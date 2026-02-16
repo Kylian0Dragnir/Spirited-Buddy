@@ -20,28 +20,32 @@ SpiritMovement::SpiritMovement(Key _switchKey)
 
 void SpiritMovement::Update(float _dt)
 {
+	MainScene* cs = static_cast<MainScene*>(SceneManager::GetInstance().GetCurrentScene());
 	InputManager& im = InputManager::Get();
-	SceneManager& sm = SceneManager::GetInstance();
-	AScene* cs = sm.GetCurrentScene();
-
-	if (m_player == nullptr) m_player = cs->FindByTag("Player");
-
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
+
+	if (m_player == nullptr)
+		m_player = cs->FindByTag("Player");
+
+	if (m_player == nullptr)
+		return;
+
 
 	if (im.IsKeyDown(m_switchKey))
 	{
-		dynamic_cast<MainScene*>(cs)->SwitchMode();
-		im.SetMousePosition(m_player->GetComponent<TransformComponent>()->GetPos());
-		if (dynamic_cast<MainScene*>(cs)->GetMode())
-			transform->SetPos(m_player->GetComponent<TransformComponent>()->GetPos());
+		cs->SwitchMode();
+		if (cs->GetMode()) {
+			transform->SetPos(m_player->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40});
+			im.SetMousePosition(m_player->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40});
+		}
 		else
 			transform->SetPos({ -100,-100 });
 	}
 
-	if (dynamic_cast<MainScene*>(cs)->GetMode())
-	{
-		transform->Translate(im.GetMousePosition().GetX(), im.GetMousePosition().GetY());
-	}
+	if (cs->GetMode() == false)
+		return;
+
+	transform->SetPos(im.GetMousePosition());
 }
 
 void SpiritMovement::OnCollisionStay(Collider* _self, Collider* _other)

@@ -5,6 +5,8 @@
 #include "Rigidbody2D.h"
 #include "Collider.h"
 #include "Entity.h"
+#include "MainScene.h"
+#include "SceneManager.h"
 
 PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJumpKey)
 {
@@ -17,6 +19,11 @@ PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJum
 
 void PlayerMovement::Update(float _dt)
 {
+	MainScene* cs = static_cast<MainScene*>(SceneManager::GetInstance().GetCurrentScene());
+
+	if (cs->GetMode())
+		return;
+
 	InputManager& im = InputManager::Get();
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 
