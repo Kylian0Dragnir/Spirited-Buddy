@@ -75,8 +75,8 @@ void LevelScene::Enter()
 	m_player->GetComponent<TransformComponent>()->SetPos({ 50, 400 });
 	m_scoreManager->GetComponent<TransformComponent>()->SetPos({ 650, 35 });
 	m_scoreManager->GetComponent<ScoreManager>()->Reset();
-	m_rightGoal->GetComponent<Transformable>()->SetPos({ 1300, 400 });
-	m_leftGoal->GetComponent<Transformable>()->SetPos({ 0, 400 });
+	m_rightGoal->GetComponent<TransformComponent>()->SetPos({ 1300, 400 });
+	m_leftGoal->GetComponent<TransformComponent>()->SetPos({ 0, 400 });
 
 	if(m_player2 == nullptr && m_ai == nullptr)
 	{

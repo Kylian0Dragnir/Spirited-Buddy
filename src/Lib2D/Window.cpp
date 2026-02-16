@@ -35,7 +35,7 @@ void Window::Create(const std::string& _title, int _w, int _h, int _x, int _y)
         m_x, m_y, 
         m_width,
         m_height, 
-        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     AssetManager::Get().SetWindow(this);
 
