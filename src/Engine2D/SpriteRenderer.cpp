@@ -5,6 +5,7 @@
 SpriteRenderer::SpriteRenderer()
 {
 	m_sprite = new Sprite();
+    m_isVisible = true;
 }
 
 SpriteRenderer::~SpriteRenderer()

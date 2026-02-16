@@ -108,6 +108,61 @@
       "property-vcpkg": false,
       "property-window": false
     },
+    "406C53FA-04B4-5549-0C72-38AD19877647": {
+      "config-debug": {
+        "additionalDependencies": [
+          "SDL2.lib",
+          "SDL2main.lib",
+          "SDL2_image.lib",
+          "SDL2_ttf.lib",
+          "SDL2_mixer.lib"
+        ],
+        "additionalIncludeDirectories": [
+          "../../lib/SDL2/include",
+          "../../lib/SDL2_image/include",
+          "../../lib/SDL2_ttf/include",
+          "../../lib/SDL2_mixer/include"
+        ],
+        "additionalLibraryDirectories": [
+          "../../lib/SDL2/lib/x64",
+          "../../lib/SDL2_image/lib/x64",
+          "../../lib/SDL2_ttf/lib/x64",
+          "../../lib/SDL2_mixer/lib/x64"
+        ],
+        "preprocessorDefinitions": []
+      },
+      "config-release": {
+        "additionalDependencies": [
+          "SDL2.lib",
+          "SDL2main.lib",
+          "SDL2_image.lib",
+          "SDL2_ttf.lib",
+          "SDL2_mixer.lib"
+        ],
+        "additionalIncludeDirectories": [
+          "../../lib/SDL2/include",
+          "../../lib/SDL2_image/include",
+          "../../lib/SDL2_ttf/include",
+          "../../lib/SDL2_mixer/include"
+        ],
+        "additionalLibraryDirectories": [
+          "../../lib/SDL2/lib/x64",
+          "../../lib/SDL2_image/lib/x64",
+          "../../lib/SDL2_ttf/lib/x64",
+          "../../lib/SDL2_mixer/lib/x64"
+        ],
+        "preprocessorDefinitions": []
+      },
+      "dependencies": [
+        "1FA65EC7-1C35-52E7-038C-4E5E06D2452A"
+      ],
+      "dependents": [],
+      "name": "SpiritedBuddy",
+      "property-lib": false,
+      "property-pch": false,
+      "property-vcpkg": false,
+      "property-window": false
+    },
     "6EC63996-0A9D-0510-074D-3D45710171D7": {
       "config-debug": {
         "additionalDependencies": [
@@ -223,10 +278,11 @@
     "Engine2D": "1FA65EC7-1C35-52E7-038C-4E5E06D2452A",
     "Game": "6EC63996-0A9D-0510-074D-3D45710171D7",
     "Lib2D": "1FC702A3-5607-7EE0-1676-67C2006652D1",
+    "SpiritedBuddy": "406C53FA-04B4-5549-0C72-38AD19877647",
     "Test": "77F25675-56CB-145C-295C-24ED577A1146"
   },
   "solution_guid": "1F511B25-05E1-46F9-6BF9-3F8F4AB66E77",
   "solution_name": "ProjectEngine2D",
-  "startup_project": "77F25675-56CB-145C-295C-24ED577A1146",
+  "startup_project": "406C53FA-04B4-5549-0C72-38AD19877647",
   "version": "2.0"
 }
