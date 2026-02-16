@@ -691,6 +691,7 @@ public:
 	void Update();
 
 	Vector2f GetMousePosition();
+    void SetMousePosition(Vector2f pos);
 
 	bool IsKeyDown(Key key);
 	bool IsKeyHeld(Key key);

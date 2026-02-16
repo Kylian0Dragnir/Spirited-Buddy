@@ -30,6 +30,11 @@ Vector2f InputManager::GetMousePosition()
 	return { (float)x, (float)y };
 }
 
+void InputManager::SetMousePosition(Vector2f pos)
+{
+	SDL_WarpMouseGlobal(pos.GetX(), pos.GetY());
+}
+
 bool InputManager::IsKeyDown(Key _key)
 {
 	SDL_Scancode scancode = SDL_GetScancodeFromKey(_key);

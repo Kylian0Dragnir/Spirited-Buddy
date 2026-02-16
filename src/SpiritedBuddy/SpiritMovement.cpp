@@ -28,15 +28,10 @@ void SpiritMovement::Update(float _dt)
 
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 
-
-
-	float dx = 0;
-	float dy = 0;
-
 	if (im.IsKeyDown(m_switchKey))
 	{
 		dynamic_cast<MainScene*>(cs)->SwitchMode();
-		m_mousePos = im.GetMousePosition();
+		im.SetMousePosition(m_player->GetComponent<TransformComponent>()->GetPos());
 		if (dynamic_cast<MainScene*>(cs)->GetMode())
 			transform->SetPos(m_player->GetComponent<TransformComponent>()->GetPos());
 		else
@@ -45,12 +40,8 @@ void SpiritMovement::Update(float _dt)
 
 	if (dynamic_cast<MainScene*>(cs)->GetMode())
 	{
-		dx = im.GetMousePosition().GetX() - m_mousePos.GetX();
-		dy = im.GetMousePosition().GetY() - m_mousePos.GetY();
-		m_mousePos = im.GetMousePosition();
+		transform->Translate(im.GetMousePosition().GetX(), im.GetMousePosition().GetY());
 	}
-
-	transform->Translate(dx, dy);
 }
 
 void SpiritMovement::OnCollisionStay(Collider* _self, Collider* _other)
