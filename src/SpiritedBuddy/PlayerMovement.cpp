@@ -45,14 +45,18 @@ void PlayerMovement::Update(float _dt)
 
 void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 {
-	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
-	if (otherEntityTag && otherEntityTag->Is("Ground"))
-		m_onGround = true;
+	if (_self->GetTop() > _self->GetOwner()->GetComponent<TransformComponent>()->GetPos().GetY()) {
+		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+		if (otherEntityTag && otherEntityTag->Is("Ground"))
+			m_onGround = true;
+	}
 }
 
 void PlayerMovement::OnCollisionExit(Collider* _self, Collider* _other)
 {
-	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
-	if (otherEntityTag && otherEntityTag->Is("Ground"))
-		m_onGround = false;
+	if (_self->GetTop() > _self->GetOwner()->GetComponent<TransformComponent>()->GetPos().GetY()) {
+		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+		if (otherEntityTag && otherEntityTag->Is("Ground"))
+			m_onGround = false;
+	}
 }
