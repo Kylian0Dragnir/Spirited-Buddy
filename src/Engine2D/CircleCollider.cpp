@@ -35,11 +35,10 @@ void CircleCollider::Draw(Window* _window)
     if (m_isVisible == false)
         return;
 
-    Brush b(_window);
     Vector2f pos = m_owner->GetComponent<TransformComponent>()->GetPos();
     pos.SetValue(pos.GetX() + m_offsetX, pos.GetY() + m_offsetY);
 
-    b.DrawCircle(pos, m_radius, 20);
+    Brush::DrawCircle(_window, pos, m_radius, 20);
 }
 
 void CircleCollider::SetRadius(float _radius)

@@ -5,25 +5,20 @@
 
 #define M_PI 3.14159265358979323846
 
-Brush::Brush(Window* _window)
+void Brush::DrawPoint(Window* _window, int _x, int _y)
 {
-	m_window = _window;
+	SDL_RenderDrawPoint(_window->m_renderer, _x, _y);
 }
 
-void Brush::DrawPoint(int _x, int _y)
+void Brush::DrawRect(Window* _window, int _x, int _y, int _width, int _height)
 {
-	SDL_RenderDrawPoint(m_window->m_renderer, _x, _y);
-}
-
-void Brush::DrawRect(int _x, int _y, int _width, int _height)
-{
-	SDL_SetRenderDrawColor(m_window->m_renderer, 0, 255, 0, 255);
+	SDL_SetRenderDrawColor(_window->m_renderer, 0, 255, 0, 255);
 
 	SDL_Rect rect{ _x, _y, _width, _height };
-	SDL_RenderDrawRect(m_window->m_renderer, &rect);
+	SDL_RenderDrawRect(_window->m_renderer, &rect);
 }
 
-void Brush::DrawCircle(Vector2f center, int radius, int precision)
+void Brush::DrawCircle(Window* _window, Vector2f center, int radius, int precision)
 {
 	float step = (2 * M_PI) / precision;
 
@@ -37,7 +32,7 @@ void Brush::DrawCircle(Vector2f center, int radius, int precision)
 		int x2 = center.GetX() + radius * cos(nextAngle);
 		int y2 = center.GetY() + radius * sin(nextAngle);
 
-		SDL_RenderDrawLine(m_window->m_renderer, x1, y1, x2, y2);
+		SDL_RenderDrawLine(_window->m_renderer, x1, y1, x2, y2);
 
 		x1 = x2;
 		y1 = y2;

@@ -44,8 +44,7 @@ void BoxCollider::Draw(Window* _window)
 
     Vector2f pos = m_owner->GetComponent<TransformComponent>()->GetPos();
 
-    Brush b(_window);
-    b.DrawRect(pos.GetX() + m_offsetX - m_width * 0.5f, pos.GetY() + m_offsetY - m_height * 0.5f, m_width, m_height);
+    Brush::DrawRect(_window, pos.GetX() + m_offsetX - m_width * 0.5f, pos.GetY() + m_offsetY - m_height * 0.5f, m_width, m_height);
 }
 
 void BoxCollider::SetBox(float _width, float _height)

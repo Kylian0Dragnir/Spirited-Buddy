@@ -15,6 +15,9 @@ SpriteRenderer::~SpriteRenderer()
 
 void SpriteRenderer::Draw(Window* _window)
 {
+    if (m_isVisible == false)
+        return;
+
     TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 
     Vector2f entityPos = transform->GetPos();

@@ -5,13 +5,9 @@ class Window;
 
 class Brush
 {
-	Window* m_window;
-
 public:
-	Brush(Window* _window);
-
-	void DrawPoint(int _x, int _y);
-	void DrawRect(int _x, int _y, int _width, int _height);
-	void DrawCircle(Vector2f center, int radius, int precision);
+	static void DrawPoint(Window* _window, int _x, int _y);
+	static void DrawRect(Window* _window, int _x, int _y, int _width, int _height);
+	static void DrawCircle(Window* _window, Vector2f center, int radius, int precision);
 };
 
