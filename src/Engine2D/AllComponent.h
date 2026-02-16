@@ -1,0 +1,10 @@
+#pragma once
+#include "TransformComponent.h"
+#include "SpriteRenderer.h"
+#include "BoxCollider.h"
+#include "CircleCollider.h"
+#include "TagComponent.h"
+#include "TextComponent.h"
+#include "Rigidbody2D.h"
+#include "ButtonComponent.h"
+#include "AudioSource.h"

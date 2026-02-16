@@ -1,0 +1,36 @@
+#include "Texture.h"
+#include "SDL_image.h"
+#include "AssetManager.h"
+
+Texture::Texture(const std::string& _filePath)
+{
+	m_texture = nullptr;
+	Load(_filePath);
+}
+
+Texture::Texture()
+{
+	m_texture = nullptr;
+}
+
+Texture::~Texture()
+{
+	if (m_texture)
+		SDL_DestroyTexture(m_texture);
+}
+
+bool Texture::Load(const std::string& _filePath)
+{
+	if (m_texture)
+		SDL_DestroyTexture(m_texture);
+
+	TextureData* tdata = AssetManager::Get().LoadTexture(_filePath.c_str());
+	m_texture = tdata->texture;
+
+	return m_texture != nullptr;
+}
+
+void Texture::SetDataPtr(void* _texture)
+{
+	m_texture = (SDL_Texture*)_texture;
+}
