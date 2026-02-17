@@ -44,7 +44,7 @@ Entity* AScene::CreateButton(float _width, float _height)
 {
 	Entity* ent = CreateEntity();
 	ent->AddComponent<ButtonComponent>();
-	ent->AddComponent<BoxCollider>(_width, _height);
+	ent->AddComponent<BoxCollider>(_width, _height, NONE, NONE);
 	return ent;
 }
 

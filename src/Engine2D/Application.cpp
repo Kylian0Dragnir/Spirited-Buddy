@@ -42,7 +42,11 @@ void Application::LoopApp()
     {
         float deltaTime = frameTimer.Restart();
 
-        InputManager::Get().Update();
+        InputManager& im = InputManager::Get();
+        im.Update();
+
+        if (im.IsKeyDown(Key::KEY_ESCAPE))
+            ShutDownApp();
 
         cs.Update(sm.GetCurrentScene()->GetEntities());
 

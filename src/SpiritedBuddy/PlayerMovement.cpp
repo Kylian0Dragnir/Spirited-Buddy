@@ -13,7 +13,7 @@ PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJum
 	m_moveLeftKey = _moveLeftKey;
 	m_moveRightKey = _moveRightKey;
 	m_moveJumpKey = _moveJumpKey;
-	m_speed = 1.2f;
+	m_speed = 0.6f;
 	m_onGround = false;
 }
 
@@ -25,29 +25,38 @@ void PlayerMovement::Update(float _dt)
 		return;
 
 	InputManager& im = InputManager::Get();
-	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
+	Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
 
 	float dx = 0;
 	float dy = 0;
 
+	Vector2f velocity = rb->GetVelocity();
+
 	if (im.IsKeyHeld(m_moveLeftKey))
 	{
-		m_direction = { -1, 0 };
-		dx += _dt * m_direction.GetX() * m_speed * 500;
+		velocity.SetX(-m_speed * 500);
 	}
-
-	if (im.IsKeyHeld(m_moveRightKey))
+	else if (im.IsKeyHeld(m_moveRightKey))
 	{
-		m_direction = { 1, 0 };
-		dx += _dt * m_direction.GetX() * m_speed * 500;
+		velocity.SetX(m_speed * 500);
+	}
+	else
+	{
+		if (velocity.GetX() > 0)
+			velocity.SetX(velocity.GetX() - 7.f);
+		else
+			velocity.SetX(velocity.GetX() + 7.f);
+
+		if (m_onGround)
+			velocity.SetX(0);
 	}
 
 	if (im.IsKeyDown(m_moveJumpKey) && m_onGround)
 	{
- 		m_owner->GetComponent<Rigidbody2D>()->AddImpulse({ 0,-750 });
+		velocity.SetY(-750);
 	}
 
-	transform->Translate(dx, dy);
+	rb->SetVelocity(velocity);
 }
 
 void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)

@@ -41,7 +41,8 @@ Vector2f Rigidbody2D::GetVelocity() const
 
 void Rigidbody2D::Update(float deltaTime)
 {
-    if (m_isKinematic) return;
+    if (m_isKinematic)
+        return;
 
     if (m_useGravity)
         m_acceleration = m_acceleration + m_gravity;

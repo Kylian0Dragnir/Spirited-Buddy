@@ -8,7 +8,7 @@ private:
     float m_height;
 
 public:
-    BoxCollider(float width, float height) : Collider(ColliderType::Rectangle), m_width(width), m_height(height) {}
+    BoxCollider(float width, float height, CollisionLayer layer, uint32_t mask) : Collider(ColliderType::Rectangle, layer, mask), m_width(width), m_height(height) {}
 
     bool IsColliding(Collider* other) override;
 

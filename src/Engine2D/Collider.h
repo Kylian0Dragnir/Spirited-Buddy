@@ -1,11 +1,20 @@
 #pragma once
 #include "Component.h"
 #include "Lib2D/Drawable.h"
+#include <string>
 
 enum ColliderType
 {
     Rectangle,
     Circle
+};
+
+enum CollisionLayer
+{
+    NONE = 0,
+    PLAYER_LAYER = 1 << 0,
+    SPIRIT_LAYER = 1 << 1,
+    ENV_LAYER = 1 << 2
 };
 
 class Collider : public Component, public Drawable
@@ -18,11 +27,17 @@ protected:
     bool m_isActived;
     bool m_isVisible;
 
+    CollisionLayer m_layer;
+    uint32_t m_mask;
+
 public:
-    Collider(ColliderType type);
+    Collider(ColliderType _type, CollisionLayer layer, uint32_t _mask);
     virtual ~Collider() {}
 
     ColliderType GetType() const { return m_type; }
+
+    CollisionLayer GetLayer() { return m_layer; }
+    bool CanCollide(Collider* _other);
 
     void SetOffset(float _ox, float _oy);
 

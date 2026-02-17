@@ -40,6 +40,9 @@ void CollisionSystem::Update(const std::vector<Entity*>& entities)
             if (a->GetOwner() == b->GetOwner())
                 continue;
 
+            if (a->CanCollide(b) == false)
+                continue;
+
             if (a->IsColliding(b) == false)
                 continue;
 

@@ -23,13 +23,13 @@ int main()
 
     Entity* e1 = new Entity();
     TransformComponent* tc = e1->AddComponent<TransformComponent>();
-    BoxCollider* bc = e1->AddComponent<BoxCollider>(135, 200);
+    BoxCollider* bc = e1->AddComponent<BoxCollider>(135, 200, 0);
     SpriteRenderer* sr = e1->AddComponent<SpriteRenderer>();
     Rigidbody2D* rb = e1->AddComponent<Rigidbody2D>();
 
     Entity* e2 = new Entity();
     TransformComponent* tc2 = e2->AddComponent<TransformComponent>();
-    CircleCollider* bc2 = e2->AddComponent<CircleCollider>(100);
+    CircleCollider* bc2 = e2->AddComponent<CircleCollider>(100, 0);
     Rigidbody2D* rb2 = e2->AddComponent<Rigidbody2D>();
 
     tc2->SetPos({ 250, 650 });

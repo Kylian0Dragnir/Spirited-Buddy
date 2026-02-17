@@ -7,7 +7,7 @@ private:
     float m_radius;
 
 public:
-    CircleCollider(float radius) : Collider(ColliderType::Circle), m_radius(radius) {}
+    CircleCollider(float radius, CollisionLayer layer, uint32_t mask) : Collider(ColliderType::Circle, layer, mask), m_radius(radius) {}
 
     float GetRadius() const { return m_radius; }
 

@@ -4,6 +4,7 @@
 #include "TransformComponent.h"
 #include "TilemapRenderer.h"
 #include "BoxCollider.h"
+#include "TagComponent.h"
 
 #include <tinyxml2.h>
 #include <vector>
@@ -71,7 +72,8 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
 
                 transform->SetPos({ x + w * 0.5f, y + h * 0.5f });
 
-                collider->AddComponent<BoxCollider>(w, h)->SetVisible(true);
+                collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER)->SetVisible(true);
+                collider->AddComponent<TagComponent>("Ground");
             }
         }
     }
