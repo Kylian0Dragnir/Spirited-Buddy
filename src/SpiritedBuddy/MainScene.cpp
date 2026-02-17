@@ -13,7 +13,7 @@ MainScene::MainScene()
 	m_spiritMode = false;
 
 	//PLAYER
-	
+	{
 		m_player = CreateEntity();
 		m_player->AddComponent<SpriteRenderer>()->Load("../../Assets/maelle.png");
 		m_player->AddComponent<TagComponent>("Player");
@@ -27,16 +27,16 @@ MainScene::MainScene()
 		bc->SetTrigger(true);
 		bc->SetOffset(0, 25);
 
+		m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
+		m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
+
 		Rigidbody2D* rb = m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f);
 		rb->AddImpulse({ 0,1000 });
 		rb->SetGravity({ 0.f,1000.f });
-
-		m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
-		m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
-	
+	}
 
 	//SPIRIT
-	
+	{
 		m_spirit = CreateEntity();
 		m_spirit->AddComponent<TagComponent>("Spirit");
 
@@ -48,13 +48,13 @@ MainScene::MainScene()
 		cc->SetVisible(true);
 		cc->SetTrigger(true);
 
-		m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
-
 		m_spirit->AddComponent<SpiritMovement>(Key::KEY_c);
-	
+
+		m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+	}
 
 	//PLAYER BARRIER
-	
+	{
 		m_playerBarrier = CreateEntity();
 
 		SpriteRenderer* sr = m_playerBarrier->AddComponent<SpriteRenderer>();
@@ -63,26 +63,26 @@ MainScene::MainScene()
 
 		m_playerBarrier->AddComponent<BoxCollider>(75, 1080, PLAYER_LAYER, PLAYER_LAYER);
 		m_playerBarrier->GetComponent<TransformComponent>()->SetPos({ 1200, 540 });
+	}
 	
-
 	//SPIRIT BARRIER
-	
+	{
 		m_spiritBarrier = CreateEntity();
 
-		sr = m_spiritBarrier->AddComponent<SpriteRenderer>();
+		SpriteRenderer* sr = m_spiritBarrier->AddComponent<SpriteRenderer>();
 		sr->Load("../../Assets/tempSpiritBarrier.png");
 		sr->SetOpacity(96);
 
 		m_spiritBarrier->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
 		m_spiritBarrier->GetComponent<TransformComponent>()->SetPos({ 800, 540 });
-	
+	}
 
 	//COLLECTIBLES
-	
+	{
 		CreateCollectible({ 960,300 });
 		CreateCollectible({ 960,400 });
+	}
 	
-
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
 }
 
