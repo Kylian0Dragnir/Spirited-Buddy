@@ -26,6 +26,7 @@ protected:
 
     bool m_isActived;
     bool m_isVisible;
+    bool m_isTrigger;
 
     CollisionLayer m_layer;
     uint32_t m_mask;
@@ -46,6 +47,9 @@ public:
 
     void SetVisible(bool _value) { m_isVisible = _value; }
     bool IsVisible() { return m_isVisible; }
+
+    void SetTrigger(bool _value) { m_isTrigger = _value; }
+    bool IsTrigger() { return m_isTrigger; }
 
     virtual bool IsColliding(Collider* other) = 0;
 

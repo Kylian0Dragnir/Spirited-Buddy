@@ -7,6 +7,19 @@
 #include "Timer.h"
 #include "Windows.h"
 
+using Clock = std::chrono::steady_clock;
+
+float GetElapsed(Clock::time_point& _start, float targetFps)
+{
+    while (true)
+    {
+        auto duration = Clock::now() - _start;
+
+        if (duration.count() >= 1000000000.f / targetFps)
+            return duration.count() / 1000000000.f;
+    }
+}
+
 Application::Application()
 { 
     m_window = nullptr;
@@ -34,16 +47,15 @@ void Application::LoopApp()
 {
     SceneManager& sm = SceneManager::GetInstance();
     CollisionSystem cs;
-    Timer frameTimer;
 
-    frameTimer.StartTime();
+    float deltaTime = 0;
 
     while (m_window->GetIsOpen())
     {
-        float deltaTime = frameTimer.Restart();
+        Clock::time_point start = Clock::now();
 
         InputManager& im = InputManager::Get();
-        im.Update();
+        im.Update(deltaTime);
 
         if (im.IsKeyDown(Key::KEY_ESCAPE))
             ShutDownApp();
@@ -58,13 +70,7 @@ void Application::LoopApp()
 
         m_window->Display();
 
-        float diff = (1.f / m_FPS) - deltaTime;
-
-        //Cap FPS
-        if (diff > 0)
-        {
-            Sleep(diff * 1000);
-        }
+        deltaTime = GetElapsed(start, m_FPS);
     }
 }
 

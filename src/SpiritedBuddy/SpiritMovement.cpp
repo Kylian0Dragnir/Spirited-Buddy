@@ -51,10 +51,13 @@ void SpiritMovement::Update(float _dt)
 
 	Vector2f dir = im.GetMousePosition() - transform->GetPos();
 
-	if (dir.Length() > 1.f)
+	if (dir.Length() > 5.f)
 		rb->SetVelocity(dir.Normalize() * 400.f);
 	else
+	{
+		im.SetMousePosition(transform->GetPos());
 		rb->SetVelocity({ 0, 0 });
+	}
 }
 
 void SpiritMovement::OnCollisionStay(Collider* _self, Collider* _other)

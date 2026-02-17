@@ -61,6 +61,9 @@ void Rigidbody2D::Update(float deltaTime)
 
 void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
 {
+    if (_self->IsTrigger() || _other->IsTrigger())
+        return;
+
     Rigidbody2D* otherRb = _other->GetOwner()->GetComponent<Rigidbody2D>();
 
     TransformComponent* selfTransform = _self->GetOwner()->GetComponent<TransformComponent>();

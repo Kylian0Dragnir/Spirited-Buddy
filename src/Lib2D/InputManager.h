@@ -688,7 +688,7 @@ class InputManager
 public:
 	static InputManager& Get();
 
-	void Update();
+	void Update(float _dt);
 
 	Vector2f GetMousePosition();
     void SetMousePosition(Vector2f pos);
@@ -709,4 +709,7 @@ private:
 
     uint32_t m_mouseState;
     uint32_t m_prevMouseState;
+
+    Vector2f m_virtualMousePos;
+    float m_maxMouseSpeed = 400.f;
 };
