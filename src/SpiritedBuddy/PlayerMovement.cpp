@@ -26,6 +26,7 @@ void PlayerMovement::Update(float _dt)
 
 	InputManager& im = InputManager::Get();
 	Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
+	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 
 	float dx = 0;
 	float dy = 0;
@@ -35,10 +36,12 @@ void PlayerMovement::Update(float _dt)
 	if (im.IsKeyHeld(m_moveLeftKey))
 	{
 		velocity.SetX(-m_speed * 500);
+		transform->SetFlip(Flip::FLIP_NONE);
 	}
 	else if (im.IsKeyHeld(m_moveRightKey))
 	{
 		velocity.SetX(m_speed * 500);
+		transform->SetFlip(Flip::FLIP_HORIZONTAL);
 	}
 	else
 	{
@@ -61,7 +64,7 @@ void PlayerMovement::Update(float _dt)
 
 void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 {
-	if (_self->GetTop() > _self->GetOwner()->GetComponent<TransformComponent>()->GetPos().GetY()) {
+	if (_self->GetTop() > m_owner->GetComponent<TransformComponent>()->GetPos().GetY()) {
 		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
 		if (otherEntityTag && otherEntityTag->Is("Ground"))
 			m_onGround = true;
@@ -70,7 +73,7 @@ void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 
 void PlayerMovement::OnCollisionExit(Collider* _self, Collider* _other)
 {
-	if (_self->GetTop() > _self->GetOwner()->GetComponent<TransformComponent>()->GetPos().GetY()) {
+	if (_self->GetTop() > m_owner->GetComponent<TransformComponent>()->GetPos().GetY()) {
 		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
 		if (otherEntityTag && otherEntityTag->Is("Ground"))
 			m_onGround = false;

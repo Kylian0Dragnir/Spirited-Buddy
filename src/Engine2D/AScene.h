@@ -24,6 +24,7 @@ public:
 	Entity* CreateButton(float _width, float _height);
 
 	std::vector<Entity*> GetEntities() { return m_entities; }
+	std::vector<Entity*> GetToDestroyEntities() { return m_toDestroy; }
 
 	Entity* FindByTag(const std::string& _tag);
 

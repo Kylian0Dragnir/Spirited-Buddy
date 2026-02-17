@@ -67,3 +67,5 @@ void SceneManager::SetStartScene(const std::string& _id)
 	m_nextScene = _id;
 }
 
+
+

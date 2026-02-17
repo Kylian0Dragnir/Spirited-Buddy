@@ -2,6 +2,8 @@
 #include "Entity.h"
 #include "Collider.h"
 #include "Collidable.h"
+#include "SceneManager.h"
+#include "AScene.h"
 
 bool SamePair(const CollisionInfo& c1, Collider* a, Collider* b)
 {
@@ -69,6 +71,20 @@ void CollisionSystem::Update(const std::vector<Entity*>& entities)
                 c->OnCollisionStay(b, a);
         }
     }
+
+    std::vector<Entity*> toDestroy = SceneManager::GetInstance().GetCurrentScene()->GetToDestroyEntities();
+
+    currentCollisions.erase(
+        std::remove_if(currentCollisions.begin(), currentCollisions.end(), [&](const CollisionInfo& col)
+            {
+                for (Entity* e : toDestroy)
+                {
+                    if (col.a->GetOwner() == e || col.b->GetOwner() == e)
+                        return true;
+                }
+                return false;
+            }),
+        currentCollisions.end());
 
     for (const CollisionInfo& oldCol : m_previousCollisions)
     {
