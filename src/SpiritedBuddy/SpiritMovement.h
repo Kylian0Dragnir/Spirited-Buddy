@@ -16,9 +16,13 @@ class SpiritMovement : public Component, public Updatable, public Collidable
 
 	Entity* m_player;
 
+	bool m_onCollisionWithPossedable;
+
 public:
 	SpiritMovement(Key _switchKey);
 	void Update(float _dt) override;
+	void OnCollisionEnter(Collider* _self, Collider* _other) override;
 	void OnCollisionStay(Collider* _self, Collider* _other) override;
+	void OnCollisionExit(Collider* _self, Collider* _other) override;
 };
 

@@ -19,7 +19,7 @@ class MainScene : public AScene
 public:
 	MainScene();
 
-	bool GetMode();
+	bool& GetMode();
 	void SwitchMode();
 	void Enter() override;
 	void Update(float _dt) override;
