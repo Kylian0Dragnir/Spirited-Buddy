@@ -75,12 +75,18 @@ void MainScene::Update(float _dt)
 	if (m_spiritMode)
 	{
 		m_spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+		m_spiritBarrier->GetComponent<BoxCollider>()->SetActive(true);
+
 		m_playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+		m_playerBarrier->GetComponent<BoxCollider>()->SetActive(false);
 	}
 	else
 	{
 		m_spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+		m_spiritBarrier->GetComponent<BoxCollider>()->SetActive(false);
+
 		m_playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+		m_playerBarrier->GetComponent<BoxCollider>()->SetActive(true);
 	}
 }
 

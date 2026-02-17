@@ -12,7 +12,7 @@ Rigidbody2D::Rigidbody2D(float mass, bool useGravity, float restitution)
     m_restitution = restitution;
     m_isKinematic = false;
 
-    m_safeMargin = 0.05f;
+    m_safeMargin = 0.1f;
 
     m_velocity = { 0, 0 };
     m_acceleration = { 0, 0 };
@@ -165,6 +165,12 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
 
     if (otherRb && !otherRb->m_isKinematic)
         otherTransform->SetPos(otherPos - correction * invMassB);
+
+    Vector2f horizontalNormal = { normal.GetX(), 0 };
+    m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);
+
+    Vector2f verticalNormal = { 0, normal.GetY() };
+    m_velocity = m_velocity - verticalNormal * m_velocity.Dot(verticalNormal);
 
     // ----------- Calcul de la vélocité relative -----------
     Vector2f otherVelocity = otherRb ? otherRb->m_velocity : Vector2f(0, 0);

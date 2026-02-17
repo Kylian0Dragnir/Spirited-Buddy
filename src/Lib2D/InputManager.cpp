@@ -1,4 +1,4 @@
-#include <SDL.h>
+﻿#include <SDL.h>
 #include <iostream>
 #include "InputManager.h"
 
@@ -18,23 +18,24 @@ void InputManager::Update(float _dt)
 {
 	memcpy(m_prevKeyboardState, m_keyboardState, KEY_NUM_SCANCODES * sizeof(Uint8));
 	SDL_Event event;
+
+	Vector2f allDelta = { 0.f, 0.f };
+
 	while (SDL_PollEvent(&event))
 	{
-		switch (event.type)
+		if (event.type == SDL_MOUSEMOTION)
 		{
-		case SDL_MOUSEMOTION:
-			Vector2f delta = { (float)event.motion.xrel, (float)event.motion.yrel };
-         
-			float maxDelta = 30.f * _dt;  
-
-			if (delta.Length() > maxDelta)
-				delta = delta.Normalize() * maxDelta;
-
-			m_virtualMousePos = m_virtualMousePos + delta;
-
-			break;
+			allDelta = allDelta + Vector2f((float)event.motion.xrel, (float)event.motion.yrel);
 		}
 	}
+
+	float maxSpeed = 700.f;              
+	float maxFrameDelta = maxSpeed * _dt; 
+
+	if (allDelta.Length() > maxFrameDelta)
+		allDelta = allDelta.Normalize() * maxFrameDelta;
+
+	m_virtualMousePos = m_virtualMousePos + allDelta;
 
 	m_prevMouseState = m_mouseState;
 	m_mouseState = SDL_GetMouseState(NULL, NULL);

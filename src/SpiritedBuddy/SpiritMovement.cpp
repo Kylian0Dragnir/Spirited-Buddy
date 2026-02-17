@@ -51,8 +51,17 @@ void SpiritMovement::Update(float _dt)
 
 	Vector2f dir = im.GetMousePosition() - transform->GetPos();
 
-	if (dir.Length() > 5.f)
-		rb->SetVelocity(dir.Normalize() * 400.f);
+	if(dir.Length() > 30)
+	{
+		im.SetMousePosition(transform->GetPos());
+		rb->SetVelocity({ 0, 0 });
+		return;
+	}
+
+	if(dir.Length() > 4.f)
+	{
+		rb->SetVelocity(dir.Normalize() * 700.f);
+	}
 	else
 	{
 		im.SetMousePosition(transform->GetPos());
