@@ -154,7 +154,7 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
     float invMassA = m_isKinematic ? 0.0f : 1.0f / m_mass;
     float invMassB = (otherRb && !otherRb->m_isKinematic) ? 1.0f / otherRb->m_mass : 0.0f;
 
-    float correctionPercent = 0.8f;
+    float correctionPercent = 1.f;
     float slop = m_safeMargin;
 
     float correctionMag = std::max(penetrationDepth - slop, 0.0f) / (invMassA + invMassB) * correctionPercent;

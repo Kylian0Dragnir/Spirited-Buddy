@@ -60,10 +60,10 @@ bool ButtonComponent::IsMouseOver() const
     if (!collider) 
         return false;
 
-    Vector2f mouse = InputManager::Get().GetMousePosition();
+    //Vector2f mouse = InputManager::Get().GetMousePosition();
 
-    return mouse.GetX() >= collider->GetLeft() &&
-        mouse.GetX() <= collider->GetRight() &&
-        mouse.GetY() >= collider->GetTop() &&
-        mouse.GetY() <= collider->GetBottom();
+    //return mouse.GetX() >= collider->GetLeft() &&
+    //    mouse.GetX() <= collider->GetRight() &&
+    //    mouse.GetY() >= collider->GetTop() &&
+    //    mouse.GetY() <= collider->GetBottom();
 }

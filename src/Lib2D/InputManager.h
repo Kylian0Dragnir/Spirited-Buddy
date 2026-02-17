@@ -690,8 +690,8 @@ public:
 
 	void Update(float _dt);
 
-	Vector2f GetMousePosition();
-    void SetMousePosition(Vector2f pos);
+    //Vector2f GetMousePosition();
+	Vector2f GetMouseDelta();
 
 	bool IsKeyDown(Key key);
 	bool IsKeyHeld(Key key);
@@ -710,6 +710,7 @@ private:
     uint32_t m_mouseState;
     uint32_t m_prevMouseState;
 
-    Vector2f m_virtualMousePos;
+    //Vector2f m_mousePosition;
+    Vector2f m_mouseDelta;
     float m_maxMouseSpeed = 400.f;
 };

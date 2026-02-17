@@ -40,7 +40,6 @@ void SpiritMovement::Update(float _dt)
 			Vector2f targetPos = m_player->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 
 			transform->SetPos(targetPos);
-			im.SetMousePosition(targetPos);
 		}
 		else
 			transform->SetPos({ -100,-100 });
@@ -49,24 +48,15 @@ void SpiritMovement::Update(float _dt)
 	if (cs->GetMode() == false)
 		return;
 
-	Vector2f dir = im.GetMousePosition() - transform->GetPos();
+	Vector2f delta = im.GetMouseDelta();
+	float maxDelta = 500.f * _dt;
 
-	if(dir.Length() > 30)
+	if (delta.Length() > maxDelta)
 	{
-		im.SetMousePosition(transform->GetPos());
-		rb->SetVelocity({ 0, 0 });
-		return;
+		delta = delta.Normalize() * maxDelta;
 	}
 
-	if(dir.Length() > 4.f)
-	{
-		rb->SetVelocity(dir.Normalize() * 700.f);
-	}
-	else
-	{
-		im.SetMousePosition(transform->GetPos());
-		rb->SetVelocity({ 0, 0 });
-	}
+	rb->SetVelocity(delta / _dt);
 }
 
 void SpiritMovement::OnCollisionStay(Collider* _self, Collider* _other)

@@ -19,36 +19,28 @@ void InputManager::Update(float _dt)
 	memcpy(m_prevKeyboardState, m_keyboardState, KEY_NUM_SCANCODES * sizeof(Uint8));
 	SDL_Event event;
 
-	Vector2f allDelta = { 0.f, 0.f };
+	m_mouseDelta = { 0.f, 0.f };
 
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_MOUSEMOTION)
 		{
-			allDelta = allDelta + Vector2f((float)event.motion.xrel, (float)event.motion.yrel);
+			m_mouseDelta = m_mouseDelta + Vector2f((float)event.motion.xrel, (float)event.motion.yrel);
 		}
 	}
-
-	float maxSpeed = 700.f;              
-	float maxFrameDelta = maxSpeed * _dt; 
-
-	if (allDelta.Length() > maxFrameDelta)
-		allDelta = allDelta.Normalize() * maxFrameDelta;
-
-	m_virtualMousePos = m_virtualMousePos + allDelta;
 
 	m_prevMouseState = m_mouseState;
 	m_mouseState = SDL_GetMouseState(NULL, NULL);
 }
 
-Vector2f InputManager::GetMousePosition()
-{
-	return m_virtualMousePos;
-}
+//Vector2f InputManager::GetMousePosition()
+//{
+//	return m_mousePosition;
+//}
 
-void InputManager::SetMousePosition(Vector2f pos)
+Vector2f InputManager::GetMouseDelta()
 {
-	m_virtualMousePos = pos;
+	return m_mouseDelta;
 }
 
 bool InputManager::IsKeyDown(Key _key)

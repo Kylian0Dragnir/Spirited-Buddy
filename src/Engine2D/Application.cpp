@@ -60,9 +60,9 @@ void Application::LoopApp()
         if (im.IsKeyDown(Key::KEY_ESCAPE))
             ShutDownApp();
 
-        cs.Update(sm.GetCurrentScene()->GetEntities());
-
         sm.Update(deltaTime);
+
+        cs.Update(sm.GetCurrentScene()->GetEntities());
 
         m_window->ClearWindow();
 
