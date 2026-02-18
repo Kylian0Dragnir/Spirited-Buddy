@@ -20,6 +20,8 @@ void Brush::DrawRect(Window* _window, int _x, int _y, int _width, int _height)
 
 void Brush::DrawCircle(Window* _window, Vector2f center, int radius, int precision)
 {
+	SDL_SetRenderDrawColor(_window->m_renderer, 0, 255, 0, 255);
+
 	float step = (2 * M_PI) / precision;
 
 	int x1 = center.GetX() + radius * cos(0);
