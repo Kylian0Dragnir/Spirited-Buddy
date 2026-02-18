@@ -19,14 +19,16 @@ public:
 	~AScene();
 
 	Entity* CreateEntity();
-	void DestroyEntity(Entity* _ent);
-	void DestroyEntityNow(Entity* _ent);
+	void DestroyEntity(Entity*& _ent);
+	void DestroyAllEntitiesWithTag(const std::string& _tag);
+	void DestroyEntityNow(Entity*& _ent);
 	Entity* CreateButton(float _width, float _height);
 
 	std::vector<Entity*> GetEntities() { return m_entities; }
 	std::vector<Entity*> GetToDestroyEntities() { return m_toDestroy; }
 
 	Entity* FindByTag(const std::string& _tag);
+	std::vector<Entity*> FindAllEntitiesWithTag(const std::string& _tag);
 
 	virtual void Enter() = 0;
 	void Update(float _dt) override;

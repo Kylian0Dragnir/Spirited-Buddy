@@ -11,6 +11,9 @@ class MainScene : public AScene
 
 	Entity* m_playerBarrier;
 	Entity* m_spiritBarrier;
+	Entity* m_spiritBarrier2;
+
+	Entity* m_portal;
 
 	std::vector<Entity*> m_collectibles;
 

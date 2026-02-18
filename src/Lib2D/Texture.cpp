@@ -16,13 +16,15 @@ Texture::Texture()
 Texture::~Texture()
 {
 	if (m_texture)
-		SDL_DestroyTexture(m_texture);
+		AssetManager::Get().UnsetTexture(m_filepath);
 }
 
 bool Texture::Load(const std::string& _filePath)
 {
+	m_filepath = _filePath;
+
 	if (m_texture)
-		SDL_DestroyTexture(m_texture);
+		AssetManager::Get().UnsetTexture(m_filepath);
 
 	TextureData* tdata = AssetManager::Get().LoadTexture(_filePath.c_str());
 	m_texture = tdata->texture;

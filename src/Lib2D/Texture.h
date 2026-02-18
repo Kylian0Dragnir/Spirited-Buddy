@@ -6,6 +6,7 @@ struct SDL_Texture;
 class Texture
 {
 	SDL_Texture* m_texture;
+	std::string m_filepath;
 
 public:
 

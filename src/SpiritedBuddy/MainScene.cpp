@@ -4,6 +4,7 @@
 #include "PlayerMovement.h"
 #include "SpiritMovement.h"
 #include "CollectibleLogic.h"
+#include "PortalLogic.h"
 #include "Collider.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
@@ -11,6 +12,32 @@
 MainScene::MainScene()
 {
 	m_spiritMode = false;
+
+	//PORTAL
+	{
+		m_portal = CreateEntity();
+
+		SpriteRenderer* sr = m_portal->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/Portal-Sheet.png");
+		sr->SetVisible(false);
+
+		CircleCollider* cc = m_portal->AddComponent<CircleCollider>(48, ENV_LAYER, PLAYER_LAYER);
+		cc->SetActive(false);
+		cc->SetVisible(true);
+		cc->SetTrigger(true);
+
+		m_portal->AddComponent<PortalLogic>();
+
+		TransformComponent* transform = m_portal->GetComponent<TransformComponent>();
+		transform->SetPos({ 80, 750 });
+		transform->SetScale(1.5f);
+	}
+
+	//COLLECTIBLES
+	{
+		CreateCollectible({ 960,300 });
+		CreateCollectible({ 960,400 });
+	}
 
 	//PLAYER
 	{
@@ -75,12 +102,16 @@ MainScene::MainScene()
 
 		m_spiritBarrier->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
 		m_spiritBarrier->GetComponent<TransformComponent>()->SetPos({ 800, 540 });
-	}
 
-	//COLLECTIBLES
-	{
-		CreateCollectible({ 960,300 });
-		CreateCollectible({ 960,400 });
+		m_spiritBarrier2 = CreateEntity();
+		m_spiritBarrier2->AddComponent<TagComponent>("BARRIER");
+
+		sr = m_spiritBarrier2->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/tempSpiritBarrier.png");
+		sr->SetOpacity(96);
+
+		m_spiritBarrier2->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
+		m_spiritBarrier2->GetComponent<TransformComponent>()->SetPos({ 960, 540 });
 	}
 	
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
@@ -94,6 +125,8 @@ bool& MainScene::GetMode()
 void MainScene::SwitchMode()
 {
 	m_spiritMode = !m_spiritMode;
+	m_player->GetComponent<Rigidbody2D>()->SetVelocity({ 0, 0 });
+	m_spirit->GetComponent<Rigidbody2D>()->SetVelocity({ 0, 0 });
 }
 
 void MainScene::Enter()
@@ -112,6 +145,12 @@ void MainScene::Update(float _dt)
 		m_spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 		m_spiritBarrier->GetComponent<BoxCollider>()->SetActive(true);
 
+		if(m_spiritBarrier2 != nullptr)
+		{
+			m_spiritBarrier2->GetComponent<SpriteRenderer>()->SetVisible(true);
+			m_spiritBarrier2->GetComponent<BoxCollider>()->SetActive(true);
+		}
+
 		m_playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
 		m_playerBarrier->GetComponent<BoxCollider>()->SetActive(false);
 	}
@@ -120,9 +159,24 @@ void MainScene::Update(float _dt)
 		m_spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
 		m_spiritBarrier->GetComponent<BoxCollider>()->SetActive(false);
 
+		if (m_spiritBarrier2 != nullptr)
+		{
+			m_spiritBarrier2->GetComponent<SpriteRenderer>()->SetVisible(false);
+			m_spiritBarrier2->GetComponent<BoxCollider>()->SetActive(false);
+		}
+
 		m_playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 		m_playerBarrier->GetComponent<BoxCollider>()->SetActive(true);
 	}
+
+	if (m_collectibles.empty())
+	{
+		m_portal->GetComponent<SpriteRenderer>()->SetVisible(true);
+		m_portal->GetComponent<CircleCollider>()->SetActive(true);
+	}
+
+	if (InputManager::Get().IsKeyDown(Key::KEY_BACKSPACE))
+		DestroyEntity(m_spiritBarrier2);
 }
 
 void MainScene::Exit()
@@ -135,14 +189,12 @@ void MainScene::DestroyCollectible(Entity* collectible)
 	{
 		if (*coll == collectible)
 		{
-			collectible->GetComponent<TransformComponent>()->SetPos({ -100,-100 });
 			m_collectibles.erase(coll);
 			DestroyEntity(collectible);
 			return;
 		}
 	}
 }
-
 
 void MainScene::CreateCollectible(Vector2f _pos)
 {

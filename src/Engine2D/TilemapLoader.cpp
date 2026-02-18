@@ -14,6 +14,9 @@ using namespace tinyxml2;
 
 void TilemapLoader::Load(const std::string& path, AScene* scene, const std::string& tilesetPath)
 {
+    scene->DestroyAllEntitiesWithTag("Tilemap");
+    scene->DestroyAllEntitiesWithTag("Ground");
+
     XMLDocument doc;
     if (doc.LoadFile(path.c_str()) != XML_SUCCESS)
         return;
@@ -39,6 +42,8 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
     // CREATE TILEMAP ENTITY
 
     Entity* mapEntity = scene->CreateEntity();
+
+    mapEntity->AddComponent<TagComponent>("Tilemap");
 
     auto transform = mapEntity->GetComponent<TransformComponent>();
     transform->SetPos({ 0, 0 });

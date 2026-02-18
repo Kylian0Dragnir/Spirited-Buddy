@@ -43,28 +43,25 @@ void SpiritMovement::Update(float _dt)
 			Vector2f targetPos = m_player->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 			transform->SetPos(targetPos);
 
-			//BoxCollider* bc = m_owner->GetComponent<BoxCollider>();
-			//bc->SetVisible(true);
-			//bc->SetActive(true);
+			BoxCollider* bc = m_owner->GetComponent<BoxCollider>();
+			bc->SetVisible(true);
+			bc->SetActive(true);
 
-			//CircleCollider* cc = m_owner->GetComponent<CircleCollider>();
-			//cc->SetVisible(true);
-			//cc->SetActive(true);
+			CircleCollider* cc = m_owner->GetComponent<CircleCollider>();
+			cc->SetVisible(true);
+			cc->SetActive(true);
 		}
 		else if (cs->GetMode() && m_onCollisionWithPossedable)
 		{
 			cs->SwitchMode();
 
-			Vector2f targetPos = m_player->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
-			transform->SetPos({-100, -100});
+			BoxCollider* bc = m_owner->GetComponent<BoxCollider>();
+			bc->SetVisible(false);
+			bc->SetActive(false);
 
-			//BoxCollider* bc = m_owner->GetComponent<BoxCollider>();
-			//bc->SetVisible(false);
-			//bc->SetActive(false);
-
-			//CircleCollider* cc = m_owner->GetComponent<CircleCollider>();
-			//cc->SetVisible(false);
-			//cc->SetActive(false);
+			CircleCollider* cc = m_owner->GetComponent<CircleCollider>();
+			cc->SetVisible(false);
+			cc->SetActive(false);
 		}
 	}
 

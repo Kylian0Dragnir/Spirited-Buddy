@@ -23,19 +23,26 @@ Entity* AScene::CreateEntity()
 	return ent;
 }
 
-void AScene::DestroyEntity(Entity* _ent)
+void AScene::DestroyEntity(Entity*& _ent)
 {
 	m_toDestroy.push_back(_ent);
+	_ent = nullptr;
 }
 
-void AScene::DestroyEntityNow(Entity* _ent)
+void AScene::DestroyAllEntitiesWithTag(const std::string& _tag)
+{
+	for(Entity* ent : FindAllEntitiesWithTag(_tag))
+		DestroyEntity(ent);
+}
+
+void AScene::DestroyEntityNow(Entity*& _ent)
 {
 	auto it = std::find(m_entities.begin(), m_entities.end(), _ent);
 
 	if (it != m_entities.end())
 	{
 		delete *it;
-		*it = nullptr;
+		_ent = nullptr;
 		m_entities.erase(it);
 	}
 }
@@ -62,6 +69,22 @@ Entity* AScene::FindByTag(const std::string& _tag)
 	return nullptr;
 }
 
+std::vector<Entity*> AScene::FindAllEntitiesWithTag(const std::string& _tag)
+{
+	std::vector<Entity*> result;
+
+	for (Entity* ent : m_entities)
+	{
+		if (TagComponent* tag = ent->GetComponent<TagComponent>())
+		{
+			if (tag->Is(_tag))
+				result.push_back(ent);
+		}
+	}
+
+	return result;
+}
+
 void AScene::Update(float _dt)
 {
 	for (Entity* ent : m_entities)
@@ -75,7 +98,6 @@ void AScene::Update(float _dt)
 		if (it != m_entities.end())
 		{
 			delete* it;
-			*it = nullptr;
 			m_entities.erase(it);
 		}
 	}
