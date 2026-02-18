@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "PlayerMovement.h"
 #include "SpiritMovement.h"
+#include "PhysicObjectMovement.h" 
 #include "CollectibleLogic.h"
 #include "PortalLogic.h"
 #include "Collider.h"
@@ -32,6 +33,21 @@ MainScene::MainScene()
 	//SPIRIT
 	{
 		CreateSpirit({ -100,-100 });
+	}
+
+	//CRATE
+	{
+		Entity* crate = CreateEntity();
+
+		//Solid Collider
+		crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
+
+		crate->AddComponent<PhysicObjectMovement>(Key::KEY_k, Key::KEY_m);
+		m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
+
+		Rigidbody2D* rb = crate->AddComponent<Rigidbody2D>(1.f, true, 0.f);
+		rb->AddImpulse({ 0,1000 });
+		rb->SetGravity({ 0.f,1000.f });
 	}
 
 	//PLAYER BARRIER
@@ -103,8 +119,7 @@ void MainScene::Update(float _dt)
 	{
 		for (Entity* p : m_portals)
 		{
-			p->GetComponent<SpriteRenderer>()->SetVisible(true);
-			p->GetComponent<CircleCollider>()->SetActive(true);
+			p->GetComponent<PortalLogic>()->Appear();
 		}
 	}
 
@@ -149,9 +164,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	m_player->GetComponent<TransformComponent>()->SetPos(_pos);
 	m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
 
-	/*Rigidbody2D* rb = */m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
-	//rb->AddImpulse({ 0,1000 });
-	//rb->SetGravity({ 0.f,1000.f });
+	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 
 }
 
