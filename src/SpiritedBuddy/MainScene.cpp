@@ -17,16 +17,11 @@ MainScene::MainScene()
 	{
 		m_portal = CreateEntity();
 
-		SpriteRenderer* sr = m_portal->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/Portal-Sheet.png");
-		sr->SetVisible(false);
+		m_portal->AddComponent<SpriteRenderer>()->Load("../../Assets/Portal-Sheet.png");
 
-		CircleCollider* cc = m_portal->AddComponent<CircleCollider>(48, ENV_LAYER, PLAYER_LAYER);
-		cc->SetActive(false);
-		cc->SetVisible(true);
-		cc->SetTrigger(true);
+		m_portal->AddComponent<CircleCollider>(48, ENV_LAYER, PLAYER_LAYER)->SetTrigger(true);
 
-		m_portal->AddComponent<PortalLogic>();
+		m_portal->AddComponent<PortalLogic>("START");
 
 		TransformComponent* transform = m_portal->GetComponent<TransformComponent>();
 		transform->SetPos({ 80, 750 });
@@ -171,8 +166,7 @@ void MainScene::Update(float _dt)
 
 	if (m_collectibles.empty())
 	{
-		m_portal->GetComponent<SpriteRenderer>()->SetVisible(true);
-		m_portal->GetComponent<CircleCollider>()->SetActive(true);
+		m_portal->GetComponent<PortalLogic>()->Appear();
 	}
 
 	if (InputManager::Get().IsKeyDown(Key::KEY_BACKSPACE))

@@ -3,43 +3,106 @@
 #include "SpriteRenderer.h"
 #include "Entity.h"
 #include "Collider.h"
+#include "CircleCollider.h"
 #include "Rigidbody2D.h"
-#include "TransformComponent.h"
 #include "SceneManager.h"
 #include "MainScene.h"
 #include "TilemapLoader.h"
 
+PortalLogic::PortalLogic(const std::string& _nextSceneID)
+{
+	m_nextSceneID = _nextSceneID;
+}
+
 void PortalLogic::Update(float dt)
 {
 	SpriteRenderer* sr = m_owner->GetComponent<SpriteRenderer>();
+	CircleCollider* cc = m_owner->GetComponent<CircleCollider>();
 
-	if (m_teleportRequested == false)
+	switch (m_state)
 	{
+	case PortalState::Hidden:
 		sr->SetFrame(64, 64, m_frameX, m_frameY);
-		return;
-	}
+		sr->SetVisible(false);
+		cc->SetActive(false);
+		cc->SetVisible(false);
+		break;
 
-	if (m_frameX >= 512)
-		return;
+	case PortalState::Appearing:
+		HandleAppear(dt);
+		break;
 
-	if (m_timer <= 0)
-	{
-		sr->SetFrame(64, 64, m_frameX, m_frameY);
-		m_frameX += 64;
-		m_timer = 0.05f;
-	}
-	else
-	{
-		m_timer -= dt;
+	case PortalState::Idle:
+		sr->SetVisible(true);
+		cc->SetActive(true);
+		cc->SetVisible(true);
+		break;
+
+	case PortalState::Disappearing:
+		HandleDisappear(dt);
+		break;
 	}
 }
 
 void PortalLogic::OnCollisionStay(Collider* _self, Collider* _other)
 {
-	if (InputManager::Get().IsKeyDown(Key::KEY_e) && static_cast<MainScene*>(SceneManager::GetInstance().GetCurrentScene())->GetMode() == false)
+	if (InputManager::Get().IsKeyDown(Key::KEY_e))
 	{
-		m_teleportRequested = true;
-		_other->GetOwner()->GetComponent<TransformComponent>()->SetPos({ 100, 100 });
-		_other->GetOwner()->GetComponent<Rigidbody2D>()->AddImpulse({0,1000});
+		m_state = PortalState::Disappearing;
+		m_timer = 0.f;
 	}
 }
+
+void PortalLogic::Appear()
+{
+	if (m_state != PortalState::Hidden)
+		return;
+
+	m_state = PortalState::Appearing;
+}
+
+void PortalLogic::HandleAppear(float _dt)
+{
+	SpriteRenderer* sr = m_owner->GetComponent<SpriteRenderer>();
+	sr->SetVisible(true);
+
+	if (m_timer > 0)
+	{
+		m_timer -= _dt;
+		return;
+	}
+
+	m_timer = 0.07f;
+
+	m_frameX -= 64;
+	sr->SetFrame(64, 64, m_frameX, m_frameY);
+
+	if (m_frameX <= 0)
+	{
+		m_state = PortalState::Idle;
+	}
+}
+
+void PortalLogic::HandleDisappear(float _dt)
+{
+	SpriteRenderer* sr = m_owner->GetComponent<SpriteRenderer>();
+
+	if (m_timer > 0)
+	{
+		m_timer -= _dt;
+		return;
+	}
+
+	m_timer = 0.07f;
+
+	m_frameX += 64;
+	sr->SetFrame(64, 64, m_frameX, m_frameY);
+
+	if (m_frameX >= 512)
+	{
+		m_state = PortalState::Hidden;
+		SceneManager::GetInstance().ChangeScene(m_nextSceneID);
+		return;
+	}
+}
+
