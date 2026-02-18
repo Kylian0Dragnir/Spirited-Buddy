@@ -9,11 +9,15 @@ class MainScene : public AScene
 	Entity* m_player;
 	Entity* m_spirit;
 
-	Entity* m_playerBarrier;
-	Entity* m_spiritBarrier;
-	Entity* m_spiritBarrier2;
+	std::vector<Entity*> m_playerBarriers;
+	std::vector<Entity*> m_spiritBarriers;
+	//Entity* m_playerBarrier;
+	//Entity* m_spiritBarrier;
+	//Entity* m_spiritBarrier2;
 
-	Entity* m_portal;
+	std::vector<Entity*> m_portals;
+
+	//Entity* m_portal;
 
 	std::vector<Entity*> m_collectibles;
 
@@ -28,7 +32,12 @@ public:
 	void Update(float _dt) override;
 	void Exit() override;
 
-	void DestroyCollectible(Entity* collectible);
 	void CreateCollectible(Vector2f _pos);
+	void CreatePlayer(Vector2f _pos);
+	void CreateSpirit(Vector2f _pos);
+	void CreatePortal(Vector2f _pos);
+	void CreatePlayerBarrier(Vector2f _pos);
+	void CreateSpiritBarrier(Vector2f _pos, const std::string& _tag = {});
+	void CleanVectors();
 };
 

@@ -15,22 +15,7 @@ MainScene::MainScene()
 
 	//PORTAL
 	{
-		m_portal = CreateEntity();
-
-		SpriteRenderer* sr = m_portal->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/Portal-Sheet.png");
-		sr->SetVisible(false);
-
-		CircleCollider* cc = m_portal->AddComponent<CircleCollider>(48, ENV_LAYER, PLAYER_LAYER);
-		cc->SetActive(false);
-		cc->SetVisible(true);
-		cc->SetTrigger(true);
-
-		m_portal->AddComponent<PortalLogic>();
-
-		TransformComponent* transform = m_portal->GetComponent<TransformComponent>();
-		transform->SetPos({ 80, 750 });
-		transform->SetScale(1.5f);
+		CreatePortal({ 80, 750 });
 	}
 
 	//COLLECTIBLES
@@ -41,77 +26,23 @@ MainScene::MainScene()
 
 	//PLAYER
 	{
-		m_player = CreateEntity();
-		m_player->AddComponent<SpriteRenderer>()->Load("../../Assets/maelle.png");
-		m_player->AddComponent<TagComponent>("Player");
-
-		//Solid Collider
-		m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
-
-		//Grounded Trigger Collider
-		BoxCollider* bc = m_player->AddComponent<BoxCollider>(33.75f / 2, 1, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER);
-		bc->SetVisible(true);
-		bc->SetTrigger(true);
-		bc->SetOffset(0, 25);
-
-		m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
-		m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
-
-		Rigidbody2D* rb = m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f);
-		rb->AddImpulse({ 0,1000 });
-		rb->SetGravity({ 0.f,1000.f });
+		CreatePlayer({ 100,100 });
 	}
 
 	//SPIRIT
 	{
-		m_spirit = CreateEntity();
-		m_spirit->AddComponent<TagComponent>("Spirit");
-
-		//Solid Collider
-		m_spirit->AddComponent<BoxCollider>(33.75f, 25.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(true);
-
-		//Interaction Trigger Collider
-		CircleCollider* cc = m_spirit->AddComponent<CircleCollider>(40.f, SPIRIT_LAYER, SPIRIT_LAYER | PLAYER_LAYER);
-		cc->SetVisible(true);
-		cc->SetTrigger(true);
-
-		m_spirit->AddComponent<SpiritMovement>(Key::KEY_c);
-
-		m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+		CreateSpirit({ -100,-100 });
 	}
 
 	//PLAYER BARRIER
 	{
-		m_playerBarrier = CreateEntity();
-
-		SpriteRenderer* sr = m_playerBarrier->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/tempPlayerBarrier.png");
-		sr->SetOpacity(96);
-
-		m_playerBarrier->AddComponent<BoxCollider>(75, 1080, PLAYER_LAYER, PLAYER_LAYER);
-		m_playerBarrier->GetComponent<TransformComponent>()->SetPos({ 1200, 540 });
+		CreatePlayerBarrier({ 1200, 540 });
 	}
 	
 	//SPIRIT BARRIER
 	{
-		m_spiritBarrier = CreateEntity();
-
-		SpriteRenderer* sr = m_spiritBarrier->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/tempSpiritBarrier.png");
-		sr->SetOpacity(96);
-
-		m_spiritBarrier->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
-		m_spiritBarrier->GetComponent<TransformComponent>()->SetPos({ 800, 540 });
-
-		m_spiritBarrier2 = CreateEntity();
-		m_spiritBarrier2->AddComponent<TagComponent>("BARRIER");
-
-		sr = m_spiritBarrier2->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/tempSpiritBarrier.png");
-		sr->SetOpacity(96);
-
-		m_spiritBarrier2->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
-		m_spiritBarrier2->GetComponent<TransformComponent>()->SetPos({ 960, 540 });
+		CreateSpiritBarrier({ 800, 540 });
+		CreateSpiritBarrier({ 960, 540 },"BARRIER");
 	}
 	
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
@@ -131,69 +62,62 @@ void MainScene::SwitchMode()
 
 void MainScene::Enter()
 {
-	m_player->GetComponent<TransformComponent>()->SetPos({ 100,100 });
+	
 
-	m_spirit->GetComponent<TransformComponent>()->SetPos({ -100,-100 });
 }
 
 void MainScene::Update(float _dt)
 {
 	AScene::Update(_dt);
 
+	CleanVectors();
+
 	if (m_spiritMode)
 	{
-		m_spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-		m_spiritBarrier->GetComponent<BoxCollider>()->SetActive(true);
-
-		if(m_spiritBarrier2 != nullptr)
+		for (Entity* sb : m_spiritBarriers)
 		{
-			m_spiritBarrier2->GetComponent<SpriteRenderer>()->SetVisible(true);
-			m_spiritBarrier2->GetComponent<BoxCollider>()->SetActive(true);
+			sb->GetComponent<SpriteRenderer>()->SetVisible(true);
+			sb->GetComponent<BoxCollider>()->SetActive(true);
 		}
-
-		m_playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-		m_playerBarrier->GetComponent<BoxCollider>()->SetActive(false);
+		for (Entity* pb : m_playerBarriers)
+		{
+			pb->GetComponent<SpriteRenderer>()->SetVisible(false);
+			pb->GetComponent<BoxCollider>()->SetActive(false);
+		}
 	}
 	else
 	{
-		m_spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-		m_spiritBarrier->GetComponent<BoxCollider>()->SetActive(false);
-
-		if (m_spiritBarrier2 != nullptr)
+		for (Entity* sb : m_spiritBarriers)
 		{
-			m_spiritBarrier2->GetComponent<SpriteRenderer>()->SetVisible(false);
-			m_spiritBarrier2->GetComponent<BoxCollider>()->SetActive(false);
+			sb->GetComponent<SpriteRenderer>()->SetVisible(false);
+			sb->GetComponent<BoxCollider>()->SetActive(false);
 		}
-
-		m_playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-		m_playerBarrier->GetComponent<BoxCollider>()->SetActive(true);
+		for (Entity* pb : m_playerBarriers)
+		{
+			pb->GetComponent<SpriteRenderer>()->SetVisible(true);
+			pb->GetComponent<BoxCollider>()->SetActive(true);
+		}
 	}
 
 	if (m_collectibles.empty())
 	{
-		m_portal->GetComponent<SpriteRenderer>()->SetVisible(true);
-		m_portal->GetComponent<CircleCollider>()->SetActive(true);
+		for (Entity* p : m_portals)
+		{
+			p->GetComponent<SpriteRenderer>()->SetVisible(true);
+			p->GetComponent<CircleCollider>()->SetActive(true);
+		}
 	}
 
 	if (InputManager::Get().IsKeyDown(Key::KEY_BACKSPACE))
-		DestroyEntity(m_spiritBarrier2);
+	{
+		DestroyAllEntitiesWithTag("BARRIER");
+	}
+
 }
 
 void MainScene::Exit()
 {
-}
 
-void MainScene::DestroyCollectible(Entity* collectible)
-{
-	for (auto coll = m_collectibles.begin(); coll != m_collectibles.end(); ++coll)
-	{
-		if (*coll == collectible)
-		{
-			m_collectibles.erase(coll);
-			DestroyEntity(collectible);
-			return;
-		}
-	}
 }
 
 void MainScene::CreateCollectible(Vector2f _pos)
@@ -203,4 +127,129 @@ void MainScene::CreateCollectible(Vector2f _pos)
 	m_coin->AddComponent<CollectibleLogic>();
 	m_coin->GetComponent<TransformComponent>()->SetPos(_pos);
 	m_collectibles.push_back(m_coin);
+}
+
+void MainScene::CreatePlayer(Vector2f _pos)
+{
+	m_player = CreateEntity();
+	m_player->AddComponent<SpriteRenderer>()->Load("../../Assets/maelle.png");
+	m_player->AddComponent<TagComponent>("Player");
+
+	//Solid Collider
+	m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
+
+	//Grounded Trigger Collider
+	BoxCollider* bc = m_player->AddComponent<BoxCollider>(33.75f / 2, 1, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER);
+	bc->SetVisible(true);
+	bc->SetTrigger(true);
+	bc->SetOffset(0, 25);
+
+	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
+
+	m_player->GetComponent<TransformComponent>()->SetPos(_pos);
+	m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
+
+	/*Rigidbody2D* rb = */m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+	//rb->AddImpulse({ 0,1000 });
+	//rb->SetGravity({ 0.f,1000.f });
+
+}
+
+void MainScene::CreateSpirit(Vector2f _pos)
+{
+	m_spirit = CreateEntity();
+	m_spirit->AddComponent<TagComponent>("Spirit");
+
+	//Solid Collider
+	m_spirit->AddComponent<BoxCollider>(33.75f, 25.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(true);
+
+	//Interaction Trigger Collider
+	CircleCollider* cc = m_spirit->AddComponent<CircleCollider>(40.f, SPIRIT_LAYER, SPIRIT_LAYER | PLAYER_LAYER);
+	cc->SetVisible(true);
+	cc->SetTrigger(true);
+
+	m_spirit->AddComponent<SpiritMovement>(Key::KEY_c);
+
+	m_spirit->GetComponent<TransformComponent>()->SetPos(_pos);
+
+	m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+}
+
+void MainScene::CreatePortal(Vector2f _pos)
+{
+	Entity* portal = CreateEntity();
+
+	SpriteRenderer* sr = portal->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/Portal-Sheet.png");
+	sr->SetVisible(false);
+
+	CircleCollider* cc = portal->AddComponent<CircleCollider>(48, ENV_LAYER, PLAYER_LAYER);
+	cc->SetActive(false);
+	cc->SetVisible(true);
+	cc->SetTrigger(true);
+
+	portal->AddComponent<PortalLogic>();
+
+	TransformComponent* transform = portal->GetComponent<TransformComponent>();
+	transform->SetPos(_pos);
+	transform->SetScale(1.5f);
+
+	m_portals.push_back(portal);
+}
+
+void MainScene::CreatePlayerBarrier(Vector2f _pos)
+{
+	Entity* playerBarrier = CreateEntity();
+
+	SpriteRenderer* sr = playerBarrier->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/tempPlayerBarrier.png");
+	sr->SetOpacity(96);
+
+	playerBarrier->AddComponent<BoxCollider>(75, 1080, PLAYER_LAYER, PLAYER_LAYER);
+	playerBarrier->GetComponent<TransformComponent>()->SetPos(_pos);
+
+	m_playerBarriers.push_back(playerBarrier);
+}
+
+void MainScene::CreateSpiritBarrier(Vector2f _pos, const std::string& _tag)
+{
+	Entity* spiritBarrier = CreateEntity();
+
+	SpriteRenderer* sr = spiritBarrier->AddComponent<SpriteRenderer>();
+	if (!_tag.empty())
+		spiritBarrier->AddComponent<TagComponent>(_tag);
+	sr->Load("../../Assets/tempSpiritBarrier.png");
+	sr->SetOpacity(96);
+
+	spiritBarrier->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
+	spiritBarrier->GetComponent<TransformComponent>()->SetPos(_pos);
+
+	m_spiritBarriers.push_back(spiritBarrier);
+}
+
+void MainScene::CleanVectors()
+{
+	for (int i = m_collectibles.size() - 1; i >= 0; i--)
+	{
+		if (m_collectibles[i]->GetComponent<TransformComponent>() == nullptr)
+			m_collectibles.erase(m_collectibles.begin() + i);
+	}
+
+	for (int i = m_playerBarriers.size() - 1; i >= 0; i--)
+	{
+		if (m_playerBarriers[i]->GetComponent<TransformComponent>() == nullptr)
+			m_playerBarriers.erase(m_playerBarriers.begin() + i);
+	}
+
+	for (int i = m_spiritBarriers.size() - 1; i >= 0; i--)
+	{
+		if (m_spiritBarriers[i]->GetComponent<TransformComponent>() == nullptr)
+			m_spiritBarriers.erase(m_spiritBarriers.begin() + i);
+	}
+
+	for (int i = m_portals.size() - 1; i >= 0; i--)
+	{
+		if (m_portals[i]->GetComponent<TransformComponent>() == nullptr)
+			m_portals.erase(m_portals.begin() + i);
+	}
 }

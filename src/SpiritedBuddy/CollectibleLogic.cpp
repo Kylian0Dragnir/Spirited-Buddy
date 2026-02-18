@@ -11,7 +11,7 @@ void CollectibleLogic::OnCollisionEnter(Collider* _self, Collider* _other)
 	if (otherEntityTag && (otherEntityTag->Is("Player") || otherEntityTag->Is("Spirit")))
 	{
 		MainScene* cs = static_cast<MainScene*>(SceneManager::GetInstance().GetCurrentScene());
-		cs->DestroyCollectible(m_owner);
+		cs->DestroyEntity(m_owner);
 	}
 
 }
