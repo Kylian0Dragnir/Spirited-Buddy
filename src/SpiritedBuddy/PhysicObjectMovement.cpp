@@ -3,6 +3,7 @@
 #include "TransformComponent.h"
 #include "TagComponent.h"
 #include "Rigidbody2D.h"
+#include "PossessionLogic.h"
 #include "Collider.h"
 #include "Entity.h"
 #include "MainScene.h"
@@ -20,18 +21,21 @@ void PhysicObjectMovement::Update(float _dt)
 	InputManager& im = InputManager::Get();
 	Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
+	PossessionLogic* pl = m_owner->GetComponent<PossessionLogic>();
 
 	float dx = 0;
 	float dy = 0;
 
 	Vector2f velocity = rb->GetVelocity();
 
-	if (im.IsKeyHeld(m_moveLeftKey))
+	bool canMove = pl->IsPossessed();
+
+	if (canMove && im.IsKeyHeld(m_moveLeftKey))
 	{
 		velocity.SetX(-m_speed * 500);
 		transform->SetFlip(Flip::FLIP_NONE);
 	}
-	else if (im.IsKeyHeld(m_moveRightKey))
+	else if (canMove && im.IsKeyHeld(m_moveRightKey))
 	{
 		velocity.SetX(m_speed * 500);
 		transform->SetFlip(Flip::FLIP_HORIZONTAL);
@@ -42,7 +46,24 @@ void PhysicObjectMovement::Update(float _dt)
 			velocity.SetX(velocity.GetX() - 7.f);
 		else
 			velocity.SetX(velocity.GetX() + 7.f);
+
+		if (m_onGround)
+			velocity.SetX(0);
 	}
 
 	rb->SetVelocity(velocity);
+}
+
+void PhysicObjectMovement::OnCollisionStay(Collider* _self, Collider* _other)
+{
+	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+	if (otherEntityTag && otherEntityTag->Is("Ground"))
+		m_onGround = true;
+}
+
+void PhysicObjectMovement::OnCollisionExit(Collider* _self, Collider* _other)
+{
+	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+	if (otherEntityTag && otherEntityTag->Is("Ground"))
+		m_onGround = false;
 }

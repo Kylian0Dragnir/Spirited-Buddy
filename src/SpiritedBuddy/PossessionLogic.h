@@ -6,7 +6,7 @@ class PossessionLogic : public Component
 	bool m_isPossessed;
 
 public:
-	bool GetPossessed() { return m_isPossessed; }
+	bool IsPossessed() { return m_isPossessed; }
 	void SetPossessed(bool _state) { m_isPossessed = _state; }
 };
 

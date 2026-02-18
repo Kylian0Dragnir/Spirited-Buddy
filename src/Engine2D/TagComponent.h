@@ -11,6 +11,7 @@ public:
     TagComponent(const std::string& _tag);
 
     void AddTag(const std::string& _tag);
+    void RemoveTag(const std::string& _tag);
 
     bool Is(const std::string& _tag) const;
 };

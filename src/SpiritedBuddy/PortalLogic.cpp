@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Collider.h"
 #include "CircleCollider.h"
+#include "TagComponent.h"
 #include "Rigidbody2D.h"
 #include "SceneManager.h"
 #include "MainScene.h"
@@ -46,7 +47,12 @@ void PortalLogic::Update(float dt)
 
 void PortalLogic::OnCollisionStay(Collider* _self, Collider* _other)
 {
-	if (InputManager::Get().IsKeyDown(Key::KEY_e))
+	TagComponent* tags = _other->GetOwner()->GetComponent<TagComponent>();
+
+	if (tags == nullptr)
+		return;
+
+	if (InputManager::Get().IsKeyDown(Key::KEY_e) && tags->Is("Player") && tags->Is("POSSESSED"))
 	{
 		m_state = PortalState::Disappearing;
 		m_timer = 0.f;

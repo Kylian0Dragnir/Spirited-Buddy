@@ -7,22 +7,22 @@
 class Vector2f;
 typedef enum Key;
 
-class SpiritMovement : public Component, public Updatable, public Collidable
+class SpiritLogic : public Component, public Updatable, public Collidable
 {
 	float m_speed;
 	Vector2f m_direction;
 	Vector2f m_mousePos;
+
 	Key m_switchKey;
+	float m_switchCouldown;
 
-	Entity* m_player;
-
-	bool m_onCollisionWithPossedable;
+	bool m_isInPossessionMode;
 
 public:
-	SpiritMovement(Key _switchKey);
+	SpiritLogic(Key _switchKey);
 	void Update(float _dt) override;
-	void OnCollisionEnter(Collider* _self, Collider* _other) override;
 	void OnCollisionStay(Collider* _self, Collider* _other) override;
-	void OnCollisionExit(Collider* _self, Collider* _other) override;
+
+	bool IsInPossessionMode() { return m_isInPossessionMode; }
 };
 

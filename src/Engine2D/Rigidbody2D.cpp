@@ -69,8 +69,11 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
     TransformComponent* selfTransform = _self->GetOwner()->GetComponent<TransformComponent>();
     TransformComponent* otherTransform = _other->GetOwner()->GetComponent<TransformComponent>();
 
-    Vector2f selfPos = selfTransform->GetPos();
-    Vector2f otherPos = otherTransform->GetPos();
+    Vector2f selfTransformPos = selfTransform->GetPos();
+    Vector2f otherTransformPos = otherTransform->GetPos();
+
+    Vector2f selfPos = selfTransformPos + _self->GetOffset();
+    Vector2f otherPos = otherTransformPos + _other->GetOffset();
 
     Vector2f normal;
     float penetrationDepth = 0.0f;
@@ -123,8 +126,8 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
         BoxCollider* box = (selfType == ColliderType::Rectangle ? static_cast<BoxCollider*>(_self) : static_cast<BoxCollider*>(_other));
         CircleCollider* circle = (selfType == ColliderType::Circle ? static_cast<CircleCollider*>(_self) : static_cast<CircleCollider*>(_other));
 
-        Vector2f boxPos = box->GetOwner()->GetComponent<TransformComponent>()->GetPos();
-        Vector2f circlePos = circle->GetOwner()->GetComponent<TransformComponent>()->GetPos();
+        Vector2f boxPos = box->GetOwner()->GetComponent<TransformComponent>()->GetPos() + box->GetOffset();
+        Vector2f circlePos = circle->GetOwner()->GetComponent<TransformComponent>()->GetPos() + circle->GetOffset();
 
         float halfW = box->GetWidth() * 0.5f;
         float halfH = box->GetHeight() * 0.5f;
@@ -161,10 +164,10 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
     Vector2f correction = normal * correctionMag;
 
     if (!m_isKinematic)
-        selfTransform->SetPos(selfPos + correction * invMassA);
+        selfTransform->SetPos(selfTransformPos + correction * invMassA);
 
     if (otherRb && !otherRb->m_isKinematic)
-        otherTransform->SetPos(otherPos - correction * invMassB);
+        otherTransform->SetPos(otherTransformPos - correction * invMassB);
 
     Vector2f horizontalNormal = { normal.GetX(), 0 };
     m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);

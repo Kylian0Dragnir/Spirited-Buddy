@@ -21,13 +21,9 @@ class MainScene : public AScene
 
 	std::vector<Entity*> m_collectibles;
 
-	bool m_spiritMode;
-
 public:
 	MainScene();
 
-	bool& GetMode();
-	void SwitchMode();
 	void Enter() override;
 	void Update(float _dt) override;
 	void Exit() override;

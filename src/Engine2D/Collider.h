@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Lib2D/Drawable.h"
+#include "Lib2D/Vector2f.h"
 #include <string>
 
 enum ColliderType
@@ -41,6 +42,7 @@ public:
     bool CanCollide(Collider* _other);
 
     void SetOffset(float _ox, float _oy);
+    Vector2f GetOffset() { Vector2f offset(m_offsetX, m_offsetY); return offset; }
 
     void SetActive(bool _value) { m_isActived = _value; }
     bool IsActived() { return m_isActived; }
