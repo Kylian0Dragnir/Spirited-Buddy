@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "AScene.h"
+#include "CollisionSystem.h"
 
 SceneManager::SceneManager()
 {
@@ -36,6 +37,8 @@ void SceneManager::Update(float _dt)
 	if (m_changeScene)
 	{
 		m_scene[m_currentScene]->Exit();
+
+		CollisionSystem::GetInstance().Clear();
 
 		m_currentScene = m_nextScene;
 

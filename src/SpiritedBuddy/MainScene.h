@@ -35,9 +35,10 @@ public:
 	void CreateCollectible(Vector2f _pos);
 	void CreatePlayer(Vector2f _pos);
 	void CreateSpirit(Vector2f _pos);
-	void CreatePortal(Vector2f _pos);
-	void CreatePlayerBarrier(Vector2f _pos);
+	void CreatePortal(Vector2f _pos, const std::string & newSceneID);
+	void CreatePlayerBarrier(Vector2f _pos, const std::string& _tag = {});
 	void CreateSpiritBarrier(Vector2f _pos, const std::string& _tag = {});
+	void CleanDestroyedEntities();
 	void CleanVectors();
 };
 

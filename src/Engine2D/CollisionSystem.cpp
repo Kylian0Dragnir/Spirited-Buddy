@@ -5,6 +5,12 @@
 #include "SceneManager.h"
 #include "AScene.h"
 
+CollisionSystem& CollisionSystem::GetInstance()
+{
+    static CollisionSystem Instance;
+    return Instance;
+}
+
 bool SamePair(const CollisionInfo& c1, Collider* a, Collider* b)
 {
     return (c1.a == a && c1.b == b) || (c1.a == b && c1.b == a);

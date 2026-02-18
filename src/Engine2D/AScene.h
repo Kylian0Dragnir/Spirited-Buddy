@@ -19,9 +19,11 @@ public:
 	~AScene();
 
 	Entity* CreateEntity();
-	void DestroyEntity(Entity*& _ent);
+	void DestroyEntity(Entity* _ent);
 	void DestroyAllEntitiesWithTag(const std::string& _tag);
-	void DestroyEntityNow(Entity*& _ent);
+	void DestroyEntityNow(Entity* _ent);
+	void DestroyAllEntities();
+
 	Entity* CreateButton(float _width, float _height);
 
 	std::vector<Entity*> GetEntities() { return m_entities; }

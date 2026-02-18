@@ -23,10 +23,9 @@ Entity* AScene::CreateEntity()
 	return ent;
 }
 
-void AScene::DestroyEntity(Entity*& _ent)
+void AScene::DestroyEntity(Entity* _ent)
 {
 	m_toDestroy.push_back(_ent);
-	_ent = nullptr;
 }
 
 void AScene::DestroyAllEntitiesWithTag(const std::string& _tag)
@@ -35,16 +34,21 @@ void AScene::DestroyAllEntitiesWithTag(const std::string& _tag)
 		DestroyEntity(ent);
 }
 
-void AScene::DestroyEntityNow(Entity*& _ent)
+void AScene::DestroyEntityNow(Entity* _ent)
 {
 	auto it = std::find(m_entities.begin(), m_entities.end(), _ent);
 
 	if (it != m_entities.end())
 	{
 		delete *it;
-		_ent = nullptr;
 		m_entities.erase(it);
 	}
+}
+
+void AScene::DestroyAllEntities()
+{
+	for (int i = m_entities.size() - 1; i >= 0; i--)
+		DestroyEntityNow(m_entities[i]);
 }
 
 Entity* AScene::CreateButton(float _width, float _height)

@@ -12,11 +12,28 @@
 
 MainScene::MainScene()
 {
+
+}
+
+bool& MainScene::GetMode()
+{
+	return m_spiritMode;
+}
+
+void MainScene::SwitchMode()
+{
+	m_spiritMode = !m_spiritMode;
+	m_player->GetComponent<Rigidbody2D>()->SetVelocity({ 0, 0 });
+	m_spirit->GetComponent<Rigidbody2D>()->SetVelocity({ 0, 0 });
+}
+
+void MainScene::Enter()
+{
 	m_spiritMode = false;
 
 	//PORTAL
 	{
-		CreatePortal({ 80, 750 });
+		CreatePortal({ 80, 750 }, "START");
 	}
 
 	//COLLECTIBLES
@@ -54,31 +71,14 @@ MainScene::MainScene()
 	{
 		CreatePlayerBarrier({ 1200, 540 });
 	}
-	
+
 	//SPIRIT BARRIER
 	{
 		CreateSpiritBarrier({ 800, 540 });
-		CreateSpiritBarrier({ 960, 540 },"BARRIER");
+		CreateSpiritBarrier({ 960, 540 }, "BARRIER");
 	}
-	
+
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
-}
-
-bool& MainScene::GetMode()
-{
-	return m_spiritMode;
-}
-
-void MainScene::SwitchMode()
-{
-	m_spiritMode = !m_spiritMode;
-	m_player->GetComponent<Rigidbody2D>()->SetVelocity({ 0, 0 });
-	m_spirit->GetComponent<Rigidbody2D>()->SetVelocity({ 0, 0 });
-}
-
-void MainScene::Enter()
-{
-	
 
 }
 
@@ -86,7 +86,7 @@ void MainScene::Update(float _dt)
 {
 	AScene::Update(_dt);
 
-	CleanVectors();
+	CleanDestroyedEntities();
 
 	if (m_spiritMode)
 	{
@@ -132,7 +132,8 @@ void MainScene::Update(float _dt)
 
 void MainScene::Exit()
 {
-
+	DestroyAllEntities();
+	CleanVectors();
 }
 
 void MainScene::CreateCollectible(Vector2f _pos)
@@ -188,7 +189,7 @@ void MainScene::CreateSpirit(Vector2f _pos)
 	m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
 }
 
-void MainScene::CreatePortal(Vector2f _pos)
+void MainScene::CreatePortal(Vector2f _pos, const std::string& newSceneID)
 {
 	Entity* portal = CreateEntity();
 
@@ -201,7 +202,7 @@ void MainScene::CreatePortal(Vector2f _pos)
 	cc->SetVisible(true);
 	cc->SetTrigger(true);
 
-	portal->AddComponent<PortalLogic>();
+	portal->AddComponent<PortalLogic>(newSceneID);
 
 	TransformComponent* transform = portal->GetComponent<TransformComponent>();
 	transform->SetPos(_pos);
@@ -210,11 +211,14 @@ void MainScene::CreatePortal(Vector2f _pos)
 	m_portals.push_back(portal);
 }
 
-void MainScene::CreatePlayerBarrier(Vector2f _pos)
+void MainScene::CreatePlayerBarrier(Vector2f _pos, const std::string& _tag)
 {
 	Entity* playerBarrier = CreateEntity();
 
 	SpriteRenderer* sr = playerBarrier->AddComponent<SpriteRenderer>();
+	TagComponent* tc = playerBarrier->AddComponent<TagComponent>("PLAYER_BARRIER");
+	if (!_tag.empty())
+		tc->AddTag(_tag);
 	sr->Load("../../Assets/tempPlayerBarrier.png");
 	sr->SetOpacity(96);
 
@@ -229,8 +233,9 @@ void MainScene::CreateSpiritBarrier(Vector2f _pos, const std::string& _tag)
 	Entity* spiritBarrier = CreateEntity();
 
 	SpriteRenderer* sr = spiritBarrier->AddComponent<SpriteRenderer>();
+	TagComponent* tc = spiritBarrier->AddComponent<TagComponent>("SPIRIT_BARRIER");
 	if (!_tag.empty())
-		spiritBarrier->AddComponent<TagComponent>(_tag);
+		tc->AddTag(_tag);
 	sr->Load("../../Assets/tempSpiritBarrier.png");
 	sr->SetOpacity(96);
 
@@ -240,7 +245,7 @@ void MainScene::CreateSpiritBarrier(Vector2f _pos, const std::string& _tag)
 	m_spiritBarriers.push_back(spiritBarrier);
 }
 
-void MainScene::CleanVectors()
+void MainScene::CleanDestroyedEntities()
 {
 	for (int i = m_collectibles.size() - 1; i >= 0; i--)
 	{
@@ -265,4 +270,19 @@ void MainScene::CleanVectors()
 		if (m_portals[i]->GetComponent<TransformComponent>() == nullptr)
 			m_portals.erase(m_portals.begin() + i);
 	}
+}
+
+void MainScene::CleanVectors()
+{
+	for (int i = m_collectibles.size() - 1; i >= 0; i--)
+		m_collectibles.erase(m_collectibles.begin() + i);
+
+	for (int i = m_playerBarriers.size() - 1; i >= 0; i--)
+		m_playerBarriers.erase(m_playerBarriers.begin() + i);
+
+	for (int i = m_spiritBarriers.size() - 1; i >= 0; i--)
+		m_spiritBarriers.erase(m_spiritBarriers.begin() + i);
+
+	for (int i = m_portals.size() - 1; i >= 0; i--)
+		m_portals.erase(m_portals.begin() + i);
 }

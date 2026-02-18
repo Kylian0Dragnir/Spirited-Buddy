@@ -46,7 +46,7 @@ void Application::InitApp(const std::string& _title, int _width, int _height, in
 void Application::LoopApp()
 {
     SceneManager& sm = SceneManager::GetInstance();
-    CollisionSystem cs;
+    CollisionSystem& cs = CollisionSystem::GetInstance();
 
     float deltaTime = 0;
 
