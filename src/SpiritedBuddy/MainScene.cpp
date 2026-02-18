@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "PlayerMovement.h"
 #include "SpiritMovement.h"
+#include "PhysicObjectMovement.h" 
 #include "CollectibleLogic.h"
 #include "PortalLogic.h"
 #include "Collider.h"
@@ -73,6 +74,21 @@ MainScene::MainScene()
 		m_spirit->AddComponent<SpiritMovement>(Key::KEY_c);
 
 		m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+	}
+
+	//CRATE
+	{
+		Entity* crate = CreateEntity();
+
+		//Solid Collider
+		crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
+
+		crate->AddComponent<PhysicObjectMovement>(Key::KEY_k, Key::KEY_m);
+		m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
+
+		Rigidbody2D* rb = crate->AddComponent<Rigidbody2D>(1.f, true, 0.f);
+		rb->AddImpulse({ 0,1000 });
+		rb->SetGravity({ 0.f,1000.f });
 	}
 
 	//PLAYER BARRIER
