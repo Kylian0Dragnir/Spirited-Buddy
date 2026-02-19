@@ -13,40 +13,38 @@
 #include "AScene.h"
 #include <iostream>
 
-SpiritLogic::SpiritLogic(Key _switchKey)
+SpiritLogic::SpiritLogic(Key _switchKey, Entity* initialPossessed)
 {
 	m_switchKey = _switchKey;
 	m_speed = 1.2f;
 
-	m_isInPossessionMode = true;
-	m_switchCouldown = 0.02f;
+	m_switchCooldown = 0.02f;
+
+	m_possessedEntity = initialPossessed;
 }
 
 void SpiritLogic::Update(float _dt)
 {
-	if (m_switchCouldown > 0)
-		m_switchCouldown -= _dt;
+	if (m_switchCooldown > 0)
+		m_switchCooldown -= _dt;
 
 	AScene* cs = SceneManager::GetInstance().GetCurrentScene();
 	InputManager& im = InputManager::Get();
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 	Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
 
-	if (m_isInPossessionMode) 
+	if (IsPossessing()) 
 	{
-		if(im.IsKeyDown(m_switchKey) && m_switchCouldown <= 0)
+		if(im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
-			m_switchCouldown = 0.02f;
+			m_switchCooldown = 0.02f;
 
-			m_isInPossessionMode = false;
-
-			Entity* possessedEntity = cs->FindByTag("POSSESSED");
-
-			Vector2f targetPos = possessedEntity->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
+			Vector2f targetPos = m_possessedEntity->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 			transform->SetPos(targetPos);
 
-			possessedEntity->GetComponent<PossessionLogic>()->SetPossessed(false);
-			possessedEntity->GetComponent<TagComponent>()->RemoveTag("POSSESSED");
+			m_possessedEntity->GetComponent<PossessionLogic>()->SetPossessed(false);
+
+			m_possessedEntity = nullptr;
 
 			for(Collider* c : m_owner->GetAllComponents<Collider>())
 			{
@@ -65,30 +63,34 @@ void SpiritLogic::Update(float _dt)
 			delta = delta.Normalize() * maxDelta;
 		}
 
+
+		transform->SetRotationCenter({ 32,48 });
+
+		float targetAngle = 0.f;
+		float rotationSpeed = 180.f; // degres/sec
+
 		if (delta.Length() > 0)
 		{
-			float angleRad = std::atan2(delta.GetY(), delta.GetX()) - 1.571f;
-			float angleDeg = angleRad * 180.f / 3.14159265f;
+			targetAngle = std::atan2(delta.GetY(), delta.GetX()) - 1.571f;
+			targetAngle *= 180.f / 3.14159265f;
 
-			Vector2f localOffset{ 0, 15 };
-
-			float cosA = std::cos(angleRad);
-			float sinA = std::sin(angleRad);
-
-			float rotatedOffsetX = localOffset.GetX() * cosA - localOffset.GetY() * sinA;
-			float rotatedOffsetY = localOffset.GetX() * sinA + localOffset.GetY() * cosA;
-
-			for (Collider* c : m_owner->GetAllComponents<Collider>())
-			{
-				if (c->IsTrigger())
-					continue;
-
-				c->SetOffset(rotatedOffsetX, rotatedOffsetY);
-			}
-
-			transform->SetRotationCenter({ 32, 32 });
-			transform->SetRotation(angleDeg);
+			rotationSpeed = 360.f;
 		}
+
+		float currentAngle = transform->GetAngle();
+
+		float diff = targetAngle - currentAngle;
+
+		while (diff > 180.f) diff -= 360.f;
+		while (diff < -180.f) diff += 360.f;
+
+		float maxStep = rotationSpeed * _dt;
+
+		if (std::abs(diff) < maxStep)
+			currentAngle = targetAngle;
+		else
+			transform->SetRotation(currentAngle + (diff > 0 ? maxStep : -maxStep));
+
 
 		rb->SetVelocity(delta / _dt);
 	}
@@ -104,19 +106,21 @@ void SpiritLogic::OnCollisionStay(Collider* _self, Collider* _other)
 
 	if (_self->IsTrigger() && pl->IsPossessed() == false)
 	{
-		if (im.IsKeyDown(m_switchKey) && m_switchCouldown <= 0)
+		if (im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
-			m_switchCouldown = 0.02f;
+			m_switchCooldown = 0.02f;
 
-			_other->GetOwner()->GetComponent<TagComponent>()->AddTag("POSSESSED");
 			pl->SetPossessed(true);
-			m_isInPossessionMode = true;
+			m_possessedEntity = _other->GetOwner();
 
 			for (Collider* c : m_owner->GetAllComponents<Collider>())
 			{
 				c->SetVisible(false);
 				c->SetActive(false);
 			}
+
+			m_owner->GetComponent<TransformComponent>()->SetPos({ -100,-100 });
+			m_owner->GetComponent<TransformComponent>()->SetRotation(0.f);
 		}
 	}
 }

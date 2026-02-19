@@ -142,9 +142,38 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
         Vector2f delta = circlePos - closest;
 
         float dist = delta.Length();
-        normal = (dist != 0) ? delta / dist : Vector2f(0, -1);
 
-        penetrationDepth = circle->GetRadius() - dist;
+
+
+        if (dist > 0.0001f)
+        {
+            normal = delta / dist;
+            penetrationDepth = circle->GetRadius() - dist;
+        }
+        else
+        {
+            float dx = circlePos.GetX() - boxPos.GetX();
+            float dy = circlePos.GetY() - boxPos.GetY();
+
+            float overlapX = halfW - std::abs(dx);
+            float overlapY = halfH - std::abs(dy);
+
+            if (overlapX < overlapY)
+            {
+                normal = (dx < 0) ? Vector2f(-1, 0) : Vector2f(1, 0);
+                penetrationDepth = circle->GetRadius() + overlapX;
+            }
+            else
+            {
+                normal = (dy < 0) ? Vector2f(0, -1) : Vector2f(0, 1);
+                penetrationDepth = circle->GetRadius() + overlapY;
+            }
+        }
+
+
+        //normal = (dist != 0) ? delta / dist : Vector2f(0, -1);
+
+        //penetrationDepth = circle->GetRadius() - dist;
 
         if (selfType == ColliderType::Rectangle)
             normal = normal * -1;
@@ -169,11 +198,18 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
     if (otherRb && !otherRb->m_isKinematic)
         otherTransform->SetPos(otherTransformPos - correction * invMassB);
 
-    Vector2f horizontalNormal = { normal.GetX(), 0 };
-    m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);
+    //Vector2f horizontalNormal = { normal.GetX(), 0 };
+    //m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);
 
-    Vector2f verticalNormal = { 0, normal.GetY() };
-    m_velocity = m_velocity - verticalNormal * m_velocity.Dot(verticalNormal);
+    //Vector2f verticalNormal = { 0, normal.GetY() };
+    //m_velocity = m_velocity - verticalNormal * m_velocity.Dot(verticalNormal);
+
+    float velocityAlongNormal = m_velocity.Dot(normal);
+
+    if (velocityAlongNormal < 0)
+    {
+        m_velocity = m_velocity - normal * velocityAlongNormal;
+    }
 
     // ----------- Calcul de la vélocité relative -----------
     Vector2f otherVelocity = otherRb ? otherRb->m_velocity : Vector2f(0, 0);

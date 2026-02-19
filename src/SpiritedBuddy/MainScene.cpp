@@ -79,7 +79,7 @@ void MainScene::Update(float _dt)
 
 	CleanDestroyedEntities();
 
-	if (m_spirit->GetComponent<SpiritLogic>()->IsInPossessionMode())
+	if (m_spirit->GetComponent<SpiritLogic>()->IsPossessing())
 	{
 		for (Entity* sb : m_spiritBarriers)
 		{
@@ -169,16 +169,17 @@ void MainScene::CreateSpirit(Vector2f _pos)
 	SpriteRenderer* sr = m_spirit->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Spirit.png");
 	sr->SetFrame(64, 64, 0, 0);
+	sr->SetOffset({ 0,-15 });
 
 	//Solid Collider
-	m_spirit->AddComponent<BoxCollider>(28.f, 28.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(true);
+	m_spirit->AddComponent<CircleCollider>(14.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(true);
 
 	//Interaction Trigger Collider
 	CircleCollider* cc = m_spirit->AddComponent<CircleCollider>(40.f, SPIRIT_LAYER, SPIRIT_LAYER | PLAYER_LAYER);
 	cc->SetVisible(true);
 	cc->SetTrigger(true);
 
-	m_spirit->AddComponent<SpiritLogic>(Key::KEY_c);
+	m_spirit->AddComponent<SpiritLogic>(Key::KEY_c,m_player);
 
 	m_spirit->GetComponent<TransformComponent>()->SetPos(_pos);
 

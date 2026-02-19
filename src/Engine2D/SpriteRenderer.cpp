@@ -6,6 +6,7 @@ SpriteRenderer::SpriteRenderer()
 {
 	m_sprite = new Sprite();
     m_isVisible = true;
+    m_offset = { 0,0 };
 }
 
 SpriteRenderer::~SpriteRenderer()
@@ -31,7 +32,7 @@ void SpriteRenderer::Draw(Window* _window)
     m_sprite->SetRotation(transform->GetAngle());
     m_sprite->SetRotationCenter(transform->GetRotationCenter());
 
-    m_sprite->SetPos(drawPos);
+    m_sprite->SetPos(drawPos + m_offset);
     m_sprite->Draw(_window);
 }
 

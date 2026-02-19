@@ -14,15 +14,15 @@ class SpiritLogic : public Component, public Updatable, public Collidable
 	Vector2f m_mousePos;
 
 	Key m_switchKey;
-	float m_switchCouldown;
+	float m_switchCooldown;
 
-	bool m_isInPossessionMode;
+	Entity* m_possessedEntity;
 
 public:
-	SpiritLogic(Key _switchKey);
+	SpiritLogic(Key _switchKey, Entity* initialPossessed = nullptr);
 	void Update(float _dt) override;
 	void OnCollisionStay(Collider* _self, Collider* _other) override;
 
-	bool IsInPossessionMode() { return m_isInPossessionMode; }
+	bool IsPossessing() { return (m_possessedEntity != nullptr); }
 };
 
