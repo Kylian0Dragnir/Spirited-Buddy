@@ -43,6 +43,5 @@ public:
 
 	void Translate(float _dx, float _dy);
 	void ResetTansform();
-
 };
 

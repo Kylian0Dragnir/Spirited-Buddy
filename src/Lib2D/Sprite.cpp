@@ -82,6 +82,8 @@ void Sprite::Draw(Window* _window)
 		break;
 	}
 
+	
+
 	SDL_RenderCopyEx(_window->m_renderer, (SDL_Texture*)m_texture->GetDataPtr(), &src, &dst, m_angle, &rotCenter, flip);
 }
 

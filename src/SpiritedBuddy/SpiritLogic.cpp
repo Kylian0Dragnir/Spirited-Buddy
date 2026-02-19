@@ -51,6 +51,8 @@ void SpiritLogic::Update(float _dt)
 				c->SetVisible(true);
 				c->SetActive(true);
 			}
+
+			m_owner->GetComponent<SpriteRenderer>()->SetVisible(true);
 		}
 	}
 	else
@@ -63,7 +65,6 @@ void SpiritLogic::Update(float _dt)
 			delta = delta.Normalize() * maxDelta;
 		}
 
-
 		transform->SetRotationCenter({ 32,48 });
 
 		float targetAngle = 0.f;
@@ -72,7 +73,7 @@ void SpiritLogic::Update(float _dt)
 		if (delta.Length() > 0)
 		{
 			targetAngle = std::atan2(delta.GetY(), delta.GetX()) - 1.571f;
-			targetAngle *= 180.f / 3.14159265f;
+			targetAngle *= 180.f / M_PI;
 
 			rotationSpeed = 360.f;
 		}
@@ -90,7 +91,6 @@ void SpiritLogic::Update(float _dt)
 			currentAngle = targetAngle;
 		else
 			transform->SetRotation(currentAngle + (diff > 0 ? maxStep : -maxStep));
-
 
 		rb->SetVelocity(delta / _dt);
 	}
@@ -119,8 +119,7 @@ void SpiritLogic::OnCollisionStay(Collider* _self, Collider* _other)
 				c->SetActive(false);
 			}
 
-			m_owner->GetComponent<TransformComponent>()->SetPos({ -100,-100 });
-			m_owner->GetComponent<TransformComponent>()->SetRotation(0.f);
+			m_owner->GetComponent<SpriteRenderer>()->SetVisible(false);
 		}
 	}
 }

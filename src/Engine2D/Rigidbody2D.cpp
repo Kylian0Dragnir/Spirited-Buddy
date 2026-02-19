@@ -143,8 +143,6 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
 
         float dist = delta.Length();
 
-
-
         if (dist > 0.0001f)
         {
             normal = delta / dist;
@@ -170,11 +168,6 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
             }
         }
 
-
-        //normal = (dist != 0) ? delta / dist : Vector2f(0, -1);
-
-        //penetrationDepth = circle->GetRadius() - dist;
-
         if (selfType == ColliderType::Rectangle)
             normal = normal * -1;
     }
@@ -198,18 +191,11 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
     if (otherRb && !otherRb->m_isKinematic)
         otherTransform->SetPos(otherTransformPos - correction * invMassB);
 
-    //Vector2f horizontalNormal = { normal.GetX(), 0 };
-    //m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);
+    Vector2f horizontalNormal = { normal.GetX(), 0 };
+    m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);
 
-    //Vector2f verticalNormal = { 0, normal.GetY() };
-    //m_velocity = m_velocity - verticalNormal * m_velocity.Dot(verticalNormal);
-
-    float velocityAlongNormal = m_velocity.Dot(normal);
-
-    if (velocityAlongNormal < 0)
-    {
-        m_velocity = m_velocity - normal * velocityAlongNormal;
-    }
+    Vector2f verticalNormal = { 0, normal.GetY() };
+    m_velocity = m_velocity - verticalNormal * m_velocity.Dot(verticalNormal);
 
     // ----------- Calcul de la vélocité relative -----------
     Vector2f otherVelocity = otherRb ? otherRb->m_velocity : Vector2f(0, 0);
