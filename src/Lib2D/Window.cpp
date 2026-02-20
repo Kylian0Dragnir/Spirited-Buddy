@@ -56,7 +56,7 @@ void Window::SetIsOpen(bool _isOpen)
 
 void Window::ClearWindow()
 {
-    SDL_SetRenderDrawColor(m_renderer, 0, 200, 255, 255);
+    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
 }
 

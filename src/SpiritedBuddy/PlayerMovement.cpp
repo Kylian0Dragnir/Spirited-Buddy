@@ -154,7 +154,37 @@ void PlayerMovement::Update(float _dt)
     }
 
     UpdateAnimation(_dt);
+
+
+
+
+
+
+
+
+
+
+
+    if (transform->GetPos().GetX() > 1920)
+        transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
+    if (transform->GetPos().GetX() < 0)
+        transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
 
 void PlayerMovement::UpdateAnimation(float _dt)
 {
@@ -303,7 +333,6 @@ void PlayerMovement::UpdateAnimation(float _dt)
     }
     }
 }
-
 
 void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 {

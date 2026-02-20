@@ -11,15 +11,14 @@ class MainScene : public AScene
 
 	std::vector<Entity*> m_playerBarriers;
 	std::vector<Entity*> m_spiritBarriers;
-	//Entity* m_playerBarrier;
-	//Entity* m_spiritBarrier;
-	//Entity* m_spiritBarrier2;
 
 	std::vector<Entity*> m_portals;
 
-	//Entity* m_portal;
-
 	std::vector<Entity*> m_collectibles;
+
+
+	Entity* m_wall1;
+	Entity* m_wall2;
 
 public:
 	MainScene();
@@ -34,6 +33,7 @@ public:
 	void CreatePortal(Vector2f _pos, const std::string & newSceneID);
 	void CreatePlayerBarrier(Vector2f _pos, const std::string& _tag = {});
 	void CreateSpiritBarrier(Vector2f _pos, const std::string& _tag = {});
+	void CreateWall(Vector2f _pos, Vector2f _size, const std::string& _tag = {});
 	void CleanDestroyedEntities();
 	void CleanVectors();
 };

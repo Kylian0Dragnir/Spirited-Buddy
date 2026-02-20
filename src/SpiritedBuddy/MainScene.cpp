@@ -69,6 +69,9 @@ void MainScene::Enter()
 		CreateSpiritBarrier({ 960, 540 }, "BARRIER");
 	}
 
+	CreateWall({ 1920 + 75,800 + 25 }, { 150,50 });
+	CreateWall({ -75,800 + 25 }, { 150,50 });
+
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
 
 }
@@ -142,7 +145,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	SpriteRenderer* sr = m_player->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Player/player_sheet.png");
 	sr->SetFrame(32, 32, 128, 0);
-	m_player->AddComponent<TagComponent>("Player")->AddTag("POSSESSED");
+	m_player->AddComponent<TagComponent>("Player")->AddTag("WORLD_WRAP");
 
 	//Solid Collider
 	m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
@@ -244,6 +247,18 @@ void MainScene::CreateSpiritBarrier(Vector2f _pos, const std::string& _tag)
 	spiritBarrier->GetComponent<TransformComponent>()->SetPos(_pos);
 
 	m_spiritBarriers.push_back(spiritBarrier);
+}
+
+void MainScene::CreateWall(Vector2f _pos, Vector2f _size, const std::string& _tag)
+{
+	m_wall1 = CreateEntity();
+	m_wall1->AddComponent<BoxCollider>(_size.GetX(), _size.GetY(), PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
+
+	TagComponent* tc = m_wall1->AddComponent<TagComponent>("Ground");
+	if (!_tag.empty())
+		tc->AddTag(_tag);
+
+	m_wall1->GetComponent<TransformComponent>()->SetPos(_pos);
 }
 
 void MainScene::CleanDestroyedEntities()
