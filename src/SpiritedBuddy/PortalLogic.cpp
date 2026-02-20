@@ -9,6 +9,7 @@
 #include "SceneManager.h"
 #include "MainScene.h"
 #include "TilemapLoader.h"
+#include "PossessionLogic.h"
 
 PortalLogic::PortalLogic(const std::string& _nextSceneID)
 {
@@ -48,11 +49,12 @@ void PortalLogic::Update(float dt)
 void PortalLogic::OnCollisionStay(Collider* _self, Collider* _other)
 {
 	TagComponent* tags = _other->GetOwner()->GetComponent<TagComponent>();
+	PossessionLogic* pl = _other->GetOwner()->GetComponent<PossessionLogic>();
 
-	if (tags == nullptr)
+	if (tags == nullptr || pl == nullptr)
 		return;
 
-	if (InputManager::Get().IsKeyDown(Key::KEY_e) && tags->Is("Player") && tags->Is("POSSESSED"))
+	if (InputManager::Get().IsKeyDown(Key::KEY_e) && tags->Is("Player") && pl->IsPossessed())
 	{
 		m_state = PortalState::Disappearing;
 		m_timer = 0.f;

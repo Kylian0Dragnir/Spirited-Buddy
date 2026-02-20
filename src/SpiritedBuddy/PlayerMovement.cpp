@@ -121,11 +121,15 @@ void PlayerMovement::Update(float _dt)
     {
         return;
     }
+    else if (m_animState == PlayerAnimState::ExitPossession)
+    {
+        return;
+    }
     else if (canMove && im.IsKeyDown(m_moveJumpKey) && m_onGround)
     {
         SetAnimation(PlayerAnimState::TakeOff);
     }
-    else if (m_animState != PlayerAnimState::ExitPossession && m_onGround == false)
+    else if (m_onGround == false)
     {
         if (velocity.GetY() < 0)
         {
@@ -218,8 +222,7 @@ void PlayerMovement::UpdateAnimation(float _dt)
     {
         if (m_currentFrame >= 2)
         {
-            Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
-            rb->SetVelocity({ rb->GetVelocity().GetX(), -750 });
+            m_owner->GetComponent<Rigidbody2D>()->SetVelocity({ 0, -600 });
             m_currentFrame = 1;
             m_isAnimationFinished = true;
         }
