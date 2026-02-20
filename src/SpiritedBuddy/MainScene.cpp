@@ -31,7 +31,7 @@ void MainScene::Enter()
 
 	//PLAYER
 	{
-		CreatePlayer({ 100,100 });
+		CreatePlayer({ 100, 750 });
 	}
 
 	//SPIRIT
@@ -139,7 +139,9 @@ void MainScene::CreateCollectible(Vector2f _pos)
 void MainScene::CreatePlayer(Vector2f _pos)
 {
 	m_player = CreateEntity();
-	m_player->AddComponent<SpriteRenderer>()->Load("../../Assets/maelle.png");
+	SpriteRenderer* sr = m_player->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/Player/player_sheet.png");
+	sr->SetFrame(32, 32, 128, 0);
 	m_player->AddComponent<TagComponent>("Player")->AddTag("POSSESSED");
 
 	//Solid Collider
@@ -152,13 +154,12 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	bc->SetOffset(0, 25);
 
 	m_player->AddComponent<PossessionLogic>()->SetPossessed(true);
-	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
+	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE)->SetAnimation(PlayerAnimState::Respawn);
 
 	m_player->GetComponent<TransformComponent>()->SetPos(_pos);
-	m_player->GetComponent<TransformComponent>()->SetScale(0.25f);
+	m_player->GetComponent<TransformComponent>()->SetScale(1.5f);
 
 	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
-
 }
 
 void MainScene::CreateSpirit(Vector2f _pos)
