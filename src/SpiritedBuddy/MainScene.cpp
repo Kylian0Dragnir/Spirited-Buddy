@@ -7,9 +7,12 @@
 #include "CollectibleLogic.h"
 #include "PossessionLogic.h"
 #include "PortalLogic.h"
+#include "ButtonLogic.h"
 #include "Collider.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
+
+#include <iostream>
 
 MainScene::MainScene()
 {
@@ -46,7 +49,7 @@ void MainScene::Enter()
 		//Solid Collider
 		crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
 
-		crate->AddComponent<TagComponent>("CRATE");
+		crate->AddComponent<TagComponent>("CRATE")->AddTag("PhysicObject");
 
 		crate->AddComponent<PossessionLogic>();
 		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
@@ -60,17 +63,43 @@ void MainScene::Enter()
 
 	//PLAYER BARRIER
 	{
-		CreatePlayerBarrier({ 1200, 540 });
+		CreatePlayerBarrier({ 1200, 0 }, { 1200, 960 }, {});
 	}
 
 	//SPIRIT BARRIER
 	{
-		CreateSpiritBarrier({ 800, 540 });
-		CreateSpiritBarrier({ 960, 540 }, "BARRIER");
+		CreateSpiritBarrier({ 800, 0 }, { 800, 960 });
+		CreateSpiritBarrier({ 960, 0 }, { 960, 960 }, "BARRIER");
+	}
+
+	//BUTTON
+	{
+		Entity* button = CreateEntity();
+
+		//Solid Collider
+		BoxCollider* solidCollider = button->AddComponent<BoxCollider>(50.f, 20.f, PLAYER_LAYER, PLAYER_LAYER);
+		solidCollider->SetVisible(true);
+		solidCollider->SetOffset(0, 10);
+
+		//Trigger Collider
+		BoxCollider* triggerCollider = button->AddComponent<BoxCollider>(35, 15.f, PLAYER_LAYER, PLAYER_LAYER);
+		triggerCollider->SetVisible(true);
+		triggerCollider->SetTrigger(true);
+		triggerCollider->SetOffset(0, -7.5f);
+
+		button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
+
+		ButtonLogic* b = button->AddComponent<ButtonLogic>(ButtonMode::Toggle);
+
+		b->SetOnActivate([this]()
+			{
+				DestroyEntity(FindByTag("BARRIER"));
+			});
+
+		button->GetComponent<TransformComponent>()->SetPos({ 250, 925 });
 	}
 
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
-
 }
 
 void MainScene::Update(float _dt)
@@ -157,7 +186,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE)->SetAnimation(PlayerAnimState::Respawn);
 
 	m_player->GetComponent<TransformComponent>()->SetPos(_pos);
-	m_player->GetComponent<TransformComponent>()->SetScale(1.5f);
+	m_player->GetComponent<TransformComponent>()->SetScale({1.5f, 1.5f});
 
 	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 }
@@ -205,45 +234,69 @@ void MainScene::CreatePortal(Vector2f _pos, const std::string& newSceneID)
 
 	TransformComponent* transform = portal->GetComponent<TransformComponent>();
 	transform->SetPos(_pos);
-	transform->SetScale(1.5f);
+	transform->SetScale({ 1.5f, 1.5f });
 
 	m_portals.push_back(portal);
 }
 
-void MainScene::CreatePlayerBarrier(Vector2f _pos, const std::string& _tag)
+void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
 {
-	Entity* playerBarrier = CreateEntity();
+	Entity* barrier = CreateEntity();
 
-	SpriteRenderer* sr = playerBarrier->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/tempPlayerBarrier.png");
-	sr->SetOpacity(96);
+	float height = abs(_end.GetY() - _start.GetY());
 
-	TagComponent* tc = playerBarrier->AddComponent<TagComponent>("PLAYER_BARRIER");
+	Vector2f center = {
+		(_start.GetX() + _end.GetX()) * 0.5f,
+		(_start.GetY() + _end.GetY()) * 0.5f
+	};
+
+	SpriteRenderer* sr = barrier->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/barrier/blue_barrier.png");
+	sr->SetFrame(16, 16, 0, 0);
+	sr->SetOpacity(255);
+	sr->SetTiledSize({ 32.f, height });
+
+	barrier->AddComponent<BoxCollider>(32.f, height, PLAYER_LAYER, PLAYER_LAYER);
+
+	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
+	transform->SetPos(center);
+	transform->SetScale({ 2.f, 2.f });
+
+	TagComponent* tc = barrier->AddComponent<TagComponent>("PLAYER_BARRIER");
 	if (!_tag.empty())
 		tc->AddTag(_tag);
 
-	playerBarrier->AddComponent<BoxCollider>(75, 1080, PLAYER_LAYER, PLAYER_LAYER);
-	playerBarrier->GetComponent<TransformComponent>()->SetPos(_pos);
-
-	m_playerBarriers.push_back(playerBarrier);
+	m_playerBarriers.push_back(barrier);
 }
 
-void MainScene::CreateSpiritBarrier(Vector2f _pos, const std::string& _tag)
+void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
 {
-	Entity* spiritBarrier = CreateEntity();
+	Entity* barrier = CreateEntity();
 
-	SpriteRenderer* sr = spiritBarrier->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/tempSpiritBarrier.png");
-	sr->SetOpacity(96);
+	float height = abs(_end.GetY() - _start.GetY());
 
-	TagComponent* tc = spiritBarrier->AddComponent<TagComponent>("SPIRIT_BARRIER");
+	Vector2f center = {
+		(_start.GetX() + _end.GetX()) * 0.5f,
+		(_start.GetY() + _end.GetY()) * 0.5f
+	};
+
+	SpriteRenderer* sr = barrier->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/barrier/green_barrier.png");
+	sr->SetFrame(16, 16, 0, 0);
+	sr->SetOpacity(255);
+	sr->SetTiledSize({ 32.f, height });
+
+	barrier->AddComponent<BoxCollider>(32.f, height, SPIRIT_LAYER, SPIRIT_LAYER);
+
+	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
+	transform->SetPos(center);
+	transform->SetScale({ 2.f, 2.f });
+
+	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");
 	if (!_tag.empty())
 		tc->AddTag(_tag);
 
-	spiritBarrier->AddComponent<BoxCollider>(75, 1080, SPIRIT_LAYER, SPIRIT_LAYER);
-	spiritBarrier->GetComponent<TransformComponent>()->SetPos(_pos);
-
-	m_spiritBarriers.push_back(spiritBarrier);
+	m_spiritBarriers.push_back(barrier);
 }
 
 void MainScene::CleanDestroyedEntities()

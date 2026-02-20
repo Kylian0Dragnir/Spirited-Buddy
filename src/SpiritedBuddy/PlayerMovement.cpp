@@ -309,7 +309,7 @@ void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 {
 	if (_self->GetTop() > m_owner->GetComponent<TransformComponent>()->GetPos().GetY()) {
 		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
-		if (otherEntityTag && otherEntityTag->Is("Ground"))
+		if (otherEntityTag && (otherEntityTag->Is("Ground") || otherEntityTag->Is("PhysicObject")))
 			m_onGround = true;
 	}
 }
@@ -318,7 +318,7 @@ void PlayerMovement::OnCollisionExit(Collider* _self, Collider* _other)
 {
 	if (_self->GetTop() > m_owner->GetComponent<TransformComponent>()->GetPos().GetY()) {
 		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
-		if (otherEntityTag && otherEntityTag->Is("Ground"))
+		if (otherEntityTag && (otherEntityTag->Is("Ground") || otherEntityTag->Is("PhysicObject")))
 			m_onGround = false;
 	}
 }

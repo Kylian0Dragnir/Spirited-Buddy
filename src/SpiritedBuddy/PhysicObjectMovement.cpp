@@ -57,13 +57,13 @@ void PhysicObjectMovement::Update(float _dt)
 void PhysicObjectMovement::OnCollisionStay(Collider* _self, Collider* _other)
 {
 	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
-	if (otherEntityTag && otherEntityTag->Is("Ground"))
+	if (otherEntityTag && (otherEntityTag->Is("Ground") || otherEntityTag->Is("PhysicObject")))
 		m_onGround = true;
 }
 
 void PhysicObjectMovement::OnCollisionExit(Collider* _self, Collider* _other)
 {
 	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
-	if (otherEntityTag && otherEntityTag->Is("Ground"))
+	if (otherEntityTag && (otherEntityTag->Is("Ground") || otherEntityTag->Is("PhysicObject")))
 		m_onGround = false;
 }

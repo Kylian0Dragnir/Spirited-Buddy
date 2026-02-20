@@ -32,8 +32,8 @@ public:
 	void CreatePlayer(Vector2f _pos);
 	void CreateSpirit(Vector2f _pos);
 	void CreatePortal(Vector2f _pos, const std::string & newSceneID);
-	void CreatePlayerBarrier(Vector2f _pos, const std::string& _tag = {});
-	void CreateSpiritBarrier(Vector2f _pos, const std::string& _tag = {});
+	void CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::string & _tag = {});
+	void CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::string& _tag = {});
 	void CleanDestroyedEntities();
 	void CleanVectors();
 };

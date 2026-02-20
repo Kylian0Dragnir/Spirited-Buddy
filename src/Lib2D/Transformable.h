@@ -19,7 +19,7 @@ protected:
 
 	Flip m_flip;
 	float m_angle;
-	float m_scale;
+	Vector2f m_scale;
 
 public:
 
@@ -28,8 +28,8 @@ public:
 	Vector2f GetPos();
 	void SetPos(Vector2f _pos);
 
-	void SetScale(float _scale);
-	float GetScale();
+	void SetScale(Vector2f _scale);
+	Vector2f GetScale();
 
 	void SetFlip(Flip _flip);
 	Flip GetFlip();

@@ -18,7 +18,7 @@ SpiritLogic::SpiritLogic(Key _switchKey, Entity* initialPossessed)
 	m_switchKey = _switchKey;
 	m_speed = 1.2f;
 
-	m_switchCooldown = 0.02f;
+	m_switchCooldown = 1.2f;
 
 	m_possessedEntity = initialPossessed;
 }
@@ -37,7 +37,7 @@ void SpiritLogic::Update(float _dt)
 	{
 		if(im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
-			m_switchCooldown = 0.02f;
+			m_switchCooldown = 1.2f;
 
 			Vector2f targetPos = m_possessedEntity->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 			transform->SetPos(targetPos);

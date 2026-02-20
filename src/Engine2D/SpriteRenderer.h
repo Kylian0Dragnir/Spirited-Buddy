@@ -13,6 +13,8 @@ class SpriteRenderer : public Component, public Drawable
 
 	Vector2f m_offset;
 
+	Vector2f m_tiledSize;
+
 public:
 
 	SpriteRenderer();
@@ -23,6 +25,8 @@ public:
 	void SetOpacity(uint8_t _opacity);
 
 	void SetOffset(Vector2f os) { m_offset = os; }
+
+	void SetTiledSize(Vector2f tiledSize) { m_tiledSize = tiledSize; }
 
 	void SetVisible(bool value) { m_isVisible = value; }
 };

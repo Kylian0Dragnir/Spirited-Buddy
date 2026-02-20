@@ -57,8 +57,8 @@ void Sprite::SetOpacity(uint8_t _opacity)
 
 void Sprite::Draw(Window* _window)
 {
-	float scaledW = m_frameWidth * m_scale;
-	float scaledH = m_frameHeight * m_scale;
+	float scaledW = m_frameWidth * m_scale.GetX();
+	float scaledH = m_frameHeight * m_scale.GetY();
 
 	SDL_Rect dst{ m_pos.GetX(), m_pos.GetY(), scaledW, scaledH };
 	SDL_Rect src{ m_frameX, m_frameY, m_frameWidth, m_frameHeight };
@@ -81,8 +81,6 @@ void Sprite::Draw(Window* _window)
 		flip = SDL_FLIP_VERTICAL;
 		break;
 	}
-
-	
 
 	SDL_RenderCopyEx(_window->m_renderer, (SDL_Texture*)m_texture->GetDataPtr(), &src, &dst, m_angle, &rotCenter, flip);
 }

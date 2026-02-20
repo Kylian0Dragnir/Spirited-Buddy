@@ -5,7 +5,7 @@ Transformable::Transformable(Vector2f _pos) : m_pos(_pos)
 	m_flip = FLIP_NONE;
 	m_angle = 0.f;
 	m_rotationCenter = { -1, -1 };
-	m_scale = 1;
+	m_scale = {1,1};
 }
 
 Vector2f Transformable::GetPos()
@@ -13,7 +13,7 @@ Vector2f Transformable::GetPos()
 	return m_pos;
 }
 
-float Transformable::GetScale()
+Vector2f Transformable::GetScale()
 {
 	return m_scale;
 }
@@ -65,7 +65,7 @@ Vector2f Transformable::GetRotationCenter()
 	return m_rotationCenter;
 }
 
-void Transformable::SetScale(float _scale)
+void Transformable::SetScale(Vector2f _scale)
 {
 	m_scale = _scale;
 }
@@ -75,5 +75,5 @@ void Transformable::ResetTansform()
 	m_flip = FLIP_NONE;
 	m_angle = 0.F;
 	m_rotationCenter = { -1,-1 };
-	m_scale = 1;
+	m_scale = {1, 1};
 }

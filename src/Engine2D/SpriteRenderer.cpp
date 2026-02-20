@@ -23,17 +23,43 @@ void SpriteRenderer::Draw(Window* _window)
     TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 
     Vector2f entityPos = transform->GetPos();
-    float scale = transform->GetScale();
-    Vector2f spriteSize{ (float)m_sprite->GetWidth() * scale, (float)m_sprite->GetHeight() * scale };
-    Vector2f drawPos = entityPos - spriteSize * 0.5f;
+    Vector2f scale = transform->GetScale();
 
-    m_sprite->SetScale(transform->GetScale());
+    m_sprite->SetScale(scale);
     m_sprite->SetFlip(transform->GetFlip());
     m_sprite->SetRotation(transform->GetAngle());
     m_sprite->SetRotationCenter(transform->GetRotationCenter());
 
-    m_sprite->SetPos(drawPos + m_offset);
-    m_sprite->Draw(_window);
+    float tileW = m_sprite->GetWidth() * scale.GetX();
+    float tileH = m_sprite->GetHeight() * scale.GetY();
+
+    Vector2f baseDrawPos = entityPos - Vector2f(tileW, tileH) * 0.5f;
+
+    if (m_tiledSize.Length() <= 0)
+    {
+        m_sprite->SetPos(baseDrawPos + m_offset);
+        m_sprite->Draw(_window);
+    }
+    else
+    {
+        int countX = (int)ceil(m_tiledSize.GetX() / tileW);
+        int countY = (int)ceil(m_tiledSize.GetY() / tileH);
+
+        float totalWidth = countX * tileW;
+        float totalHeight = countY * tileH;
+
+        baseDrawPos = entityPos - Vector2f(totalWidth, totalHeight) * 0.5f;
+
+        for (int y = 0; y < countY; y++)
+        {
+            for (int x = 0; x < countX; x++)
+            {
+                Vector2f tileOffset = { x * tileW, y * tileH };
+                m_sprite->SetPos(baseDrawPos + tileOffset + m_offset);
+                m_sprite->Draw(_window);
+            }
+        }
+    }
 }
 
 void SpriteRenderer::Load(const std::string& _filePath)
