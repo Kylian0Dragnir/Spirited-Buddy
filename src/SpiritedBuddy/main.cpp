@@ -13,6 +13,17 @@ int main()
     Application& app = Application::Get();
     app.InitApp("Pong", 1920, 1080);
 
+    AudioEngine& ae = AudioEngine::Get();
+
+    if (ae.Init() == false)
+        exit(1);
+
+    ae.SetMasterVolume(5);
+
+    ae.LoadMusic("MAIN", "../../Assets/mainMusic.wav");
+
+    ae.PlayMusic("MAIN", true);
+
     SceneManager& sm = SceneManager::GetInstance();
 
     sm.AddScene("LevelTestScene", new LevelTestScene);
