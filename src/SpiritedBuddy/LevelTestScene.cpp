@@ -8,7 +8,7 @@ void LevelTestScene::OnEnter()
 {
 	//PORTAL
 	{
-		CreatePortal({ 80, 885 }, "START");
+		CreatePortal({ 80, 885 }, "LevelTestScene");
 	}
 
 	//COLLECTIBLES
@@ -38,7 +38,7 @@ void LevelTestScene::OnEnter()
 
 	//PLAYER BARRIER
 	{
-		CreatePlayerBarrier({ 1200, 0 }, { 1200, 925 }, {});
+		CreatePlayerBarrier({ 1200, 0 }, { 1200, 925 });
 	}
 
 	//SPIRIT BARRIER

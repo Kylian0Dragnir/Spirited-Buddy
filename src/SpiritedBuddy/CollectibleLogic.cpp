@@ -10,8 +10,10 @@ void CollectibleLogic::OnCollisionEnter(Collider* _self, Collider* _other)
 	TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
 	if (otherEntityTag && (otherEntityTag->Is("Player") || otherEntityTag->Is("Spirit")))
 	{
+		if (_other->IsTrigger())
+			return;
+
 		AScene* cs = SceneManager::GetInstance().GetCurrentScene();
 		cs->DestroyEntity(m_owner);
 	}
-
 }
