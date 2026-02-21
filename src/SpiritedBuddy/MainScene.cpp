@@ -72,7 +72,7 @@ void MainScene::Enter()
 
 	//SPIRIT BARRIER
 	{
-		CreateSpiritBarrier({ 800, 540 });
+		CreateSpiritBarrier({ 800, 540 }, "BARRIER");
 		CreateSpiritBarrier({ 960, 540 }, "BARRIER");
 	}
 
@@ -177,7 +177,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 void MainScene::CreateSpirit(Vector2f _pos)
 {
 	m_spirit = CreateEntity();
-	m_spirit->AddComponent<TagComponent>("Spirit");
+	m_spirit->AddComponent<TagComponent>("Spirit")->AddTag("WORLD_WRAP");
 
 	SpriteRenderer* sr = m_spirit->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Spirit.png");
@@ -197,6 +197,8 @@ void MainScene::CreateSpirit(Vector2f _pos)
 	m_spirit->GetComponent<TransformComponent>()->SetPos(_pos);
 
 	m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+
+	m_spirit->AddComponent<WorldWrapLogic>()->Generate();
 }
 
 void MainScene::CreatePortal(Vector2f _pos, const std::string& newSceneID)

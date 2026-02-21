@@ -19,8 +19,9 @@ void WorldWrapLogic::Update(float _dt)
 	if (m_clone == nullptr)
 		return;
 
-	TransformComponent* transform = m_clone->GetComponent<TransformComponent>();
-	Vector2f ownerPos = m_owner->GetComponent<TransformComponent>()->GetPos();
+	TransformComponent* cloneTransform = m_clone->GetComponent<TransformComponent>();
+	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
+	Vector2f ownerPos = transform->GetPos();
 
 
 	system("cls");
@@ -29,12 +30,12 @@ void WorldWrapLogic::Update(float _dt)
 	{
 		if (ownerPos.GetX() > 1920 / 2)
 		{
-			transform->SetPos({ ownerPos.GetX() - 1920, ownerPos.GetY() });
+			cloneTransform->SetPos({ ownerPos.GetX() - 1920, ownerPos.GetY() });
 			std::cout << "Right" << std::endl;
 		}
 		else
 		{
-			transform->SetPos({ ownerPos.GetX() + 1920, ownerPos.GetY() });
+			cloneTransform->SetPos({ ownerPos.GetX() + 1920, ownerPos.GetY() });
 			std::cout << "Left" << std::endl;
 		}
 	}
@@ -42,21 +43,32 @@ void WorldWrapLogic::Update(float _dt)
 	{
 		if (ownerPos.GetY() > 1080 / 2)
 		{
-			transform->SetPos({ ownerPos.GetX(), ownerPos.GetY() - 1080 });
+			cloneTransform->SetPos({ ownerPos.GetX(), ownerPos.GetY() - 1080 });
 			std::cout << "Bottom" << std::endl;
 		}
 		else
 		{
-			transform->SetPos({ ownerPos.GetX(), ownerPos.GetY() + 1080 });
+			cloneTransform->SetPos({ ownerPos.GetX(), ownerPos.GetY() + 1080 });
 			std::cout << "Top" << std::endl;
 		}
 	}
 
-
-
-
 	std::cout << "Player : " << ownerPos.GetX() << " " << ownerPos.GetY() << std::endl;
-	std::cout << "Clone : " << transform->GetPos().GetX() << " " << transform->GetPos().GetY();
+	std::cout << "Clone : " << cloneTransform->GetPos().GetX() << " " << cloneTransform->GetPos().GetY();
+
+	Collider* ownerCollider = m_owner->GetComponent<Collider>();
+
+	float ownerMiddle = 0;
+
+	if (ownerCollider->GetType() == ColliderType::Circle)
+		ownerMiddle = ownerPos.GetY();
+	else if (ownerCollider->GetType() == ColliderType::Rectangle)
+		ownerMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
+
+	if (ownerPos.GetX() > 1920 + ownerMiddle)
+		transform->SetPos({ ownerPos.GetX() - 1920, ownerPos.GetY() });
+	if (ownerPos.GetX() < 0 - ownerMiddle)
+		transform->SetPos({ ownerPos.GetX() + 1920, ownerPos.GetY() });
 }
 
 void WorldWrapLogic::Generate()
