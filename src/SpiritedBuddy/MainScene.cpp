@@ -51,7 +51,6 @@ void MainScene::Enter()
 		sr->Load("../../Assets/tempCrate.png");
 
 		crate->AddComponent<TagComponent>("CRATE");
-		crate->GetComponent<TagComponent>()->AddTag("WORLD_WRAP");
 
 		crate->AddComponent<PossessionLogic>();
 		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
@@ -62,7 +61,7 @@ void MainScene::Enter()
 		rb->AddImpulse({ 0,1000 });
 		rb->SetGravity({ 0.f,1000.f });
 
-		//crate->AddComponent<WorldWrapLogic>();
+		crate->AddComponent<WorldWrapLogic>()->Generate();
 	}
 
 	//PLAYER BARRIER
@@ -152,7 +151,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	SpriteRenderer* sr = m_player->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Player/player_sheet.png");
 	sr->SetFrame(32, 32, 128, 0);
-	m_player->AddComponent<TagComponent>("Player")->AddTag("WORLD_WRAP");
+	m_player->AddComponent<TagComponent>("Player");
 
 	//Solid Collider
 	m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
@@ -177,7 +176,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 void MainScene::CreateSpirit(Vector2f _pos)
 {
 	m_spirit = CreateEntity();
-	m_spirit->AddComponent<TagComponent>("Spirit")->AddTag("WORLD_WRAP");
+	m_spirit->AddComponent<TagComponent>("Spirit");
 
 	SpriteRenderer* sr = m_spirit->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Spirit.png");

@@ -8,6 +8,7 @@
 #include "TransformComponent.h"
 #include <iostream>
 #include <algorithm>
+#include "TagComponent.h"
 
 WorldWrapLogic::WorldWrapLogic()
 {
@@ -40,24 +41,30 @@ void WorldWrapLogic::Update(float _dt)
 
 	Collider* ownerCollider = m_owner->GetComponent<Collider>();
 
-	float ownerMiddle = 0;
+	float ownerWidthMiddle = 0;
+	float ownerHeightMiddle = 0;
 
 	if (ownerCollider->GetType() == ColliderType::Rectangle)
-		ownerMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
+	{
+		ownerWidthMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
+		ownerHeightMiddle = static_cast<BoxCollider*>(ownerCollider)->GetHeight() / 2;
+	}
 
-	if (ownerPos.GetX() > 1920 + ownerMiddle)
-		transform->SetPos({ ownerPos.GetX() - 1920, ownerPos.GetY() });
-	if (ownerPos.GetX() < 0 - ownerMiddle)
-		transform->SetPos({ ownerPos.GetX() + 1920, ownerPos.GetY() });
-	if (ownerPos.GetY() > 1080 + ownerMiddle)
-		transform->SetPos({ ownerPos.GetX(), ownerPos.GetY() - 1080 });
-	if (ownerPos.GetY() < 0 - ownerMiddle)
-		transform->SetPos({ ownerPos.GetX(), ownerPos.GetY() + 1080 });
+	if (transform->GetPos().GetX() - ownerWidthMiddle > 1920)
+		transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
+	if (transform->GetPos().GetX() + ownerWidthMiddle < 0 )
+		transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
+	if (transform->GetPos().GetY() - ownerHeightMiddle > 1080)
+		transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() - 1080 });
+	if (transform->GetPos().GetY() + ownerHeightMiddle < 0 )
+		transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() + 1080 });
 }
 
 void WorldWrapLogic::Generate()
 {
 	m_clone = SceneManager::GetInstance().GetCurrentScene()->CreateEntity();
+
+	m_owner->GetComponent<TagComponent>()->AddTag("WORLD_WRAP");
 
 	std::vector<Collider*> ownerColliders = m_owner->GetAllComponents<Collider>();
 

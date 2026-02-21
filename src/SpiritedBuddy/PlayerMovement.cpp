@@ -10,6 +10,7 @@
 #include "MainScene.h"
 #include "SceneManager.h"
 #include "BoxCollider.h"
+#include <iostream>
 
 PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJumpKey)
 {
