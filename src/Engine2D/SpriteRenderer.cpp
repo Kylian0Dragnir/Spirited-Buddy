@@ -1,6 +1,8 @@
 #include "SpriteRenderer.h"
 #include "Entity.h"
 #include "TransformComponent.h"
+#include "Window.h"
+#include <TagComponent.h>
 
 SpriteRenderer::SpriteRenderer()
 {
@@ -60,6 +62,22 @@ void SpriteRenderer::Draw(Window* _window)
             }
         }
     }
+
+    if (m_owner->GetComponent<TagComponent>()->Is("WORLD_WRAP"))
+    {
+        m_sprite->SetPos(baseDrawPos + m_offset + Vector2f{ (float)_window->GetWidth(), 0 });
+        m_sprite->Draw(_window);
+
+        m_sprite->SetPos(baseDrawPos + m_offset - Vector2f{ (float)_window->GetWidth(), 0 });
+        m_sprite->Draw(_window);
+
+        m_sprite->SetPos(baseDrawPos + m_offset + Vector2f{ 0, (float)_window->GetHeight() });
+        m_sprite->Draw(_window);
+
+        m_sprite->SetPos(baseDrawPos + m_offset - Vector2f{ 0, (float)_window->GetHeight() });
+        m_sprite->Draw(_window);
+    }
+
 }
 
 void SpriteRenderer::Load(const std::string& _filePath)
