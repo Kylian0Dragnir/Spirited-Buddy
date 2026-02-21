@@ -44,40 +44,12 @@ void MainScene::Enter()
 
 	//CRATE
 	{
-		Entity* crate = CreateEntity();
-
-		//Solid Collider
-		crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
-
-		crate->AddComponent<SpriteRenderer>()->Load("../../Assets/crate.png");
-
-		crate->AddComponent<TagComponent>("CRATE")->AddTag("PhysicObject");
-
-		crate->AddComponent<PossessionLogic>();
-		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
-
-		TransformComponent* transform = crate->GetComponent<TransformComponent>();
-		transform->SetPos({ 1800, 920 });
-		transform->SetScale({ 2.5f, 2.5f });
-
-		crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+		CreateCrate({ 1800, 920 });
 	}
 
 	//DUMMY WALL
 	{
-		Entity* dummyWall = CreateEntity();
-
-		dummyWall->AddComponent<SpriteRenderer>()->Load("../../Assets/RightDummyWall.png");
-
-		BoxCollider* bc = dummyWall->AddComponent<BoxCollider>(160.f, 160.f, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
-		bc->SetVisible(true);
-		bc->SetTrigger(true);
-
-		dummyWall->AddComponent<DummyWallLogic>();
-
-		TransformComponent* transform = dummyWall->GetComponent<TransformComponent>();
-		transform->SetPos({ 400, 840 });
-		transform->SetScale({ 2.f, 2.f });
+		CreateDummyWall({ 400, 840 }, "Right");
 	}
 
 	//PLAYER BARRIER
@@ -93,24 +65,9 @@ void MainScene::Enter()
 
 	//BUTTON
 	{
-		Entity* button = CreateEntity();
+		ButtonLogic* bl = CreateButton({ 1550, 930 }, ButtonMode::Hold);
 
-		//Solid Collider
-		BoxCollider* solidCollider = button->AddComponent<BoxCollider>(50.f, 20.f, PLAYER_LAYER, PLAYER_LAYER);
-		solidCollider->SetVisible(true);
-		solidCollider->SetOffset(0, 10);
-
-		//Trigger Collider
-		BoxCollider* triggerCollider = button->AddComponent<BoxCollider>(35, 15.f, PLAYER_LAYER, PLAYER_LAYER);
-		triggerCollider->SetVisible(true);
-		triggerCollider->SetTrigger(true);
-		triggerCollider->SetOffset(0, -7.5f);
-
-		button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
-
-		ButtonLogic* b = button->AddComponent<ButtonLogic>(ButtonMode::Hold);
-
-		b->SetOnActivate([this]()
+		bl->SetOnActivate([this]()
 			{
 				Entity* targetBarrier = FindByTag("BARRIER");
 
@@ -121,7 +78,7 @@ void MainScene::Enter()
 				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
 			});
 
-		b->SetOnDeactivate([this]()
+		bl->SetOnDeactivate([this]()
 			{
 				Entity* targetBarrier = FindByTag("BARRIER");
 
@@ -131,9 +88,6 @@ void MainScene::Enter()
 				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
 			});
-
-
-		button->GetComponent<TransformComponent>()->SetPos({ 1550, 930 });
 	}
 
 	TilemapLoader::Load("../../Assets/test3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
@@ -438,6 +392,66 @@ void MainScene::CreatePortal(Vector2f _pos, const std::string& newSceneID)
 	transform->SetScale({ 1.5f, 1.5f });
 
 	m_portals.push_back(portal);
+}
+
+void MainScene::CreateCrate(Vector2f _pos)
+{
+	Entity* crate = CreateEntity();
+
+	//Solid Collider
+	crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
+
+	crate->AddComponent<SpriteRenderer>()->Load("../../Assets/crate.png");
+
+	crate->AddComponent<TagComponent>("CRATE")->AddTag("PhysicObject");
+
+	crate->AddComponent<PossessionLogic>();
+	crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
+
+	TransformComponent* transform = crate->GetComponent<TransformComponent>();
+	transform->SetPos(_pos);
+	transform->SetScale({ 2.5f, 2.5f });
+
+	crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+}
+
+ButtonLogic* MainScene::CreateButton(Vector2f _pos, ButtonMode _mode)
+{
+	Entity* button = CreateEntity();
+
+	//Solid Collider
+	BoxCollider* solidCollider = button->AddComponent<BoxCollider>(50.f, 20.f, PLAYER_LAYER, PLAYER_LAYER);
+	solidCollider->SetVisible(true);
+	solidCollider->SetOffset(0, 10);
+
+	//Trigger Collider
+	BoxCollider* triggerCollider = button->AddComponent<BoxCollider>(35, 15.f, PLAYER_LAYER, PLAYER_LAYER);
+	triggerCollider->SetVisible(true);
+	triggerCollider->SetTrigger(true);
+	triggerCollider->SetOffset(0, -7.5f);
+
+	button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
+
+	button->GetComponent<TransformComponent>()->SetPos(_pos);
+
+	return button->AddComponent<ButtonLogic>(_mode);
+}
+
+void MainScene::CreateDummyWall(Vector2f _pos, const std::string& _direction)
+{
+	Entity* dummyWall = CreateEntity();
+
+	dummyWall->AddComponent<SpriteRenderer>()->Load("../../Assets/" + _direction + "DummyWall.png");
+
+	BoxCollider* bc = dummyWall->AddComponent<BoxCollider>(160.f, 160.f, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
+	bc->SetVisible(true);
+	bc->SetTrigger(true);
+
+	dummyWall->AddComponent<DummyWallLogic>();
+
+	TransformComponent* transform = dummyWall->GetComponent<TransformComponent>();
+	transform->SetPos(_pos);
+	transform->SetScale({ 2.f, 2.f });
 }
 
 void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
