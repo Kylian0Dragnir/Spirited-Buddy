@@ -7,7 +7,6 @@
 #include "SpriteRenderer.h"
 #include "Collider.h"
 #include "Entity.h"
-#include "MainScene.h"
 #include "SceneManager.h"
 #include "AnimatorComponent.h"
 

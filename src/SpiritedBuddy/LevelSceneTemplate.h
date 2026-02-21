@@ -6,8 +6,9 @@ class Entity;
 enum class ButtonMode;
 class ButtonLogic;
 
-class MainScene : public AScene
+class LevelSceneTemplate : public AScene
 {
+protected:
 	Entity* m_player;
 	Entity* m_spirit;
 
@@ -17,11 +18,15 @@ class MainScene : public AScene
 	std::vector<Entity*> m_collectibles;
 
 public:
-	MainScene();
+	LevelSceneTemplate();
 
 	void Enter() override;
 	void Update(float _dt) override;
 	void Exit() override;
+
+	virtual void OnEnter() {};
+	virtual void OnUpdate(float _dt) {};
+	virtual void OnExit() {};
 
 	void CreateCollectible(Vector2f _pos);
 	void CreatePlayer(Vector2f _pos);

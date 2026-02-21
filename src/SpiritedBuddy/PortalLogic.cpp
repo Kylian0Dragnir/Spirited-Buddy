@@ -7,7 +7,6 @@
 #include "TagComponent.h"
 #include "Rigidbody2D.h"
 #include "SceneManager.h"
-#include "MainScene.h"
 #include "TilemapLoader.h"
 #include "PossessionLogic.h"
 

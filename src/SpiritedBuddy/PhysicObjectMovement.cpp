@@ -6,8 +6,6 @@
 #include "PossessionLogic.h"
 #include "Collider.h"
 #include "Entity.h"
-#include "MainScene.h"
-#include "SceneManager.h"
 
 PhysicObjectMovement::PhysicObjectMovement(Key _moveLeftKey, Key _moveRightKey)
 {

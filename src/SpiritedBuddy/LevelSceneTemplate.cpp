@@ -1,4 +1,4 @@
-#include "MainScene.h"
+#include "LevelSceneTemplate.h"
 #include "AllComponent.h"
 #include "Entity.h"
 #include "PlayerMovement.h"
@@ -15,116 +15,21 @@
 
 #include <iostream>
 
-MainScene::MainScene()
+LevelSceneTemplate::LevelSceneTemplate()
 {
 
 }
 
-void MainScene::Enter()
+void LevelSceneTemplate::Enter()
 {
-	//PORTAL
-	{
-		CreatePortal({ 80, 885 }, "START");
-	}
-
-	//COLLECTIBLES
-	{
-		CreateCollectible({ 960,300 });
-	}
-
-	//PLAYER
-	{
-		CreatePlayer({ 100, 920 });
-	}
-
-	//SPIRIT
-	{
-		CreateSpirit({ -100,-100 });
-	}
-
-	//CRATE
-	{
-		CreateCrate({ 1800, 920 });
-	}
-
-	//DUMMY WALL
-	{
-		CreateDummyWall({ 400, 840 }, "Right");
-	}
-
-	//PLAYER BARRIER
-	{
-		CreatePlayerBarrier({ 1200, 0 }, { 1200, 925 }, {});
-	}
-
-	//SPIRIT BARRIER
-	{
-		CreateSpiritBarrier({ 800, 0 }, { 800, 925 });
-		CreateSpiritBarrier({ 960, 266 }, { 960, 330 }, "BARRIER");
-	}
-
-	//BUTTON
-	{
-		ButtonLogic* bl = CreateButton({ 1550, 930 }, ButtonMode::Hold);
-
-		bl->SetOnActivate([this]()
-			{
-				Entity* targetBarrier = FindByTag("BARRIER");
-
-				if (targetBarrier == nullptr)
-					return;
-
-				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
-			});
-
-		bl->SetOnDeactivate([this]()
-			{
-				Entity* targetBarrier = FindByTag("BARRIER");
-
-				if (targetBarrier == nullptr)
-					return;
-
-				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
-			});
-	}
-
-	TilemapLoader::Load("../../Assets/test3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	OnEnter();
 }
 
-void MainScene::Update(float _dt)
+void LevelSceneTemplate::Update(float _dt)
 {
 	AScene::Update(_dt);
 
 	CleanDestroyedEntities();
-
-	//if (m_spirit->GetComponent<SpiritLogic>()->IsPossessing())
-	//{
-	//	for (Entity* sb : m_spiritBarriers)
-	//	{
-	//		sb->GetComponent<SpriteRenderer>()->SetVisible(false);
-	//		sb->GetComponent<BoxCollider>()->SetActive(false);
-	//	}
-	//	for (Entity* pb : m_playerBarriers)
-	//	{
-	//		pb->GetComponent<SpriteRenderer>()->SetVisible(true);
-	//		pb->GetComponent<BoxCollider>()->SetActive(true);
-	//	}
-	//}
-	//else
-	//{
-	//	for (Entity* sb : m_spiritBarriers)
-	//	{
-	//		sb->GetComponent<SpriteRenderer>()->SetVisible(true);
-	//		sb->GetComponent<BoxCollider>()->SetActive(true);
-	//	}
-	//	for (Entity* pb : m_playerBarriers)
-	//	{
-	//		pb->GetComponent<SpriteRenderer>()->SetVisible(false);
-	//		pb->GetComponent<BoxCollider>()->SetActive(false);
-	//	}
-	// }
 
 	if (m_collectibles.empty() || InputManager::Get().IsKeyDown(Key::KEY_p))
 	{
@@ -138,15 +43,19 @@ void MainScene::Update(float _dt)
 	{
 		DestroyAllEntitiesWithTag("BARRIER");
 	}
+
+	OnUpdate(_dt);
 }
 
-void MainScene::Exit()
+void LevelSceneTemplate::Exit()
 {
 	DestroyAllEntities();
 	CleanVectors();
+
+	OnExit();
 }
 
-void MainScene::CreateCollectible(Vector2f _pos)
+void LevelSceneTemplate::CreateCollectible(Vector2f _pos)
 {
 	Entity* m_coin = CreateEntity();
 	m_coin->AddComponent<BoxCollider>(25.f, 25.f, ENV_LAYER, SPIRIT_LAYER | PLAYER_LAYER)->SetVisible(true);
@@ -156,7 +65,7 @@ void MainScene::CreateCollectible(Vector2f _pos)
 	m_collectibles.push_back(m_coin);
 }
 
-void MainScene::CreatePlayer(Vector2f _pos)
+void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 {
 	m_player = CreateEntity();
 	SpriteRenderer* sr = m_player->AddComponent<SpriteRenderer>();
@@ -346,7 +255,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	animator->Play("Respawn");
 }
 
-void MainScene::CreateSpirit(Vector2f _pos)
+void LevelSceneTemplate::CreateSpirit(Vector2f _pos)
 {
 	m_spirit = CreateEntity();
 	m_spirit->AddComponent<TagComponent>("Spirit");
@@ -371,7 +280,7 @@ void MainScene::CreateSpirit(Vector2f _pos)
 	m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
 }
 
-void MainScene::CreatePortal(Vector2f _pos, const std::string& newSceneID)
+void LevelSceneTemplate::CreatePortal(Vector2f _pos, const std::string& newSceneID)
 {
 	Entity* portal = CreateEntity();
 
@@ -394,7 +303,7 @@ void MainScene::CreatePortal(Vector2f _pos, const std::string& newSceneID)
 	m_portals.push_back(portal);
 }
 
-void MainScene::CreateCrate(Vector2f _pos)
+void LevelSceneTemplate::CreateCrate(Vector2f _pos)
 {
 	Entity* crate = CreateEntity();
 
@@ -415,7 +324,7 @@ void MainScene::CreateCrate(Vector2f _pos)
 	crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 }
 
-ButtonLogic* MainScene::CreateButton(Vector2f _pos, ButtonMode _mode)
+ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
 {
 	Entity* button = CreateEntity();
 
@@ -437,7 +346,7 @@ ButtonLogic* MainScene::CreateButton(Vector2f _pos, ButtonMode _mode)
 	return button->AddComponent<ButtonLogic>(_mode);
 }
 
-void MainScene::CreateDummyWall(Vector2f _pos, const std::string& _direction)
+void LevelSceneTemplate::CreateDummyWall(Vector2f _pos, const std::string& _direction)
 {
 	Entity* dummyWall = CreateEntity();
 
@@ -454,11 +363,19 @@ void MainScene::CreateDummyWall(Vector2f _pos, const std::string& _direction)
 	transform->SetScale({ 2.f, 2.f });
 }
 
-void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
+void LevelSceneTemplate::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
 {
 	Entity* barrier = CreateEntity();
 
+	bool vertical = true;
+
 	float height = abs(_end.GetY() - _start.GetY());
+
+	if ( height == 0)
+	{
+		 height = abs(_end.GetX() - _start.GetX());
+		 vertical = false;
+	}
 
 	Vector2f center = {
 		(_start.GetX() + _end.GetX()) * 0.5f,
@@ -469,13 +386,22 @@ void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::s
 	sr->Load("../../Assets/barrier/blue_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
-	sr->SetTiledSize({ 48.f, height });
-
-	barrier->AddComponent<BoxCollider>(48.f, height, PLAYER_LAYER, PLAYER_LAYER);
 
 	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
 	transform->SetPos(center);
-	transform->SetScale({ 3.f, 2.f });
+	transform->SetScale({ 3.f, 3.f });
+
+	if(vertical)
+	{
+		sr->SetTiledSize({ 48.f, height });
+		barrier->AddComponent<BoxCollider>(48.f, height, PLAYER_LAYER, PLAYER_LAYER);
+	}
+	else
+	{
+		transform->SetRotation(-90);
+		sr->SetTiledSize({ height , 48.f });
+		barrier->AddComponent<BoxCollider>(height, 48.f, PLAYER_LAYER, PLAYER_LAYER);
+	}
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("PLAYER_BARRIER");
 	if (!_tag.empty())
@@ -502,11 +428,19 @@ void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::s
 	m_playerBarriers.push_back(barrier);
 }
 
-void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
+void LevelSceneTemplate::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::string& _tag)
 {
 	Entity* barrier = CreateEntity();
 
+	bool vertical = true;
+
 	float height = abs(_end.GetY() - _start.GetY());
+
+	if (height == 0)
+	{
+		height = abs(_end.GetX() - _start.GetX());
+		vertical = false;
+	}
 
 	Vector2f center = {
 		(_start.GetX() + _end.GetX()) * 0.5f,
@@ -517,13 +451,22 @@ void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::s
 	sr->Load("../../Assets/barrier/green_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
-	sr->SetTiledSize({ 48.f, height });
-
-	barrier->AddComponent<BoxCollider>(48.f, height, SPIRIT_LAYER, SPIRIT_LAYER);
 
 	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
 	transform->SetPos(center);
-	transform->SetScale({ 3.f, 2.f });
+	transform->SetScale({ 3.f, 3.f });
+
+	if (vertical)
+	{
+		sr->SetTiledSize({ 48.f, height });
+		barrier->AddComponent<BoxCollider>(48.f, height, SPIRIT_LAYER, SPIRIT_LAYER);
+	}
+	else
+	{
+		transform->SetRotation(-90);
+		sr->SetTiledSize({ height , 48.f });
+		barrier->AddComponent<BoxCollider>(height, 48.f, SPIRIT_LAYER, SPIRIT_LAYER);
+	}
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");
 	if (!_tag.empty())
@@ -550,7 +493,7 @@ void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::s
 	m_spiritBarriers.push_back(barrier);
 }
 
-void MainScene::CleanDestroyedEntities()
+void LevelSceneTemplate::CleanDestroyedEntities()
 {
 	for (int i = m_collectibles.size() - 1; i >= 0; i--)
 	{
@@ -577,7 +520,7 @@ void MainScene::CleanDestroyedEntities()
 	}
 }
 
-void MainScene::CleanVectors()
+void LevelSceneTemplate::CleanVectors()
 {
 	for (int i = m_collectibles.size() - 1; i >= 0; i--)
 		m_collectibles.erase(m_collectibles.begin() + i);

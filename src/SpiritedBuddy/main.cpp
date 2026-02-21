@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Application.h"
 #include "SceneManager.h"
-#include "MainScene.h"
+#include "LevelTestScene.h"
 #include "Lib2D/AudioEngine.h"
 
 int main()
@@ -15,9 +15,9 @@ int main()
 
     SceneManager& sm = SceneManager::GetInstance();
 
-    sm.AddScene("START", new MainScene);
+    sm.AddScene("LevelTestScene", new LevelTestScene);
 
-    sm.SetStartScene("START");
+    sm.SetStartScene("LevelTestScene");
 
     app.LoopApp();
 	return 0;
