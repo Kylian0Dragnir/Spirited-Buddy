@@ -486,9 +486,10 @@ void LevelSceneTemplate::CreateSpiritBarrier(Vector2f _start, Vector2f _end, con
 	}
 	else
 	{
+		transform->SetRotationCenter({ 24.f, 24.f });
 		transform->SetRotation(-90);
 		sr->SetTiledSize({ height , 48.f });
-		barrier->AddComponent<BoxCollider>(height, 48.f, SPIRIT_LAYER, SPIRIT_LAYER);
+		barrier->AddComponent<BoxCollider>(height, 48.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(true);
 	}
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");

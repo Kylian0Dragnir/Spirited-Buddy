@@ -1,14 +1,14 @@
-#include "LevelTestScene.h"
+#include "Level1Scene.h"
 #include "AllComponent.h"
 #include "ButtonLogic.h"
 #include "Entity.h"
 #include "TilemapLoader.h"
 
-void LevelTestScene::OnEnter()
+void Level1Scene::OnEnter()
 {
 	//PORTAL
 	{
-		CreatePortal({ 80, 885 }, "Level1Scene");
+		CreatePortal({ 80, 725 }, "Level1Scene");
 	}
 
 	//COLLECTIBLES
@@ -18,7 +18,7 @@ void LevelTestScene::OnEnter()
 
 	//PLAYER
 	{
-		CreatePlayer({ 100, 920 });
+		CreatePlayer({ 100, 760 });
 	}
 
 	//SPIRIT
@@ -28,28 +28,22 @@ void LevelTestScene::OnEnter()
 
 	//CRATE
 	{
-		CreateCrate({ 1800, 920 });
-	}
-
-	//DUMMY WALL
-	{
-		CreateDummyWall({ 400, 840 }, "Right");
+		CreateCrate({ 1800, 760 });
 	}
 
 	//PLAYER BARRIER
 	{
-		CreatePlayerBarrier({ 1200, 0 }, { 1200, 925 });
+		CreatePlayerBarrier({ 840, 0 }, { 840, 925 });
 	}
 
 	//SPIRIT BARRIER
 	{
-		CreateSpiritBarrier({ 800, 0 }, { 800, 925 });
-		CreateSpiritBarrier({ 960, 266 }, { 960, 330 }, "BARRIER");
+		CreateSpiritBarrier({ 64, 400 }, { 1856, 400 }, "BARRIER");
 	}
 
 	//BUTTON
 	{
-		ButtonLogic* bl = CreateButton({ 1550, 930 }, ButtonMode::Hold);
+		ButtonLogic* bl = CreateButton({ 1450, 930 }, ButtonMode::Hold);
 
 		bl->SetOnActivate([this]()
 			{
@@ -74,13 +68,13 @@ void LevelTestScene::OnEnter()
 			});
 	}
 
-	TilemapLoader::Load("../../Assets/test3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("../../Assets/level1.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
-void LevelTestScene::OnUpdate(float _dt)
+void Level1Scene::OnUpdate(float _dt)
 {
 }
 
-void LevelTestScene::OnExit()
+void Level1Scene::OnExit()
 {
 }

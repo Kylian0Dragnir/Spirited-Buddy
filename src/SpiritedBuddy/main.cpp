@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "SceneManager.h"
 #include "LevelTestScene.h"
+#include "Level1Scene.h"
 #include "Lib2D/AudioEngine.h"
 
 int main()
@@ -27,8 +28,9 @@ int main()
     SceneManager& sm = SceneManager::GetInstance();
 
     sm.AddScene("LevelTestScene", new LevelTestScene);
+    sm.AddScene("Level1Scene", new Level1Scene);
 
-    sm.SetStartScene("LevelTestScene");
+    sm.SetStartScene("Level1Scene");
 
     app.LoopApp();
 	return 0;
