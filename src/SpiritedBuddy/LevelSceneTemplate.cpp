@@ -57,12 +57,35 @@ void LevelSceneTemplate::Exit()
 
 void LevelSceneTemplate::CreateCollectible(Vector2f _pos)
 {
-	Entity* m_coin = CreateEntity();
-	m_coin->AddComponent<BoxCollider>(25.f, 25.f, ENV_LAYER, SPIRIT_LAYER | PLAYER_LAYER)->SetVisible(true);
-	m_coin->AddComponent<TagComponent>("COLLECTIBLE");
-	m_coin->AddComponent<CollectibleLogic>();
-	m_coin->GetComponent<TransformComponent>()->SetPos(_pos);
-	m_collectibles.push_back(m_coin);
+	Entity* coin = CreateEntity();
+
+	coin->AddComponent<BoxCollider>(25.f, 25.f, ENV_LAYER, SPIRIT_LAYER | PLAYER_LAYER)->SetTrigger(true);
+
+	coin->AddComponent<TagComponent>("COLLECTIBLE");
+
+	SpriteRenderer* sr = coin->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/collectible.png");
+	sr->SetFrame(32, 32, 0, 0);
+
+	coin->AddComponent<CollectibleLogic>();
+	coin->GetComponent<TransformComponent>()->SetPos(_pos);
+
+	AnimatorComponent* animator = coin->AddComponent<AnimatorComponent>();
+
+	Animation idle;
+	idle.frameWidth = 32;
+	idle.frameHeight = 32;
+	idle.frameDuration = 0.1f;
+	idle.loop = true;
+
+	for (int i = 0; i < 7; i++)
+		idle.frames.push_back({ (float)i , 0.f });
+
+	animator->AddAnimation("Idle", idle);
+
+	animator->Play("Idle");
+
+	m_collectibles.push_back(coin);
 }
 
 void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
