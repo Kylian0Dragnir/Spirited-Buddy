@@ -9,6 +9,7 @@
 #include "PortalLogic.h"
 #include "ButtonLogic.h"
 #include "DummyWallLogic.h"
+#include "WorldWrapLogic.h"
 #include "Collider.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
@@ -89,6 +90,10 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 	m_player->GetComponent<TransformComponent>()->SetScale({1.5f, 1.5f});
 
 	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+
+	m_player->AddComponent<WorldWrapLogic>()->Generate();
+
+
 
 	AnimatorComponent* animator = m_player->AddComponent<AnimatorComponent>();
 
@@ -264,13 +269,14 @@ void LevelSceneTemplate::CreateSpirit(Vector2f _pos)
 	sr->Load("../../Assets/Spirit.png");
 	sr->SetFrame(64, 64, 0, 0);
 	sr->SetOffset({ 0,-15 });
+	sr->SetVisible(false);
 
 	//Solid Collider
-	m_spirit->AddComponent<CircleCollider>(14.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(true);
+	m_spirit->AddComponent<CircleCollider>(14.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(false);
 
 	//Interaction Trigger Collider
 	CircleCollider* cc = m_spirit->AddComponent<CircleCollider>(40.f, SPIRIT_LAYER, SPIRIT_LAYER | PLAYER_LAYER);
-	cc->SetVisible(true);
+	cc->SetVisible(false);
 	cc->SetTrigger(true);
 
 	m_spirit->AddComponent<SpiritLogic>(Key::KEY_c,m_player);
@@ -278,6 +284,8 @@ void LevelSceneTemplate::CreateSpirit(Vector2f _pos)
 	m_spirit->GetComponent<TransformComponent>()->SetPos(_pos);
 
 	m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+
+	m_spirit->AddComponent<WorldWrapLogic>()->Generate();
 }
 
 void LevelSceneTemplate::CreatePortal(Vector2f _pos, const std::string& newSceneID)
@@ -322,6 +330,8 @@ void LevelSceneTemplate::CreateCrate(Vector2f _pos)
 	transform->SetScale({ 2.5f, 2.5f });
 
 	crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+
+	crate->AddComponent<WorldWrapLogic>()->Generate();
 }
 
 ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
@@ -351,6 +361,7 @@ void LevelSceneTemplate::CreateDummyWall(Vector2f _pos, const std::string& _dire
 	Entity* dummyWall = CreateEntity();
 
 	dummyWall->AddComponent<SpriteRenderer>()->Load("../../Assets/" + _direction + "DummyWall.png");
+	dummyWall->AddComponent<TagComponent>("");
 
 	BoxCollider* bc = dummyWall->AddComponent<BoxCollider>(160.f, 160.f, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
 	bc->SetVisible(true);

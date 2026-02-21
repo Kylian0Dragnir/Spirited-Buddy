@@ -28,6 +28,9 @@ public:
 	void Draw(Drawable* p);
 	void Display();
 
+	int GetWidth() { return m_width; }
+	int GetHeight() { return m_height; }
+
 	friend class Sprite;
 	friend class AssetManager;
 	friend class Text;

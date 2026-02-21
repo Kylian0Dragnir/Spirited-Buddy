@@ -53,6 +53,8 @@ public:
     void SetTrigger(bool _value) { m_isTrigger = _value; }
     bool IsTrigger() { return m_isTrigger; }
 
+    uint32_t GetMask() { return m_mask; }
+
     virtual bool IsColliding(Collider* other) = 0;
 
     virtual float GetLeft() = 0;
