@@ -23,52 +23,36 @@ void WorldWrapLogic::Update(float _dt)
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 	Vector2f ownerPos = transform->GetPos();
 
-
-	system("cls");
-
 	if (std::min(abs(ownerPos.GetX() - 1920), ownerPos.GetX()) < std::min(abs(ownerPos.GetY() - 1080), ownerPos.GetY()))
 	{
 		if (ownerPos.GetX() > 1920 / 2)
-		{
 			cloneTransform->SetPos({ ownerPos.GetX() - 1920, ownerPos.GetY() });
-			std::cout << "Right" << std::endl;
-		}
 		else
-		{
 			cloneTransform->SetPos({ ownerPos.GetX() + 1920, ownerPos.GetY() });
-			std::cout << "Left" << std::endl;
-		}
 	}
 	else
 	{
 		if (ownerPos.GetY() > 1080 / 2)
-		{
 			cloneTransform->SetPos({ ownerPos.GetX(), ownerPos.GetY() - 1080 });
-			std::cout << "Bottom" << std::endl;
-		}
 		else
-		{
 			cloneTransform->SetPos({ ownerPos.GetX(), ownerPos.GetY() + 1080 });
-			std::cout << "Top" << std::endl;
-		}
 	}
-
-	std::cout << "Player : " << ownerPos.GetX() << " " << ownerPos.GetY() << std::endl;
-	std::cout << "Clone : " << cloneTransform->GetPos().GetX() << " " << cloneTransform->GetPos().GetY();
 
 	Collider* ownerCollider = m_owner->GetComponent<Collider>();
 
 	float ownerMiddle = 0;
 
-	if (ownerCollider->GetType() == ColliderType::Circle)
-		ownerMiddle = ownerPos.GetY();
-	else if (ownerCollider->GetType() == ColliderType::Rectangle)
+	if (ownerCollider->GetType() == ColliderType::Rectangle)
 		ownerMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
 
 	if (ownerPos.GetX() > 1920 + ownerMiddle)
 		transform->SetPos({ ownerPos.GetX() - 1920, ownerPos.GetY() });
 	if (ownerPos.GetX() < 0 - ownerMiddle)
 		transform->SetPos({ ownerPos.GetX() + 1920, ownerPos.GetY() });
+	if (ownerPos.GetY() > 1080 + ownerMiddle)
+		transform->SetPos({ ownerPos.GetX(), ownerPos.GetY() - 1080 });
+	if (ownerPos.GetY() < 0 - ownerMiddle)
+		transform->SetPos({ ownerPos.GetX(), ownerPos.GetY() + 1080 });
 }
 
 void WorldWrapLogic::Generate()
