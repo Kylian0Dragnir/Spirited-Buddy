@@ -110,7 +110,7 @@ void MainScene::Enter()
 		button->GetComponent<TransformComponent>()->SetPos({ 1550, 940 });
 	}
 
-	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
+	TilemapLoader::Load("../../Assets/test3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void MainScene::Update(float _dt)

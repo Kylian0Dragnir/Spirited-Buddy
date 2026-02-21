@@ -12,11 +12,8 @@
 
 using namespace tinyxml2;
 
-void TilemapLoader::Load(const std::string& path, AScene* scene, const std::string& tilesetPath)
+void TilemapLoader::Load(const std::string& path, AScene* scene, const std::string& tilesetPath, Vector2f scale)
 {
-    //scene->DestroyAllEntitiesWithTag("Tilemap");
-    //scene->DestroyAllEntitiesWithTag("Ground");
-
     XMLDocument doc;
     if (doc.LoadFile(path.c_str()) != XML_SUCCESS)
         return;
@@ -45,8 +42,9 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
 
     mapEntity->AddComponent<TagComponent>("Tilemap");
 
-    auto transform = mapEntity->GetComponent<TransformComponent>();
+    TransformComponent* transform = mapEntity->GetComponent<TransformComponent>();
     transform->SetPos({ 0, 0 });
+    transform->SetScale(scale);
 
     mapEntity->AddComponent<TilemapRenderer>(tiles, width, height, tileSize, tilesetPath);
 
@@ -67,10 +65,10 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
                 obj != nullptr;
                 obj = obj->NextSiblingElement("object"))
             {
-                float x = obj->FloatAttribute("x");
-                float y = obj->FloatAttribute("y");
-                float w = obj->FloatAttribute("width");
-                float h = obj->FloatAttribute("height");
+                float x = obj->FloatAttribute("x") * scale.GetX();
+                float y = obj->FloatAttribute("y") * scale.GetY();
+                float w = obj->FloatAttribute("width") * scale.GetX();
+                float h = obj->FloatAttribute("height") * scale.GetY();
 
                 Entity* collider = scene->CreateEntity();
                 auto transform = collider->GetComponent<TransformComponent>();
