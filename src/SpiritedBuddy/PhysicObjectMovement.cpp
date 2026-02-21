@@ -6,6 +6,7 @@
 #include "PossessionLogic.h"
 #include "Collider.h"
 #include "Entity.h"
+#include "BoxCollider.h"
 
 PhysicObjectMovement::PhysicObjectMovement(Key _moveLeftKey, Key _moveRightKey)
 {
@@ -50,6 +51,27 @@ void PhysicObjectMovement::Update(float _dt)
 	}
 
 	rb->SetVelocity(velocity);
+
+
+	Collider* ownerCollider = m_owner->GetComponent<Collider>();
+
+	float ownerWidthMiddle = 0;
+	float ownerHeightMiddle = 0;
+
+	if (ownerCollider->GetType() == ColliderType::Rectangle)
+	{
+		ownerWidthMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
+		ownerHeightMiddle = static_cast<BoxCollider*>(ownerCollider)->GetHeight() / 2;
+	}
+
+	if (transform->GetPos().GetX() - ownerWidthMiddle > 1920)
+		transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
+	if (transform->GetPos().GetX() + ownerWidthMiddle < 0)
+		transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
+	if (transform->GetPos().GetY() - ownerHeightMiddle > 1080)
+		transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() - 1080 });
+	if (transform->GetPos().GetY() + ownerHeightMiddle < 0)
+		transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() + 1080 });
 }
 
 void PhysicObjectMovement::OnCollisionStay(Collider* _self, Collider* _other)

@@ -39,28 +39,28 @@ void WorldWrapLogic::Update(float _dt)
 			cloneTransform->SetPos({ ownerPos.GetX(), ownerPos.GetY() + 1080 });
 	}
 
-	if (m_owner->GetComponent<TagComponent>()->Is("Player"))
-		return;
+	//if (m_owner->GetComponent<TagComponent>()->Is("Player"))
+	//	return;
 
-	Collider* ownerCollider = m_owner->GetComponent<Collider>();
+	//Collider* ownerCollider = m_owner->GetComponent<Collider>();
 
-	float ownerWidthMiddle = 0;
-	float ownerHeightMiddle = 0;
+	//float ownerWidthMiddle = 0;
+	//float ownerHeightMiddle = 0;
 
-	if (ownerCollider->GetType() == ColliderType::Rectangle)
-	{
-		ownerWidthMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
-		ownerHeightMiddle = static_cast<BoxCollider*>(ownerCollider)->GetHeight() / 2;
-	}
+	//if (ownerCollider->GetType() == ColliderType::Rectangle)
+	//{
+	//	ownerWidthMiddle = static_cast<BoxCollider*>(ownerCollider)->GetWidth() / 2;
+	//	ownerHeightMiddle = static_cast<BoxCollider*>(ownerCollider)->GetHeight() / 2;
+	//}
 
-	if (transform->GetPos().GetX() - ownerWidthMiddle > 1920)
-		transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
-	if (transform->GetPos().GetX() + ownerWidthMiddle < 0 )
-		transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
-	if (transform->GetPos().GetY() - ownerHeightMiddle > 1080)
-		transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() - 1080 });
-	if (transform->GetPos().GetY() + ownerHeightMiddle < 0 )
-		transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() + 1080 });
+	//if (transform->GetPos().GetX() - ownerWidthMiddle > 1920)
+	//	transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
+	//if (transform->GetPos().GetX() + ownerWidthMiddle < 0 )
+	//	transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
+	//if (transform->GetPos().GetY() - ownerHeightMiddle > 1080)
+	//	transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() - 1080 });
+	//if (transform->GetPos().GetY() + ownerHeightMiddle < 0 )
+	//	transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() + 1080 });
 }
 
 void WorldWrapLogic::Generate()
@@ -79,7 +79,7 @@ void WorldWrapLogic::Generate()
 		{
 			BoxCollider* bc = static_cast<BoxCollider*>(col);
 			BoxCollider* cbc = m_clone->AddComponent<BoxCollider>(bc->GetWidth(), bc->GetHeight(), bc->GetLayer(), bc->GetMask());
-			cbc->SetVisible(true);
+			cbc->SetVisible(false);
 			cbc->SetOffset(bc->GetOffset().GetX(), bc->GetOffset().GetY());
 			cbc->SetActive(bc->IsActived());
 			cbc->SetTrigger(bc->IsTrigger());
@@ -91,7 +91,7 @@ void WorldWrapLogic::Generate()
 		{
 			CircleCollider* cc = static_cast<CircleCollider*>(col);
 			CircleCollider* ccc = m_clone->AddComponent<CircleCollider>(cc->GetRadius(), cc->GetLayer(), cc->GetMask());
-			ccc->SetVisible(true);
+			ccc->SetVisible(false);
 			ccc->SetOffset(cc->GetOffset().GetX(), cc->GetOffset().GetY());
 			ccc->SetActive(cc->IsActived());
 			ccc->SetTrigger(cc->IsTrigger());
