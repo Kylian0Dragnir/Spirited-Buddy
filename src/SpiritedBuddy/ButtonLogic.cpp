@@ -36,14 +36,11 @@ void ButtonLogic::OnCollisionExit(Collider* self, Collider* other)
 {
     if (self->IsTrigger())
     {
-        m_isPlayerOnTop = true;
+        m_isPlayerOnTop = false;
 
-        if (m_mode == ButtonMode::Toggle)
+        if (m_mode == ButtonMode::Hold)
         {
-            if (m_isPressed)
-                Deactivate();
-            else
-                Activate();
+            Deactivate();
         }
     }
 }

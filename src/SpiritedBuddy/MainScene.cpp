@@ -29,7 +29,6 @@ void MainScene::Enter()
 	//COLLECTIBLES
 	{
 		CreateCollectible({ 960,300 });
-		CreateCollectible({ 960,400 });
 	}
 
 	//PLAYER
@@ -54,11 +53,9 @@ void MainScene::Enter()
 		crate->AddComponent<PossessionLogic>();
 		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
 
-		crate->GetComponent<TransformComponent>()->SetPos({ 20, 0 });
+		crate->GetComponent<TransformComponent>()->SetPos({ 1800, 750 });
 
-		Rigidbody2D* rb = crate->AddComponent<Rigidbody2D>(1.f, true, 0.f);
-		rb->AddImpulse({ 0,1000 });
-		rb->SetGravity({ 0.f,1000.f });
+		crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 	}
 
 	//PLAYER BARRIER
@@ -69,7 +66,7 @@ void MainScene::Enter()
 	//SPIRIT BARRIER
 	{
 		CreateSpiritBarrier({ 800, 0 }, { 800, 960 });
-		CreateSpiritBarrier({ 960, 0 }, { 960, 960 }, "BARRIER");
+		CreateSpiritBarrier({ 960, 266 }, { 960, 330 }, "BARRIER");
 	}
 
 	//BUTTON
@@ -89,14 +86,24 @@ void MainScene::Enter()
 
 		button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
 
-		ButtonLogic* b = button->AddComponent<ButtonLogic>(ButtonMode::Toggle);
+		ButtonLogic* b = button->AddComponent<ButtonLogic>(ButtonMode::Hold);
 
 		b->SetOnActivate([this]()
 			{
-				DestroyEntity(FindByTag("BARRIER"));
+				Entity* targetBarrier = FindByTag("BARRIER");
+				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
 			});
 
-		button->GetComponent<TransformComponent>()->SetPos({ 250, 925 });
+		b->SetOnDeactivate([this]()
+			{
+				Entity* targetBarrier = FindByTag("BARRIER");
+				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
+			});
+
+
+		button->GetComponent<TransformComponent>()->SetPos({ 1550, 940 });
 	}
 
 	TilemapLoader::Load("../../Assets/test.tmx", this, "../../Assets/Dungeon_Tileset.png");
@@ -108,32 +115,32 @@ void MainScene::Update(float _dt)
 
 	CleanDestroyedEntities();
 
-	if (m_spirit->GetComponent<SpiritLogic>()->IsPossessing())
-	{
-		for (Entity* sb : m_spiritBarriers)
-		{
-			sb->GetComponent<SpriteRenderer>()->SetVisible(false);
-			sb->GetComponent<BoxCollider>()->SetActive(false);
-		}
-		for (Entity* pb : m_playerBarriers)
-		{
-			pb->GetComponent<SpriteRenderer>()->SetVisible(true);
-			pb->GetComponent<BoxCollider>()->SetActive(true);
-		}
-	}
-	else
-	{
-		for (Entity* sb : m_spiritBarriers)
-		{
-			sb->GetComponent<SpriteRenderer>()->SetVisible(true);
-			sb->GetComponent<BoxCollider>()->SetActive(true);
-		}
-		for (Entity* pb : m_playerBarriers)
-		{
-			pb->GetComponent<SpriteRenderer>()->SetVisible(false);
-			pb->GetComponent<BoxCollider>()->SetActive(false);
-		}
-	}
+	//if (m_spirit->GetComponent<SpiritLogic>()->IsPossessing())
+	//{
+	//	for (Entity* sb : m_spiritBarriers)
+	//	{
+	//		sb->GetComponent<SpriteRenderer>()->SetVisible(false);
+	//		sb->GetComponent<BoxCollider>()->SetActive(false);
+	//	}
+	//	for (Entity* pb : m_playerBarriers)
+	//	{
+	//		pb->GetComponent<SpriteRenderer>()->SetVisible(true);
+	//		pb->GetComponent<BoxCollider>()->SetActive(true);
+	//	}
+	//}
+	//else
+	//{
+	//	for (Entity* sb : m_spiritBarriers)
+	//	{
+	//		sb->GetComponent<SpriteRenderer>()->SetVisible(true);
+	//		sb->GetComponent<BoxCollider>()->SetActive(true);
+	//	}
+	//	for (Entity* pb : m_playerBarriers)
+	//	{
+	//		pb->GetComponent<SpriteRenderer>()->SetVisible(false);
+	//		pb->GetComponent<BoxCollider>()->SetActive(false);
+	//	}
+	// }
 
 	if (m_collectibles.empty() || InputManager::Get().IsKeyDown(Key::KEY_p))
 	{
@@ -158,7 +165,7 @@ void MainScene::Exit()
 void MainScene::CreateCollectible(Vector2f _pos)
 {
 	Entity* m_coin = CreateEntity();
-	m_coin->AddComponent<BoxCollider>(50, 50, ENV_LAYER, SPIRIT_LAYER | PLAYER_LAYER)->SetVisible(true);
+	m_coin->AddComponent<BoxCollider>(25.f, 25.f, ENV_LAYER, SPIRIT_LAYER | PLAYER_LAYER)->SetVisible(true);
 	m_coin->AddComponent<TagComponent>("COLLECTIBLE");
 	m_coin->AddComponent<CollectibleLogic>();
 	m_coin->GetComponent<TransformComponent>()->SetPos(_pos);
@@ -171,7 +178,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	SpriteRenderer* sr = m_player->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Player/player_sheet.png");
 	sr->SetFrame(32, 32, 128, 0);
-	m_player->AddComponent<TagComponent>("Player")->AddTag("POSSESSED");
+	m_player->AddComponent<TagComponent>("Player");
 
 	//Solid Collider
 	m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
@@ -254,13 +261,13 @@ void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::s
 	sr->Load("../../Assets/barrier/blue_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
-	sr->SetTiledSize({ 32.f, height });
+	sr->SetTiledSize({ 48.f, height });
 
-	barrier->AddComponent<BoxCollider>(32.f, height, PLAYER_LAYER, PLAYER_LAYER);
+	barrier->AddComponent<BoxCollider>(48.f, height, PLAYER_LAYER, PLAYER_LAYER);
 
 	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
 	transform->SetPos(center);
-	transform->SetScale({ 2.f, 2.f });
+	transform->SetScale({ 3.f, 2.f });
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("PLAYER_BARRIER");
 	if (!_tag.empty())
@@ -284,13 +291,13 @@ void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::s
 	sr->Load("../../Assets/barrier/green_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
-	sr->SetTiledSize({ 32.f, height });
+	sr->SetTiledSize({ 48.f, height });
 
-	barrier->AddComponent<BoxCollider>(32.f, height, SPIRIT_LAYER, SPIRIT_LAYER);
+	barrier->AddComponent<BoxCollider>(48.f, height, SPIRIT_LAYER, SPIRIT_LAYER);
 
 	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
 	transform->SetPos(center);
-	transform->SetScale({ 2.f, 2.f });
+	transform->SetScale({ 3.f, 2.f });
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");
 	if (!_tag.empty())
