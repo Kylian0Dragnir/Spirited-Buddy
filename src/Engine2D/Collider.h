@@ -39,6 +39,7 @@ public:
     ColliderType GetType() const { return m_type; }
 
     CollisionLayer GetLayer() { return m_layer; }
+    uint32_t GetMask() { return m_mask; }
     bool CanCollide(Collider* _other);
 
     void SetOffset(float _ox, float _oy);

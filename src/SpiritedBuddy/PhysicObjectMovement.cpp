@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "MainScene.h"
 #include "SceneManager.h"
+#include "BoxCollider.h"
 
 PhysicObjectMovement::PhysicObjectMovement(Key _moveLeftKey, Key _moveRightKey)
 {
@@ -52,6 +53,15 @@ void PhysicObjectMovement::Update(float _dt)
 	}
 
 	rb->SetVelocity(velocity);
+
+
+
+
+	if (transform->GetPos().GetX() > 1920 + m_owner->GetComponent<BoxCollider>()->GetWidth() / 2)
+		transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
+	if (transform->GetPos().GetX() < 0 - m_owner->GetComponent<BoxCollider>()->GetWidth() / 2)
+		transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
+
 }
 
 void PhysicObjectMovement::OnCollisionStay(Collider* _self, Collider* _other)

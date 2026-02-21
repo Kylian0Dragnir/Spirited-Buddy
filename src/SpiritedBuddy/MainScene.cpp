@@ -7,6 +7,7 @@
 #include "CollectibleLogic.h"
 #include "PossessionLogic.h"
 #include "PortalLogic.h"
+#include "WorldWrapLogic.h"
 #include "Collider.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
@@ -46,7 +47,11 @@ void MainScene::Enter()
 		//Solid Collider
 		crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
 
+		SpriteRenderer* sr = crate->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/tempCrate.png");
+
 		crate->AddComponent<TagComponent>("CRATE");
+		crate->GetComponent<TagComponent>()->AddTag("WORLD_WRAP");
 
 		crate->AddComponent<PossessionLogic>();
 		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
@@ -56,6 +61,8 @@ void MainScene::Enter()
 		Rigidbody2D* rb = crate->AddComponent<Rigidbody2D>(1.f, true, 0.f);
 		rb->AddImpulse({ 0,1000 });
 		rb->SetGravity({ 0.f,1000.f });
+
+		//crate->AddComponent<WorldWrapLogic>();
 	}
 
 	//PLAYER BARRIER
@@ -163,6 +170,8 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	m_player->GetComponent<TransformComponent>()->SetScale(1.5f);
 
 	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+
+	m_player->AddComponent<WorldWrapLogic>()->Generate();
 }
 
 void MainScene::CreateSpirit(Vector2f _pos)

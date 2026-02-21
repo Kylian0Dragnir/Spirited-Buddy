@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include "MainScene.h"
 #include "SceneManager.h"
+#include "BoxCollider.h"
 
 PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJumpKey)
 {
@@ -165,9 +166,9 @@ void PlayerMovement::Update(float _dt)
 
 
 
-    if (transform->GetPos().GetX() > 1920)
+    if (transform->GetPos().GetX() > 1920 + m_owner->GetComponent<BoxCollider>()->GetWidth() / 2)
         transform->SetPos({ transform->GetPos().GetX() - 1920, transform->GetPos().GetY() });
-    if (transform->GetPos().GetX() < 0)
+    if (transform->GetPos().GetX() < 0 - m_owner->GetComponent<BoxCollider>()->GetWidth() / 2)
         transform->SetPos({ transform->GetPos().GetX() + 1920, transform->GetPos().GetY() });
 
 

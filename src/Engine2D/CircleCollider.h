@@ -16,6 +16,7 @@ public:
     void Draw(Window* _window) override;
 
     void SetRadius(float _radius);
+    float GetRadius() { return m_radius; }
 
     float GetLeft() override;
     float GetRight() override;
