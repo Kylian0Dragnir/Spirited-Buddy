@@ -48,12 +48,16 @@ void MainScene::Enter()
 		//Solid Collider
 		crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
 
+		crate->AddComponent<SpriteRenderer>()->Load("../../Assets/crate.png");
+
 		crate->AddComponent<TagComponent>("CRATE")->AddTag("PhysicObject");
 
 		crate->AddComponent<PossessionLogic>();
 		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
 
-		crate->GetComponent<TransformComponent>()->SetPos({ 1800, 750 });
+		TransformComponent* transform = crate->GetComponent<TransformComponent>();
+		transform->SetPos({ 1800, 750 });
+		transform->SetScale({ 2.5f, 2.5f });
 
 		crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 	}
@@ -190,12 +194,176 @@ void MainScene::CreatePlayer(Vector2f _pos)
 	bc->SetOffset(0, 25);
 
 	m_player->AddComponent<PossessionLogic>()->SetPossessed(true);
-	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE)->SetAnimation(PlayerAnimState::Respawn);
+	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
 
 	m_player->GetComponent<TransformComponent>()->SetPos(_pos);
 	m_player->GetComponent<TransformComponent>()->SetScale({1.5f, 1.5f});
 
 	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
+
+	AnimatorComponent* animator = m_player->AddComponent<AnimatorComponent>();
+
+	//Idle
+	{
+		Animation idle;
+		idle.frameWidth = 32;
+		idle.frameHeight = 32;
+		idle.frameDuration = 0.3f;
+		idle.loop = true;
+
+		idle.frames = {
+		{0 * 32, 0 * 32},
+		{1 * 32, 0 * 32},
+		{0 * 32, 0 * 32},
+		{1 * 32, 0 * 32},
+		{0 * 32, 1 * 32},
+		{1 * 32, 1 * 32}
+		};
+
+		animator->AddAnimation("Idle", idle);
+	}
+
+	//Walk
+	{
+		Animation walk;
+		walk.frameWidth = 32;
+		walk.frameHeight = 32;
+		walk.frameDuration = 0.1f;
+		walk.loop = true;
+
+		for (int i = 0; i < 8; i++)
+			walk.frames.push_back({ i * 32.f, 3.f * 32.f });
+
+		animator->AddAnimation("Walk", walk);
+	}
+
+	//TakeOff
+	{
+		Animation takeOff;
+		takeOff.frameWidth = 32;
+		takeOff.frameHeight = 32;
+		takeOff.frameDuration = 0.1f;
+		takeOff.loop = false;
+
+		takeOff.frames = {
+			{0 * 32, 5 * 32},
+			{1 * 32, 5 * 32}
+		};
+
+		takeOff.onFinish = [this]()
+			{
+				m_player->GetComponent<PlayerMovement>()->Jump();
+			};
+
+		animator->AddAnimation("TakeOff", takeOff);
+	}
+	
+	//Jump
+	{
+		Animation jump;
+		jump.frameWidth = 32;
+		jump.frameHeight = 32;
+		jump.frameDuration = 0.2f;
+		jump.loop = true;
+
+		jump.frames = {
+			{2 * 32, 5 * 32},
+			{3 * 32, 5 * 32}
+		};
+
+		animator->AddAnimation("Jump", jump);
+	}
+
+	//Fall
+	{
+		Animation fall;
+		fall.frameWidth = 32;
+		fall.frameHeight = 32;
+		fall.frameDuration = 0.2f;
+		fall.loop = true;
+
+		fall.frames = {
+		{3 * 32, 5 * 32},
+		{4 * 32, 5 * 32},
+		{5 * 32, 5 * 32}
+		};
+
+		animator->AddAnimation("Fall", fall);
+	}
+	
+	//Land
+	{
+		Animation land;
+		land.frameWidth = 32;
+		land.frameHeight = 32;
+		land.frameDuration = 0.1f;
+		land.loop = false;
+
+		land.frames = {
+		{6 * 32, 5 * 32},
+		{7 * 32, 5 * 32}
+		};
+
+		animator->AddAnimation("Land", land);
+	}
+
+	//EnterPossession
+	{
+		Animation enterPossession;
+		enterPossession.frameWidth = 32;
+		enterPossession.frameHeight = 32;
+		enterPossession.frameDuration = 0.2f;
+		enterPossession.loop = false;
+
+		for (int i = 3; i >= 0; i--)
+			enterPossession.frames.push_back({ i * 32.f, 4.f * 32.f });
+
+		animator->AddAnimation("EnterPossession", enterPossession);
+	}
+
+	//ExitPossession
+	{
+		Animation exitPossession;
+		exitPossession.frameWidth = 32;
+		exitPossession.frameHeight = 32;
+		exitPossession.frameDuration = 0.2f;
+		exitPossession.loop = false;
+
+		for (int i = 0; i < 4; i++)
+			exitPossession.frames.push_back({ i * 32.f, 4.f * 32.f });
+
+		animator->AddAnimation("ExitPossession", exitPossession);
+	}
+
+	//Despawn
+	{
+		Animation despawn;
+		despawn.frameWidth = 32;
+		despawn.frameHeight = 32;
+		despawn.frameDuration = 0.1f;
+		despawn.loop = false;
+
+		for (int i = 0; i < 4; i++)
+			despawn.frames.push_back({ i * 32.f, 6.f * 32.f });
+
+		animator->AddAnimation("Despawn", despawn);
+	}
+
+	//Respawn
+	{
+		Animation respawn;
+		respawn.frameWidth = 32;
+		respawn.frameHeight = 32;
+		respawn.frameDuration = 0.1f;
+		respawn.loop = false;
+
+		for (int i = 3; i >= 0; i--)
+			respawn.frames.push_back({ i * 32.f, 6.f * 32 });
+
+		animator->AddAnimation("Respawn", respawn);
+	}
+
+	animator->Play("Respawn");
 }
 
 void MainScene::CreateSpirit(Vector2f _pos)
@@ -273,6 +441,24 @@ void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::s
 	if (!_tag.empty())
 		tc->AddTag(_tag);
 
+	AnimatorComponent* animator = barrier->AddComponent<AnimatorComponent>();
+
+	//Idle
+	{
+		Animation idle;
+		idle.frameWidth = 16;
+		idle.frameHeight = 16;
+		idle.frameDuration = 0.001f;
+		idle.loop = true;
+
+		for (int i = 0; i < 16; i++)
+			idle.frames.push_back({ i * 16.f, 0.f});
+
+		animator->AddAnimation("Idle", idle);
+	}
+
+	animator->Play("Idle");
+
 	m_playerBarriers.push_back(barrier);
 }
 
@@ -302,6 +488,24 @@ void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::s
 	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");
 	if (!_tag.empty())
 		tc->AddTag(_tag);
+
+	AnimatorComponent* animator = barrier->AddComponent<AnimatorComponent>();
+
+	//Idle
+	{
+		Animation idle;
+		idle.frameWidth = 16;
+		idle.frameHeight = 16;
+		idle.frameDuration = 0.001f;
+		idle.loop = true;
+
+		for (int i = 0; i < 16; i++)
+			idle.frames.push_back({ i * 16.f, 0.f });
+
+		animator->AddAnimation("Idle", idle);
+	}
+
+	animator->Play("Idle");
 
 	m_spiritBarriers.push_back(barrier);
 }

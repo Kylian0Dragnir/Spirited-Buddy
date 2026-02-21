@@ -8,3 +8,4 @@
 #include "Rigidbody2D.h"
 #include "ButtonComponent.h"
 #include "AudioSource.h"
+#include "AnimatorComponent.h"

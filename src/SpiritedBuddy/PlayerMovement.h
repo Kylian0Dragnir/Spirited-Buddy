@@ -31,23 +31,16 @@ class PlayerMovement : public Component, public Updatable, public Collidable
 	Key m_moveJumpKey;
 
 	bool m_onGround;
+	bool m_wasOnGround;
 	bool m_wasPossessed;
-
-	PlayerAnimState m_animState;
-	PlayerAnimState m_previousAnimState;
-
-	float m_animTimer = 0.f;
-	float m_frameDuration = 0.1f;
-
-	int m_currentFrame = 0;
-	bool m_isAnimationFinished = false;
+	bool m_jumpRequested;
 
 public:
 	PlayerMovement(Key m_moveLeftKey, Key m_moveRightKey, Key m_moveJumpKey);
-	void SetAnimation(PlayerAnimState newState);
 	void Update(float _dt) override;
-	void UpdateAnimation(float _dt);
 	void OnCollisionStay(Collider* _self, Collider* _other) override;
 	void OnCollisionExit(Collider* _self, Collider* _other) override;
+
+	void Jump() { m_jumpRequested = true; }
 };
 
