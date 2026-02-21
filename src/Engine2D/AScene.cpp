@@ -6,6 +6,7 @@
 #include "SpriteRenderer.h"
 #include "ButtonComponent.h"
 #include "BoxCollider.h"
+#include "CollisionSystem.h"
 
 AScene::AScene()
 {
@@ -40,6 +41,7 @@ void AScene::DestroyEntityNow(Entity* _ent)
 
 	if (it != m_entities.end())
 	{
+		CollisionSystem::GetInstance().Clear(*it);
 		delete *it;
 		m_entities.erase(it);
 	}
@@ -101,6 +103,7 @@ void AScene::Update(float _dt)
 		auto it = std::find(m_entities.begin(), m_entities.end(), e);
 		if (it != m_entities.end())
 		{
+			CollisionSystem::GetInstance().Clear(*it);
 			delete* it;
 			m_entities.erase(it);
 		}

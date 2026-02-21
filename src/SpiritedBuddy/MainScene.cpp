@@ -8,6 +8,7 @@
 #include "PossessionLogic.h"
 #include "PortalLogic.h"
 #include "ButtonLogic.h"
+#include "DummyWallLogic.h"
 #include "Collider.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
@@ -23,7 +24,7 @@ void MainScene::Enter()
 {
 	//PORTAL
 	{
-		CreatePortal({ 80, 750 }, "START");
+		CreatePortal({ 80, 885 }, "START");
 	}
 
 	//COLLECTIBLES
@@ -33,7 +34,7 @@ void MainScene::Enter()
 
 	//PLAYER
 	{
-		CreatePlayer({ 100, 750 });
+		CreatePlayer({ 100, 920 });
 	}
 
 	//SPIRIT
@@ -56,20 +57,37 @@ void MainScene::Enter()
 		crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
 
 		TransformComponent* transform = crate->GetComponent<TransformComponent>();
-		transform->SetPos({ 1800, 750 });
+		transform->SetPos({ 1800, 920 });
 		transform->SetScale({ 2.5f, 2.5f });
 
 		crate->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 	}
 
+	//DUMMY WALL
+	{
+		Entity* dummyWall = CreateEntity();
+
+		dummyWall->AddComponent<SpriteRenderer>()->Load("../../Assets/RightDummyWall.png");
+
+		BoxCollider* bc = dummyWall->AddComponent<BoxCollider>(160.f, 160.f, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
+		bc->SetVisible(true);
+		bc->SetTrigger(true);
+
+		dummyWall->AddComponent<DummyWallLogic>();
+
+		TransformComponent* transform = dummyWall->GetComponent<TransformComponent>();
+		transform->SetPos({ 400, 840 });
+		transform->SetScale({ 2.f, 2.f });
+	}
+
 	//PLAYER BARRIER
 	{
-		CreatePlayerBarrier({ 1200, 0 }, { 1200, 960 }, {});
+		CreatePlayerBarrier({ 1200, 0 }, { 1200, 925 }, {});
 	}
 
 	//SPIRIT BARRIER
 	{
-		CreateSpiritBarrier({ 800, 0 }, { 800, 960 });
+		CreateSpiritBarrier({ 800, 0 }, { 800, 925 });
 		CreateSpiritBarrier({ 960, 266 }, { 960, 330 }, "BARRIER");
 	}
 
@@ -95,6 +113,10 @@ void MainScene::Enter()
 		b->SetOnActivate([this]()
 			{
 				Entity* targetBarrier = FindByTag("BARRIER");
+
+				if (targetBarrier == nullptr)
+					return;
+
 				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
 				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
 			});
@@ -102,12 +124,16 @@ void MainScene::Enter()
 		b->SetOnDeactivate([this]()
 			{
 				Entity* targetBarrier = FindByTag("BARRIER");
+
+				if (targetBarrier == nullptr)
+					return;
+
 				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
 			});
 
 
-		button->GetComponent<TransformComponent>()->SetPos({ 1550, 940 });
+		button->GetComponent<TransformComponent>()->SetPos({ 1550, 930 });
 	}
 
 	TilemapLoader::Load("../../Assets/test3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
@@ -212,12 +238,12 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		idle.loop = true;
 
 		idle.frames = {
-		{0 * 32, 0 * 32},
-		{1 * 32, 0 * 32},
-		{0 * 32, 0 * 32},
-		{1 * 32, 0 * 32},
-		{0 * 32, 1 * 32},
-		{1 * 32, 1 * 32}
+		{0 , 0 },
+		{1 , 0 },
+		{0 , 0 },
+		{1 , 0 },
+		{0 , 1 },
+		{1 , 1 }
 		};
 
 		animator->AddAnimation("Idle", idle);
@@ -232,7 +258,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		walk.loop = true;
 
 		for (int i = 0; i < 8; i++)
-			walk.frames.push_back({ i * 32.f, 3.f * 32.f });
+			walk.frames.push_back({ (float)i , 3.f });
 
 		animator->AddAnimation("Walk", walk);
 	}
@@ -246,8 +272,8 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		takeOff.loop = false;
 
 		takeOff.frames = {
-			{0 * 32, 5 * 32},
-			{1 * 32, 5 * 32}
+			{0 , 5 },
+			{1 , 5 }
 		};
 
 		takeOff.onFinish = [this]()
@@ -267,8 +293,8 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		jump.loop = true;
 
 		jump.frames = {
-			{2 * 32, 5 * 32},
-			{3 * 32, 5 * 32}
+			{2 , 5 },
+			{3 , 5 }
 		};
 
 		animator->AddAnimation("Jump", jump);
@@ -283,9 +309,9 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		fall.loop = true;
 
 		fall.frames = {
-		{3 * 32, 5 * 32},
-		{4 * 32, 5 * 32},
-		{5 * 32, 5 * 32}
+		{3 , 5 },
+		{4 , 5 },
+		{5 , 5 }
 		};
 
 		animator->AddAnimation("Fall", fall);
@@ -300,8 +326,8 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		land.loop = false;
 
 		land.frames = {
-		{6 * 32, 5 * 32},
-		{7 * 32, 5 * 32}
+		{6 , 5 },
+		{7 , 5 }
 		};
 
 		animator->AddAnimation("Land", land);
@@ -316,7 +342,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		enterPossession.loop = false;
 
 		for (int i = 3; i >= 0; i--)
-			enterPossession.frames.push_back({ i * 32.f, 4.f * 32.f });
+			enterPossession.frames.push_back({ (float)i , 4.f });
 
 		animator->AddAnimation("EnterPossession", enterPossession);
 	}
@@ -330,7 +356,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		exitPossession.loop = false;
 
 		for (int i = 0; i < 4; i++)
-			exitPossession.frames.push_back({ i * 32.f, 4.f * 32.f });
+			exitPossession.frames.push_back({ (float)i , 4.f});
 
 		animator->AddAnimation("ExitPossession", exitPossession);
 	}
@@ -344,7 +370,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		despawn.loop = false;
 
 		for (int i = 0; i < 4; i++)
-			despawn.frames.push_back({ i * 32.f, 6.f * 32.f });
+			despawn.frames.push_back({ (float)i , 6.f });
 
 		animator->AddAnimation("Despawn", despawn);
 	}
@@ -358,7 +384,7 @@ void MainScene::CreatePlayer(Vector2f _pos)
 		respawn.loop = false;
 
 		for (int i = 3; i >= 0; i--)
-			respawn.frames.push_back({ i * 32.f, 6.f * 32 });
+			respawn.frames.push_back({ (float)i , 6.f });
 
 		animator->AddAnimation("Respawn", respawn);
 	}
@@ -452,7 +478,7 @@ void MainScene::CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::s
 		idle.loop = true;
 
 		for (int i = 0; i < 16; i++)
-			idle.frames.push_back({ i * 16.f, 0.f});
+			idle.frames.push_back({ (float)i , 0.f});
 
 		animator->AddAnimation("Idle", idle);
 	}
@@ -500,7 +526,7 @@ void MainScene::CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::s
 		idle.loop = true;
 
 		for (int i = 0; i < 16; i++)
-			idle.frames.push_back({ i * 16.f, 0.f });
+			idle.frames.push_back({ (float)i , 0.f });
 
 		animator->AddAnimation("Idle", idle);
 	}

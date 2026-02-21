@@ -19,6 +19,7 @@ private:
 public:
     static CollisionSystem& GetInstance();
 	void Update(const std::vector<Entity*>& entities);
-    void Clear() { m_previousCollisions.clear(); }
+    void Clear(Entity* entity);
+    void ClearAll() { m_previousCollisions.clear(); }
 };
 

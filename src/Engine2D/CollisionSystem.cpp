@@ -78,20 +78,6 @@ void CollisionSystem::Update(const std::vector<Entity*>& entities)
         }
     }
 
-    std::vector<Entity*> toDestroy = SceneManager::GetInstance().GetCurrentScene()->GetToDestroyEntities();
-
-    currentCollisions.erase(
-        std::remove_if(currentCollisions.begin(), currentCollisions.end(), [&](const CollisionInfo& col)
-            {
-                for (Entity* e : toDestroy)
-                {
-                    if (col.a->GetOwner() == e || col.b->GetOwner() == e)
-                        return true;
-                }
-                return false;
-            }),
-        currentCollisions.end());
-
     for (const CollisionInfo& oldCol : m_previousCollisions)
     {
         if (WasColliding(currentCollisions, oldCol.a, oldCol.b) == false)
@@ -108,5 +94,27 @@ void CollisionSystem::Update(const std::vector<Entity*>& entities)
     }
 
     m_previousCollisions = currentCollisions;
+}
+
+void CollisionSystem::Clear(Entity* entity)
+{
+    std::vector<Collider*> colliders = entity->GetAllComponents<Collider>();
+
+    m_previousCollisions.erase(
+        std::remove_if(
+            m_previousCollisions.begin(),
+            m_previousCollisions.end(),
+            [&colliders](const CollisionInfo& info)
+            {
+                for (Collider* col : colliders)
+                {
+                    if (info.a == col || info.b == col)
+                        return true;
+                }
+                return false;
+            }
+        ),
+        m_previousCollisions.end()
+    );
 }
 

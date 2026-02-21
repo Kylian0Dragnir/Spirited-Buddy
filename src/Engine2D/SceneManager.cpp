@@ -38,7 +38,7 @@ void SceneManager::Update(float _dt)
 	{
 		m_scene[m_currentScene]->Exit();
 
-		CollisionSystem::GetInstance().Clear();
+		CollisionSystem::GetInstance().ClearAll();
 
 		m_currentScene = m_nextScene;
 

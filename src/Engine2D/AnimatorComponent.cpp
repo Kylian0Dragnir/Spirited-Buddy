@@ -63,8 +63,8 @@ void AnimatorComponent::Update(float dt)
     sr->SetFrame(
         m_currentAnimation->frameWidth,
         m_currentAnimation->frameHeight,
-        framePos.GetX(),
-        framePos.GetY()
+        framePos.GetX() * m_currentAnimation->frameWidth,
+        framePos.GetY() * m_currentAnimation->frameHeight
     );
 }
 
