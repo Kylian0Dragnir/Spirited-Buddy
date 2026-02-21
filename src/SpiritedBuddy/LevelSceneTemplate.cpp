@@ -417,24 +417,25 @@ void LevelSceneTemplate::CreatePlayerBarrier(Vector2f _start, Vector2f _end, con
 	};
 
 	SpriteRenderer* sr = barrier->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/barrier/blue_barrier.png");
+	sr->Load("../../Assets/barrier/red_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
 
 	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
 	transform->SetPos(center);
-	transform->SetScale({ 3.f, 3.f });
+	transform->SetScale({ 2.f, 2.f });
 
 	if(vertical)
 	{
-		sr->SetTiledSize({ 48.f, height });
-		barrier->AddComponent<BoxCollider>(48.f, height, PLAYER_LAYER, PLAYER_LAYER);
+		sr->SetTiledSize({ 32.f, height });
+		barrier->AddComponent<BoxCollider>(32.f, height, PLAYER_LAYER, PLAYER_LAYER)->SetVisible(true);
 	}
 	else
 	{
+		transform->SetRotationCenter({ 16.f, 16.f });
 		transform->SetRotation(-90);
-		sr->SetTiledSize({ height , 48.f });
-		barrier->AddComponent<BoxCollider>(height, 48.f, PLAYER_LAYER, PLAYER_LAYER);
+		sr->SetTiledSize({ height , 32.f });
+		barrier->AddComponent<BoxCollider>(height, 32.f, PLAYER_LAYER, PLAYER_LAYER)->SetVisible(true);
 	}
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("PLAYER_BARRIER");
@@ -488,19 +489,19 @@ void LevelSceneTemplate::CreateSpiritBarrier(Vector2f _start, Vector2f _end, con
 
 	TransformComponent* transform = barrier->GetComponent<TransformComponent>();
 	transform->SetPos(center);
-	transform->SetScale({ 3.f, 3.f });
+	transform->SetScale({ 2.f, 2.f });
 
 	if (vertical)
 	{
-		sr->SetTiledSize({ 48.f, height });
-		barrier->AddComponent<BoxCollider>(48.f, height, SPIRIT_LAYER, SPIRIT_LAYER);
+		sr->SetTiledSize({ 32.f, height });
+		barrier->AddComponent<BoxCollider>(32.f, height, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(true);
 	}
 	else
 	{
-		transform->SetRotationCenter({ 24.f, 24.f });
+		transform->SetRotationCenter({ 16.f, 16.f });
 		transform->SetRotation(-90);
-		sr->SetTiledSize({ height , 48.f });
-		barrier->AddComponent<BoxCollider>(height, 48.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(true);
+		sr->SetTiledSize({ height , 32.f });
+		barrier->AddComponent<BoxCollider>(height, 32.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(true);
 	}
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");

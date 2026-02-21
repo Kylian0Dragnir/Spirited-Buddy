@@ -89,7 +89,7 @@ void PlayerMovement::Update(float _dt)
     if (m_jumpRequested)
     {
         m_jumpRequested = false;
-        velocity.SetY(velocity.GetY() - 600);
+        velocity.SetY(velocity.GetY() - 620);
     }
 
 	rb->SetVelocity(velocity);
