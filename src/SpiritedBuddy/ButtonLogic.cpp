@@ -1,6 +1,8 @@
 #include "ButtonLogic.h"
 #include "TagComponent.h"
 #include "Collider.h"
+#include "Entity.h"
+#include "SpriteRenderer.h"
 
 ButtonLogic::ButtonLogic(ButtonMode mode)
 {
@@ -50,6 +52,8 @@ void ButtonLogic::Activate()
     if (m_isPressed)
         return;
 
+    m_owner->GetComponent<SpriteRenderer>()->SetFrame(32,32,32,0);
+
     m_isPressed = true;
 
     if (m_onActivate)
@@ -60,6 +64,8 @@ void ButtonLogic::Deactivate()
 {
     if (!m_isPressed)
         return;
+
+    m_owner->GetComponent<SpriteRenderer>()->SetFrame(32, 32, 0, 0);
 
     m_isPressed = false;
 
