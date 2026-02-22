@@ -13,6 +13,8 @@
 #include "Collider.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
+#include "SceneManager.h"
+#include "Lib2D/AudioEngine.h"
 
 #include <iostream>
 
@@ -43,6 +45,12 @@ void LevelSceneTemplate::Update(float _dt)
 	if (InputManager::Get().IsKeyDown(Key::KEY_BACKSPACE))
 	{
 		DestroyAllEntitiesWithTag("BARRIER");
+	}
+
+	if (InputManager::Get().IsKeyDown(Key::KEY_r))
+	{
+		m_player->GetComponent<AnimatorComponent>()->Play("Despawn");
+		AudioEngine::Get().PlaySound("DEATH", false);
 	}
 
 	OnUpdate(_dt);
@@ -104,7 +112,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 	BoxCollider* bc = m_player->AddComponent<BoxCollider>(33.75f / 2, 1, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER);
 	bc->SetVisible(true);
 	bc->SetTrigger(true);
-	bc->SetOffset(0, 25);
+	bc->SetOffset(0, 30);
 
 	m_player->AddComponent<PossessionLogic>()->SetPossessed(true);
 	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
@@ -115,8 +123,6 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 	m_player->AddComponent<Rigidbody2D>(1.f, true, 0.f)->SetGravity({ 0.f,1000.f });
 
 	m_player->AddComponent<WorldWrapLogic>()->Generate();
-
-
 
 	AnimatorComponent* animator = m_player->AddComponent<AnimatorComponent>();
 
@@ -159,7 +165,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		Animation takeOff;
 		takeOff.frameWidth = 32;
 		takeOff.frameHeight = 32;
-		takeOff.frameDuration = 0.1f;
+		takeOff.frameDuration = 0.01f;
 		takeOff.loop = false;
 
 		takeOff.frames = {
@@ -213,7 +219,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		Animation land;
 		land.frameWidth = 32;
 		land.frameHeight = 32;
-		land.frameDuration = 0.1f;
+		land.frameDuration = 0.01f;
 		land.loop = false;
 
 		land.frames = {
@@ -229,7 +235,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		Animation enterPossession;
 		enterPossession.frameWidth = 32;
 		enterPossession.frameHeight = 32;
-		enterPossession.frameDuration = 0.2f;
+		enterPossession.frameDuration = 0.1f;
 		enterPossession.loop = false;
 
 		for (int i = 3; i >= 0; i--)
@@ -243,7 +249,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		Animation exitPossession;
 		exitPossession.frameWidth = 32;
 		exitPossession.frameHeight = 32;
-		exitPossession.frameDuration = 0.2f;
+		exitPossession.frameDuration = 0.1f;
 		exitPossession.loop = false;
 
 		for (int i = 0; i < 4; i++)
@@ -260,8 +266,13 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		despawn.frameDuration = 0.1f;
 		despawn.loop = false;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 			despawn.frames.push_back({ (float)i , 6.f });
+
+		despawn.onFinish = [this]() 
+			{
+				SceneManager::GetInstance().ReloadScene();
+			};
 
 		animator->AddAnimation("Despawn", despawn);
 	}
@@ -291,20 +302,23 @@ void LevelSceneTemplate::CreateSpirit(Vector2f _pos)
 	SpriteRenderer* sr = m_spirit->AddComponent<SpriteRenderer>();
 	sr->Load("../../Assets/Spirit.png");
 	sr->SetFrame(64, 64, 0, 0);
-	sr->SetOffset({ 0,-15 });
+	sr->SetOffset({ 0,-11.25 });
 	sr->SetVisible(false);
 
 	//Solid Collider
-	m_spirit->AddComponent<CircleCollider>(14.f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(false);
+	m_spirit->AddComponent<CircleCollider>(10.5f, SPIRIT_LAYER, SPIRIT_LAYER | ENV_LAYER)->SetVisible(false);
 
 	//Interaction Trigger Collider
-	CircleCollider* cc = m_spirit->AddComponent<CircleCollider>(40.f, SPIRIT_LAYER, SPIRIT_LAYER | PLAYER_LAYER);
+	CircleCollider* cc = m_spirit->AddComponent<CircleCollider>(30.f, SPIRIT_LAYER, SPIRIT_LAYER | PLAYER_LAYER);
 	cc->SetVisible(false);
 	cc->SetTrigger(true);
 
 	m_spirit->AddComponent<SpiritLogic>(Key::KEY_c,m_player);
 
-	m_spirit->GetComponent<TransformComponent>()->SetPos(_pos);
+	TransformComponent* transform = m_spirit->GetComponent<TransformComponent>();
+	transform->SetPos(_pos);
+	transform->SetScale({ 0.75f, 0.75f });
+	transform->SetRotationCenter({ 24,36 });
 
 	m_spirit->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
 
@@ -387,7 +401,7 @@ void LevelSceneTemplate::CreateDummyWall(Vector2f _pos, const std::string& _dire
 	dummyWall->AddComponent<TagComponent>("");
 
 	BoxCollider* bc = dummyWall->AddComponent<BoxCollider>(160.f, 160.f, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
-	bc->SetVisible(true);
+	bc->SetVisible(false);
 	bc->SetTrigger(true);
 
 	dummyWall->AddComponent<DummyWallLogic>();
@@ -425,22 +439,23 @@ void LevelSceneTemplate::CreatePlayerBarrier(Vector2f _start, Vector2f _end, con
 	transform->SetPos(center);
 	transform->SetScale({ 2.f, 2.f });
 
-	if(vertical)
-	{
-		sr->SetTiledSize({ 32.f, height });
-		barrier->AddComponent<BoxCollider>(32.f, height, PLAYER_LAYER, PLAYER_LAYER)->SetVisible(true);
-	}
-	else
-	{
-		transform->SetRotationCenter({ 16.f, 16.f });
-		transform->SetRotation(-90);
-		sr->SetTiledSize({ height , 32.f });
-		barrier->AddComponent<BoxCollider>(height, 32.f, PLAYER_LAYER, PLAYER_LAYER)->SetVisible(true);
-	}
-
 	TagComponent* tc = barrier->AddComponent<TagComponent>("PLAYER_BARRIER");
 	if (!_tag.empty())
 		tc->AddTag(_tag);
+
+	if(vertical)
+	{
+		sr->SetTiledSize({ 32.f, height });
+		barrier->AddComponent<BoxCollider>(32.f, height, PLAYER_LAYER, PLAYER_LAYER)->SetVisible(false);
+	}
+	else
+	{
+		tc->AddTag("Ground");
+		transform->SetRotationCenter({ 16.f, 16.f });
+		transform->SetRotation(-90);
+		sr->SetTiledSize({ height , 32.f });
+		barrier->AddComponent<BoxCollider>(height, 32.f, PLAYER_LAYER, PLAYER_LAYER)->SetVisible(false);
+	}
 
 	AnimatorComponent* animator = barrier->AddComponent<AnimatorComponent>();
 

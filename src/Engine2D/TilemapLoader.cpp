@@ -75,8 +75,28 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
 
                 transform->SetPos({ x + w * 0.5f, y + h * 0.5f });
 
-                collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER)->SetVisible(true);
+                collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER)->SetVisible(false);
                 collider->AddComponent<TagComponent>("Ground");
+            }
+        }
+        else if (std::string(layerName) == "Kill_Zone")
+        {
+            for (XMLElement* obj = group->FirstChildElement("object");
+                obj != nullptr;
+                obj = obj->NextSiblingElement("object"))
+            {
+                float x = obj->FloatAttribute("x") * scale.GetX();
+                float y = obj->FloatAttribute("y") * scale.GetY();
+                float w = obj->FloatAttribute("width") * scale.GetX();
+                float h = obj->FloatAttribute("height") * scale.GetY();
+
+                Entity* collider = scene->CreateEntity();
+                auto transform = collider->GetComponent<TransformComponent>();
+
+                transform->SetPos({ x + w * 0.5f, y + h * 0.5f });
+
+                collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER)->SetTrigger(true);
+                collider->AddComponent<TagComponent>("KILL_ZONE");
             }
         }
     }

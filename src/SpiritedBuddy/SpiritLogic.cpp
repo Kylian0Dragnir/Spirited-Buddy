@@ -16,9 +16,9 @@
 SpiritLogic::SpiritLogic(Key _switchKey, Entity* initialPossessed)
 {
 	m_switchKey = _switchKey;
-	m_speed = 1.2f;
+	m_speed = 2.2f;
 
-	m_switchCooldown = 1.2f;
+	m_switchCooldown = 0.6f;
 
 	m_possessedEntity = initialPossessed;
 }
@@ -37,7 +37,7 @@ void SpiritLogic::Update(float _dt)
 	{
 		if(im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
-			m_switchCooldown = 1.2f;
+			m_switchCooldown = 0.6f;
 
 			Vector2f targetPos = m_possessedEntity->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 			transform->SetPos(targetPos);
@@ -64,8 +64,6 @@ void SpiritLogic::Update(float _dt)
 		{
 			delta = delta.Normalize() * maxDelta;
 		}
-
-		transform->SetRotationCenter({ 32,48 });
 
 		float targetAngle = 0.f;
 		float rotationSpeed = 180.f; // degres/sec
@@ -130,7 +128,7 @@ void SpiritLogic::OnCollisionStay(Collider* _self, Collider* _other)
 	{
 		if (im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
-			m_switchCooldown = 0.02f;
+			m_switchCooldown = 0.6f;
 
 			pl->SetPossessed(true);
 			m_possessedEntity = _other->GetOwner();

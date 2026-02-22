@@ -24,6 +24,7 @@ public:
 
 	AScene* GetCurrentScene();
 	void ChangeScene(const std::string& _id);
+	void ReloadScene();
 	void Update(float _dt) override;
 	void Draw(Window* _window) override;
 	void AddScene(const std::string& _id, AScene* _scene);

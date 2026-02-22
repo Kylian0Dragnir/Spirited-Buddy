@@ -38,6 +38,7 @@ class PlayerMovement : public Component, public Updatable, public Collidable
 public:
 	PlayerMovement(Key m_moveLeftKey, Key m_moveRightKey, Key m_moveJumpKey);
 	void Update(float _dt) override;
+	void OnCollisionEnter(Collider* _self, Collider* _other) override;
 	void OnCollisionStay(Collider* _self, Collider* _other) override;
 	void OnCollisionExit(Collider* _self, Collider* _other) override;
 
