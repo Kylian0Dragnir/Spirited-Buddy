@@ -159,7 +159,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		Animation takeOff;
 		takeOff.frameWidth = 32;
 		takeOff.frameHeight = 32;
-		takeOff.frameDuration = 0.1f;
+		takeOff.frameDuration = 0.01f;
 		takeOff.loop = false;
 
 		takeOff.frames = {
