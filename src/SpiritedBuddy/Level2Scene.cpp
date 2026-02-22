@@ -18,7 +18,7 @@ void Level2Scene::OnEnter()
 
 	//PLAYER
 	{
-		CreatePlayer({ 100, 920 });
+		CreatePlayer({ 120, 920 });
 	}
 
 	//SPIRIT
@@ -75,7 +75,7 @@ void Level2Scene::OnEnter()
 		// Swipe Barrier Mode Button
 		{
 
-			ButtonLogic* bl2 = CreateButton({ 1840, 930 }, ButtonMode::Hold);
+			ButtonLogic* bl2 = CreateButton({ 1790, 930 }, ButtonMode::Hold);
 
 			bl2->SetOnActivate([this]()
 				{
@@ -102,6 +102,12 @@ void Level2Scene::OnEnter()
 	}
 
 	TilemapLoader::Load("../../Assets/level2.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+
+	//Dummy Wall
+	{
+		CreateDummyWall({ -16, 880 }, "Left");
+		CreateDummyWall({ 1936, 880 }, "Right");
+	}
 }
 
 void Level2Scene::OnUpdate(float _dt)

@@ -32,6 +32,11 @@ void SceneManager::ChangeScene(const std::string& _id)
 	m_changeScene = true;
 }
 
+void SceneManager::ReloadScene()
+{
+	m_changeScene = true;
+}
+
 void SceneManager::Update(float _dt)
 {
 	if (m_changeScene)

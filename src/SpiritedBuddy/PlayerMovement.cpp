@@ -10,6 +10,7 @@
 #include "SceneManager.h"
 #include "AnimatorComponent.h"
 #include "BoxCollider.h"
+#include "Lib2D/AudioEngine.h"
 
 PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJumpKey)
 {
@@ -23,21 +24,25 @@ PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJum
 void PlayerMovement::Update(float _dt)
 {
     AnimatorComponent* animator = m_owner->GetComponent<AnimatorComponent>();
+    Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
 
     if (animator->IsFinished() == false &&
         (animator->IsPlaying("EnterPossession") ||
             animator->IsPlaying("ExitPossession") ||
             animator->IsPlaying("TakeOff") ||
             animator->IsPlaying("Land") ||
-            animator->IsPlaying("Despawn") ||
             animator->IsPlaying("Respawn") ||
             animator->IsPlaying("Death")))
     {
         return;
     }
+    else if (animator->IsFinished() == false && animator->IsPlaying("Despawn"))
+    {
+        rb->SetVelocity({ 0.f, 0 });
+        return;
+    }
 
 	InputManager& im = InputManager::Get();
-	Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
 	TransformComponent* transform = m_owner->GetComponent<TransformComponent>();
 	PossessionLogic* pl = m_owner->GetComponent<PossessionLogic>();
 
@@ -49,7 +54,7 @@ void PlayerMovement::Update(float _dt)
 	bool canMove = pl->IsPossessed();
 
 
-    if (m_wasOnGround == false && m_onGround)
+    if (m_wasOnGround == false && m_onGround && animator->IsPlaying("ExitPossession") == false)
     {
         animator->Play("Land");
     }
@@ -116,8 +121,6 @@ void PlayerMovement::Update(float _dt)
         transform->SetPos({ transform->GetPos().GetX(), transform->GetPos().GetY() + 1080 });
 
 
-
-
     if (animator->IsFinished() == false &&
         (animator->IsPlaying("EnterPossession") ||
             animator->IsPlaying("ExitPossession") ||
@@ -133,7 +136,7 @@ void PlayerMovement::Update(float _dt)
     {
         return;
     }
-    else if (canMove && im.IsKeyDown(m_moveJumpKey) && m_onGround)
+    else if (canMove && im.IsKeyHeld(m_moveJumpKey) && m_onGround)
     {
         animator->Play("TakeOff");
     }
@@ -158,10 +161,23 @@ void PlayerMovement::Update(float _dt)
     }
 }
 
+void PlayerMovement::OnCollisionEnter(Collider* _self, Collider* _other)
+{
+    if (_self->IsTrigger() == false)
+    {
+        TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+        if(otherEntityTag && otherEntityTag->Is("KILL_ZONE"))
+        {
+            m_owner->GetComponent<AnimatorComponent>()->Play("Despawn");
+            AudioEngine::Get().PlaySound("DEATH", false);
+        }
+    }
+}
+
 void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 {
-	if (_self->GetTop() > m_owner->GetComponent<TransformComponent>()->GetPos().GetY()) {
-		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+    if (_self->IsTrigger()) {
+        TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
 		if (otherEntityTag && (otherEntityTag->Is("Ground") || otherEntityTag->Is("PhysicObject")))
 			m_onGround = true;
 	}
@@ -169,8 +185,9 @@ void PlayerMovement::OnCollisionStay(Collider* _self, Collider* _other)
 
 void PlayerMovement::OnCollisionExit(Collider* _self, Collider* _other)
 {
+    TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
+
 	if (_self->GetTop() > m_owner->GetComponent<TransformComponent>()->GetPos().GetY()) {
-		TagComponent* otherEntityTag = _other->GetOwner()->GetComponent<TagComponent>();
 		if (otherEntityTag && (otherEntityTag->Is("Ground") || otherEntityTag->Is("PhysicObject")))
 			m_onGround = false;
 	}

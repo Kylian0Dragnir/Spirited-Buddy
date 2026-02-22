@@ -23,6 +23,7 @@ int main()
 
     ae.SetMasterVolume(5);
 
+    ae.LoadSound("DEATH", "../../Assets/Death_SFX.wav");
     ae.LoadMusic("MAIN", "../../Assets/mainMusic.wav");
 
     ae.PlayMusic("MAIN", true);
