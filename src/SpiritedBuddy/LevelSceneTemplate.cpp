@@ -375,16 +375,21 @@ ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
 {
 	Entity* button = CreateEntity();
 
+	TransformComponent* tc = button->GetComponent<TransformComponent>();
+	tc->SetScale({ 1.5f,1.5f });
+
+	button->AddComponent<SpriteRenderer>()->Load("../../Assets/button.png");
+	SpriteRenderer* sr = button->GetComponent<SpriteRenderer>();
+	sr->SetFrame(32, 32, 0, 0);
+
 	//Solid Collider
-	BoxCollider* solidCollider = button->AddComponent<BoxCollider>(50.f, 20.f, PLAYER_LAYER, PLAYER_LAYER);
-	solidCollider->SetVisible(true);
-	solidCollider->SetOffset(0, 10);
+	BoxCollider* solidCollider = button->AddComponent<BoxCollider>(48.f, 4.f, PLAYER_LAYER, PLAYER_LAYER);
+	solidCollider->SetOffset(0,22);
 
 	//Trigger Collider
-	BoxCollider* triggerCollider = button->AddComponent<BoxCollider>(35, 15.f, PLAYER_LAYER, PLAYER_LAYER);
-	triggerCollider->SetVisible(true);
+	BoxCollider* triggerCollider = button->AddComponent<BoxCollider>(44.f, 7.f, PLAYER_LAYER, PLAYER_LAYER);
 	triggerCollider->SetTrigger(true);
-	triggerCollider->SetOffset(0, -7.5f);
+	triggerCollider->SetOffset(0, 17);
 
 	button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
 

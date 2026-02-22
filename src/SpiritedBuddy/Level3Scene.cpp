@@ -6,52 +6,13 @@
 
 void Level3Scene::OnEnter()
 {
-	//PORTAL
-	{
-		CreatePortal({ 160, 208 }, "Level3Scene");
-	}
-
-	//COLLECTIBLES
-	{
-		CreateCollectible({ 500,120 });
-	}
-
-	//PLAYER
-	{
-		CreatePlayer({ 300, 984 });
-	}
-
-	//SPIRIT
-	{
-		CreateSpirit({ -100,-100 });
-	}
-
-	//CRATE
-	{
-		CreateCrate({ 900, 984 });
-	}
-
-	//PLAYER BARRIER
-	{
-		CreatePlayerBarrier({ 608, 64 }, { 608, 994 }, "LEFT_BARRIER");
-		CreatePlayerBarrier({ 1344, 64 }, { 1344, 994 }, "RIGHT_BARRIER"); 
-
-		Entity* targetBarrier = FindByTag("RIGHT_BARRIER");
-		targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-		targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
-	}
-
-	//SPIRIT BARRIER
-	{
-		CreateSpiritBarrier({ 256, 272+96 }, { 1696, 272+96 });
-	}
 
 	//BUTTON
 	{
 
 		//Destroy Barrier Button 
 		{
-			ButtonLogic* bl = CreateButton({ 992, 988 }, ButtonMode::Hold);
+			ButtonLogic* bl = CreateButton({ 992, 952 + 16 }, ButtonMode::Hold);
 
 			bl->SetOnActivate([this]()
 				{
@@ -96,6 +57,48 @@ void Level3Scene::OnEnter()
 				});
 		}
 	}
+
+	//PORTAL
+	{
+		CreatePortal({ 160, 208 }, "Level3Scene");
+	}
+
+	//COLLECTIBLES
+	{
+		CreateCollectible({ 500,120 });
+	}
+
+	//PLAYER
+	{
+		CreatePlayer({ 300, 984 });
+	}
+
+	//SPIRIT
+	{
+		CreateSpirit({ -100,-100 });
+	}
+
+	//CRATE
+	{
+		CreateCrate({ 900, 984 });
+	}
+
+	//PLAYER BARRIER
+	{
+		CreatePlayerBarrier({ 608, 64 }, { 608, 994 }, "LEFT_BARRIER");
+		CreatePlayerBarrier({ 1344, 64 }, { 1344, 994 }, "RIGHT_BARRIER"); 
+
+		Entity* targetBarrier = FindByTag("RIGHT_BARRIER");
+		targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+		targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
+	}
+
+	//SPIRIT BARRIER
+	{
+		CreateSpiritBarrier({ 256, 272+96 }, { 1696, 272+96 });
+	}
+
+
 
 	TilemapLoader::Load("../../Assets/level3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }

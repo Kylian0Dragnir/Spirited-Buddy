@@ -37,7 +37,7 @@ int main()
     sm.AddScene("Level3Scene", new Level3Scene);
     sm.AddScene("Level4Scene", new Level4Scene);
 
-    sm.SetStartScene("Level4Scene");
+    sm.SetStartScene("Level3Scene");
 
     app.LoopApp();
 	return 0;
