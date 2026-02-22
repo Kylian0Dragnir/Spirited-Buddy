@@ -9,6 +9,8 @@
 #include "SceneManager.h"
 #include "TilemapLoader.h"
 #include "PossessionLogic.h"
+#include "AnimatorComponent.h"
+#include "Lib2D/AudioEngine.h"
 
 PortalLogic::PortalLogic(const std::string& _nextSceneID)
 {
@@ -26,7 +28,6 @@ void PortalLogic::Update(float dt)
 		sr->SetFrame(64, 64, m_frameX, m_frameY);
 		sr->SetVisible(false);
 		cc->SetActive(false);
-		cc->SetVisible(false);
 		break;
 
 	case PortalState::Appearing:
@@ -36,7 +37,6 @@ void PortalLogic::Update(float dt)
 	case PortalState::Idle:
 		sr->SetVisible(true);
 		cc->SetActive(true);
-		cc->SetVisible(true);
 		break;
 
 	case PortalState::Disappearing:
@@ -55,6 +55,9 @@ void PortalLogic::OnCollisionStay(Collider* _self, Collider* _other)
 
 	if (InputManager::Get().IsKeyDown(Key::KEY_e) && tags->Is("Player") && pl->IsPossessed())
 	{
+		AudioEngine::Get().PlaySound("PORTAL_CLOSE", false);
+		_other->GetOwner()->GetComponent<AnimatorComponent>()->Play("Despawn2");
+		m_player = _other->GetOwner();
 		m_state = PortalState::Disappearing;
 		m_timer = 0.f;
 	}
@@ -64,6 +67,8 @@ void PortalLogic::Appear()
 {
 	if (m_state != PortalState::Hidden)
 		return;
+
+	AudioEngine::Get().PlaySound("PORTAL_OPEN", false);
 
 	m_state = PortalState::Appearing;
 }
@@ -92,6 +97,9 @@ void PortalLogic::HandleAppear(float _dt)
 
 void PortalLogic::HandleDisappear(float _dt)
 {
+	if (m_player->GetComponent<AnimatorComponent>()->IsPlaying("Despawn2"))
+		return;
+
 	SpriteRenderer* sr = m_owner->GetComponent<SpriteRenderer>();
 
 	if (m_timer > 0)

@@ -36,7 +36,7 @@ int main()
     rb2->SetKinematic(true);
 
     tc->SetPos({ 400, 100 });
-    sr->Load("../../Assets/maelle.png");
+    sr->Load("./Assets/maelle.png");
 
     InputManager& im = InputManager::Get();
 

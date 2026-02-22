@@ -51,9 +51,9 @@ void LevelSceneTemplate::Enter()
 
 		ent->AddComponent<TagComponent>("");
 
-		ent->AddComponent<SpriteRenderer>()->Load("../../Assets/dialogue_box.png");
+		ent->AddComponent<SpriteRenderer>()->Load("./Assets/dialogue_box.png");
 
-		TextComponent* text = ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48);
+		TextComponent* text = ent->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 48);
 		text->SetText("MENU");
 		text->SetOffset({ 0.f, -300.f });
 
@@ -71,12 +71,12 @@ void LevelSceneTemplate::Enter()
 		ent->AddComponent<TagComponent>("");
 
 		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/UIbutton.png");
+		sr->Load("./Assets/UIbutton.png");
 		sr->SetFrame(100, 35, 200, 0);
 
 		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
 
-		ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48)->SetText("CONTINUE");
+		ent->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 48)->SetText("CONTINUE");
 
 		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
 			{
@@ -97,12 +97,12 @@ void LevelSceneTemplate::Enter()
 		ent->AddComponent<TagComponent>("");
 
 		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/UIbutton.png");
+		sr->Load("./Assets/UIbutton.png");
 		sr->SetFrame(100, 35, 200, 0);
 
 		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
 
-		ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48)->SetText("RESTART");
+		ent->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 48)->SetText("RESTART");
 
 		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
 			{
@@ -125,12 +125,12 @@ void LevelSceneTemplate::Enter()
 		ent->AddComponent<TagComponent>("");
 
 		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/UIbutton.png");
+		sr->Load("./Assets/UIbutton.png");
 		sr->SetFrame(100, 35, 200, 0);
 
 		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
 
-		TextComponent* text = ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 30);
+		TextComponent* text = ent->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 30);
 		text->SetText(" RETURN\nTO START");
 		text->SetOffset({ 425.f , 0.f });
 
@@ -153,18 +153,18 @@ void LevelSceneTemplate::Enter()
 		ent->AddComponent<TagComponent>("");
 
 		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/UIbutton.png");
+		sr->Load("./Assets/UIbutton.png");
 		sr->SetFrame(100, 35, 200, 0);
 
 		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
 
-		TextComponent* text = ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 30);
+		TextComponent* text = ent->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 30);
 		text->SetText("         GO TO\nLEVEL SELECT");
 		text->SetOffset({ 385.f , 0.f });
 
 		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
 			{
-				SceneManager::GetInstance().ChangeScene("StartScene");
+				SceneManager::GetInstance().ChangeScene("LevelSelectorScene");
 			});
 
 		m_pauseMenuEntities.push_back(ent);
@@ -181,12 +181,12 @@ void LevelSceneTemplate::Enter()
 		ent->AddComponent<TagComponent>("");
 
 		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/UIbutton.png");
+		sr->Load("./Assets/UIbutton.png");
 		sr->SetFrame(100, 35, 200, 0);
 
 		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
 
-		ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48)->SetText("QUIT");
+		ent->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 48)->SetText("QUIT");
 
 		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
 			{
@@ -208,7 +208,7 @@ void LevelSceneTemplate::Enter()
 		transform->SetScale({ 3.f, 3.f });
 
 		SpriteRenderer* sr = m_mouse->AddComponent<SpriteRenderer>();
-		sr->Load("../../Assets/Spirit_backup.png");
+		sr->Load("./Assets/Spirit_backup.png");
 		sr->SetOffset({ 25, 30 });
 
 		//Solid Collider
@@ -270,6 +270,8 @@ void LevelSceneTemplate::Exit()
 {
 	DestroyAllEntities();
 
+	AudioEngine::Get().StopAllSounds();
+
 	CleanVectors();
 
 	OnExit();
@@ -294,7 +296,7 @@ void LevelSceneTemplate::CreateCollectible(Vector2f _pos)
 	coin->AddComponent<TagComponent>("COLLECTIBLE");
 
 	SpriteRenderer* sr = coin->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/collectible.png");
+	sr->Load("./Assets/collectible.png");
 	sr->SetFrame(32, 32, 0, 0);
 
 	coin->AddComponent<CollectibleLogic>();
@@ -322,7 +324,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 {
 	m_player = CreateEntity();
 	SpriteRenderer* sr = m_player->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/Player/player_sheet.png");
+	sr->Load("./Assets/Player/player_sheet.png");
 	sr->SetFrame(32, 32, 128, 0);
 	m_player->AddComponent<TagComponent>("Player");
 
@@ -336,7 +338,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 	bc->SetOffset(0, 30);
 
 	m_player->AddComponent<PossessionLogic>()->SetPossessed(true);
-	m_player->AddComponent<PlayerMovement>(Key::KEY_q, Key::KEY_d, Key::KEY_SPACE);
+	m_player->AddComponent<PlayerMovement>(Key::KEY_a, Key::KEY_d, Key::KEY_SPACE);
 
 	m_player->GetComponent<TransformComponent>()->SetPos(_pos);
 	m_player->GetComponent<TransformComponent>()->SetScale({1.5f, 1.5f});
@@ -498,6 +500,25 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		animator->AddAnimation("Despawn", despawn);
 	}
 
+	//Despawn2
+	{
+		Animation despawnwr;
+		despawnwr.frameWidth = 32;
+		despawnwr.frameHeight = 32;
+		despawnwr.frameDuration = 0.1f;
+		despawnwr.loop = false;
+
+		despawnwr.onFinish = [this]()
+			{
+				m_player->GetComponent<SpriteRenderer>()->SetVisible(false);
+			};
+
+		for (int i = 0; i < 4; i++)
+			despawnwr.frames.push_back({ (float)i , 6.f });
+
+		animator->AddAnimation("Despawn2", despawnwr);
+	}
+
 	//Respawn
 	{
 		Animation respawn;
@@ -521,7 +542,7 @@ void LevelSceneTemplate::CreateSpirit(Vector2f _pos)
 	m_spirit->AddComponent<TagComponent>("Spirit");
 
 	SpriteRenderer* sr = m_spirit->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/Spirit.png");
+	sr->Load("./Assets/Spirit.png");
 	sr->SetFrame(64, 64, 0, 0);
 	sr->SetOffset({ 0,-11.25 });
 	sr->SetVisible(false);
@@ -553,12 +574,12 @@ void LevelSceneTemplate::CreatePortal(Vector2f _pos, const std::string& newScene
 	portal->AddComponent<TagComponent>("PORTAL");
 
 	SpriteRenderer* sr = portal->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/Portal-Sheet.png");
+	sr->Load("./Assets/Portal-Sheet.png");
 	sr->SetVisible(false);
 
 	CircleCollider* cc = portal->AddComponent<CircleCollider>(48.f, ENV_LAYER, PLAYER_LAYER);
 	cc->SetActive(false);
-	cc->SetTrigger(false);
+	cc->SetTrigger(true);
 
 	portal->AddComponent<PortalLogic>(newSceneID);
 
@@ -569,6 +590,16 @@ void LevelSceneTemplate::CreatePortal(Vector2f _pos, const std::string& newScene
 	m_portals.push_back(portal);
 }
 
+void LevelSceneTemplate::CreateText(Vector2f _pos, const std::string& _text, int _size, const std::string& _fontPath)
+{
+	Entity* text = CreateEntity();
+
+	text->AddComponent<TagComponent>("");
+
+	text->AddComponent<TextComponent>(_fontPath, _size)->SetText(_text);
+	text->GetComponent<TransformComponent>()->SetPos(_pos);
+}
+
 void LevelSceneTemplate::CreateCrate(Vector2f _pos)
 {
 	Entity* crate = CreateEntity();
@@ -576,12 +607,12 @@ void LevelSceneTemplate::CreateCrate(Vector2f _pos)
 	//Solid Collider
 	crate->AddComponent<BoxCollider>(40.f, 40.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
 
-	crate->AddComponent<SpriteRenderer>()->Load("../../Assets/crate.png");
+	crate->AddComponent<SpriteRenderer>()->Load("./Assets/crate.png");
 
 	crate->AddComponent<TagComponent>("CRATE")->AddTag("PhysicObject");
 
 	crate->AddComponent<PossessionLogic>();
-	crate->AddComponent<PhysicObjectMovement>(Key::KEY_q, Key::KEY_d);
+	crate->AddComponent<PhysicObjectMovement>(Key::KEY_a, Key::KEY_d);
 
 	TransformComponent* transform = crate->GetComponent<TransformComponent>();
 	transform->SetPos(_pos);
@@ -599,7 +630,7 @@ ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
 	TransformComponent* tc = button->GetComponent<TransformComponent>();
 	tc->SetScale({ 1.5f,1.5f });
 
-	button->AddComponent<SpriteRenderer>()->Load("../../Assets/button.png");
+	button->AddComponent<SpriteRenderer>()->Load("./Assets/button.png");
 	SpriteRenderer* sr = button->GetComponent<SpriteRenderer>();
 	sr->SetFrame(32, 32, 0, 0);
 
@@ -623,7 +654,7 @@ void LevelSceneTemplate::CreateDummyWall(Vector2f _pos, const std::string& _dire
 {
 	Entity* dummyWall = CreateEntity();
 
-	dummyWall->AddComponent<SpriteRenderer>()->Load("../../Assets/" + _direction + "DummyWall.png");
+	dummyWall->AddComponent<SpriteRenderer>()->Load("./Assets/" + _direction + "DummyWall.png");
 	dummyWall->AddComponent<TagComponent>("");
 
 	BoxCollider* bc = dummyWall->AddComponent<BoxCollider>(160.f, 160.f, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
@@ -657,7 +688,7 @@ void LevelSceneTemplate::CreatePlayerBarrier(Vector2f _start, Vector2f _end, con
 	};
 
 	SpriteRenderer* sr = barrier->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/barrier/red_barrier.png");
+	sr->Load("./Assets/barrier/red_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
 
@@ -724,7 +755,7 @@ void LevelSceneTemplate::CreateSpiritBarrier(Vector2f _start, Vector2f _end, con
 	};
 
 	SpriteRenderer* sr = barrier->AddComponent<SpriteRenderer>();
-	sr->Load("../../Assets/barrier/green_barrier.png");
+	sr->Load("./Assets/barrier/green_barrier.png");
 	sr->SetFrame(16, 16, 0, 0);
 	sr->SetOpacity(255);
 
@@ -735,14 +766,14 @@ void LevelSceneTemplate::CreateSpiritBarrier(Vector2f _start, Vector2f _end, con
 	if (vertical)
 	{
 		sr->SetTiledSize({ 32.f, height });
-		barrier->AddComponent<BoxCollider>(32.f, height, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(true);
+		barrier->AddComponent<BoxCollider>(32.f, height, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(false);
 	}
 	else
 	{
 		transform->SetRotationCenter({ 16.f, 16.f });
 		transform->SetRotation(-90);
 		sr->SetTiledSize({ height , 32.f });
-		barrier->AddComponent<BoxCollider>(height, 32.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(true);
+		barrier->AddComponent<BoxCollider>(height, 32.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(false);
 	}
 
 	TagComponent* tc = barrier->AddComponent<TagComponent>("SPIRIT_BARRIER");

@@ -6,6 +6,32 @@
 
 void Level1Scene::OnEnter()
 {
+	//BUTTON
+	{
+		ButtonLogic* bl = CreateButton({ 1450, 905 }, ButtonMode::Hold);
+
+		bl->SetOnActivate([this]()
+			{
+				Entity* targetBarrier = FindByTag("BARRIER");
+
+				if (targetBarrier == nullptr)
+					return;
+
+				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
+			});
+
+		bl->SetOnDeactivate([this]()
+			{
+				Entity* targetBarrier = FindByTag("BARRIER");
+
+				if (targetBarrier == nullptr)
+					return;
+
+				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
+			});
+	}
 	//PORTAL
 	{
 		CreatePortal({ 80, 725 }, "Level2Scene");
@@ -41,34 +67,7 @@ void Level1Scene::OnEnter()
 		CreateSpiritBarrier({ 64, 400 }, { 1856, 400 }, "BARRIER");
 	}
 
-	//BUTTON
-	{
-		ButtonLogic* bl = CreateButton({ 1450, 930 }, ButtonMode::Hold);
-
-		bl->SetOnActivate([this]()
-			{
-				Entity* targetBarrier = FindByTag("BARRIER");
-
-				if (targetBarrier == nullptr)
-					return;
-
-				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
-			});
-
-		bl->SetOnDeactivate([this]()
-			{
-				Entity* targetBarrier = FindByTag("BARRIER");
-
-				if (targetBarrier == nullptr)
-					return;
-
-				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
-			});
-	}
-
-	TilemapLoader::Load("../../Assets/level1.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("./Assets/level1.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void Level1Scene::OnUpdate(float _dt)

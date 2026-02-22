@@ -30,6 +30,9 @@ class PlayerMovement : public Component, public Updatable, public Collidable
 	Key m_moveRightKey;
 	Key m_moveJumpKey;
 
+	bool m_isPlayingWalking;
+	bool m_wasPlayingWalking;
+
 	bool m_onGround;
 	bool m_wasOnGround;
 	bool m_wasPossessed;

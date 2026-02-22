@@ -11,6 +11,7 @@
 #include "Collider.h"
 #include "Entity.h"
 #include "AScene.h"
+#include "Lib2D/AudioEngine.h"
 #include <iostream>
 
 SpiritLogic::SpiritLogic(Key _switchKey, Entity* initialPossessed)
@@ -38,6 +39,8 @@ void SpiritLogic::Update(float _dt)
 		if(im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
 			m_switchCooldown = 0.6f;
+
+			AudioEngine::Get().PlaySound("SPIRIT_OUT", false);
 
 			Vector2f targetPos = m_possessedEntity->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 			transform->SetPos(targetPos);
@@ -129,6 +132,8 @@ void SpiritLogic::OnCollisionStay(Collider* _self, Collider* _other)
 		if (im.IsKeyDown(m_switchKey) && m_switchCooldown <= 0)
 		{
 			m_switchCooldown = 0.6f;
+
+			AudioEngine::Get().PlaySound("SPIRIT_IN", false);
 
 			pl->SetPossessed(true);
 			m_possessedEntity = _other->GetOwner();

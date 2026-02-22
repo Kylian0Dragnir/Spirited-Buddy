@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "Entity.h"
 #include "SpriteRenderer.h"
+#include "Lib2D/AudioEngine.h"
 
 ButtonLogic::ButtonLogic(ButtonMode mode)
 {
@@ -52,6 +53,8 @@ void ButtonLogic::Activate()
     if (m_isPressed)
         return;
 
+    AudioEngine::Get().PlaySound("BUTTON_DOWN", false);
+
     m_owner->GetComponent<SpriteRenderer>()->SetFrame(32,32,32,0);
 
     m_isPressed = true;
@@ -64,6 +67,8 @@ void ButtonLogic::Deactivate()
 {
     if (!m_isPressed)
         return;
+
+    AudioEngine::Get().PlaySound("BUTTON_UP", false);
 
     m_owner->GetComponent<SpriteRenderer>()->SetFrame(32, 32, 0, 0);
 

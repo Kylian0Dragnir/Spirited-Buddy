@@ -8,7 +8,7 @@ void Level4Scene::OnEnter()
 {
 	//PORTAL
 	{
-		CreatePortal({ 1760, 960 - 16 }, "Level4Scene");
+		CreatePortal({ 1760, 960 - 16 }, "LevelSelectorScene");
 	}
 
 	//COLLECTIBLES
@@ -19,17 +19,13 @@ void Level4Scene::OnEnter()
 
 	//PLAYER
 	{
-		CreatePlayer({ 200, 160 });
+		CreatePlayer({ 200, 984 });
 	}
 
 	//SPIRIT
 	{
 		CreateSpirit({ -100,-100 });
 	}
-
-
-
-
 
 	//PLAYER BARRIER
 	{
@@ -38,10 +34,11 @@ void Level4Scene::OnEnter()
 
 	//SPIRIT BARRIER
 	{
-		//CreateSpiritBarrier({ 256, 272 + 96 }, { 1696, 272 + 96 });
+		CreateSpiritBarrier({1696, 368}, { 1824, 368});
+		CreateSpiritBarrier({ 1120, 96 }, { 1120, 224 });
 	}
 
-	TilemapLoader::Load("../../Assets/level4.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("./Assets/level4.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 
 	//DUMMY WALL
 	{

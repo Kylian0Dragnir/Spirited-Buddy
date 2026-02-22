@@ -6,18 +6,18 @@
 EndScene::EndScene()
 {
     m_backGround = CreateEntity();
-    m_backGround->AddComponent<SpriteRenderer>()->Load("../../Assets/EndBackground.jpg");
+    m_backGround->AddComponent<SpriteRenderer>()->Load("./Assets/EndBackground.jpg");
     m_backGround->GetComponent<TransformComponent>()->SetScale(1);
 
     m_title = CreateEntity();
-    TextComponent* tc = m_title->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 100);
+    TextComponent* tc = m_title->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 100);
     tc->SetDrawColor(243, 255, 94, 255);
     tc->SetText("Game Over");
 
     m_quitButton = CreateButton(200, 100);
-    m_quitButton->AddComponent<SpriteRenderer>()->Load("../../Assets/Sprites-Button/png/Dummy-Rect/Hover.png");
+    m_quitButton->AddComponent<SpriteRenderer>()->Load("./Assets/Sprites-Button/png/Dummy-Rect/Hover.png");
     m_quitButton->GetComponent<TransformComponent>()->SetScale(1.2f);
-    m_quitButton->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 45)->SetText("Quit");
+    m_quitButton->AddComponent<TextComponent>("./Assets/Bungee-Regular.otf", 45)->SetText("Quit");
     m_quitButton->AddComponent<QuitButtonComponent>();
 
 }

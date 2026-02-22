@@ -18,13 +18,33 @@ PlayerMovement::PlayerMovement(Key _moveLeftKey, Key _moveRightKey, Key _moveJum
 	m_moveRightKey = _moveRightKey;
 	m_moveJumpKey = _moveJumpKey;
 	m_speed = 0.6f;
-	m_onGround = false;
+
+    m_isPlayingWalking = false;
+    m_wasPlayingWalking = false;
+
+    m_onGround = false;
+    m_wasOnGround = false;
+    m_wasPossessed = false;
+    m_jumpRequested = false;
 }
 
 void PlayerMovement::Update(float _dt)
 {
     AnimatorComponent* animator = m_owner->GetComponent<AnimatorComponent>();
     Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
+
+    if (animator->IsPlaying("Walk") && m_isPlayingWalking == false)
+    {
+        AudioEngine::Get().PlaySound("WALKING", true);
+        m_isPlayingWalking = true;
+    }
+    else if(animator->IsPlaying("Walk") == false && m_wasPlayingWalking)
+    {
+        AudioEngine::Get().StopAllSounds();
+        m_isPlayingWalking = false;
+    }
+
+    m_wasPlayingWalking = m_isPlayingWalking;
 
     if (animator->IsFinished() == false &&
         (animator->IsPlaying("EnterPossession") ||
@@ -36,7 +56,7 @@ void PlayerMovement::Update(float _dt)
     {
         return;
     }
-    else if (animator->IsFinished() == false && animator->IsPlaying("Despawn"))
+    else if (animator->IsFinished() == false && (animator->IsPlaying("Despawn") || animator->IsPlaying("Despawn2")))
     {
         rb->SetVelocity({ 0.f, 0 });
         return;
@@ -94,7 +114,7 @@ void PlayerMovement::Update(float _dt)
     if (m_jumpRequested)
     {
         m_jumpRequested = false;
-        velocity.SetY(velocity.GetY() - 620);
+        velocity.SetY(velocity.GetY() - 640);
     }
 
 	rb->SetVelocity(velocity);
@@ -127,6 +147,7 @@ void PlayerMovement::Update(float _dt)
             animator->IsPlaying("TakeOff") ||
             animator->IsPlaying("Land") ||
             animator->IsPlaying("Despawn") ||
+            animator->IsPlaying("Despawn2") ||
             animator->IsPlaying("Respawn") ||
             animator->IsPlaying("Death")))
     {

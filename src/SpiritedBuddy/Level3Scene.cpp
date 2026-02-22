@@ -60,7 +60,7 @@ void Level3Scene::OnEnter()
 
 	//PORTAL
 	{
-		CreatePortal({ 160, 208 }, "Level3Scene");
+		CreatePortal({ 160, 208 }, "Level4Scene");
 	}
 
 	//COLLECTIBLES
@@ -100,7 +100,7 @@ void Level3Scene::OnEnter()
 
 
 
-	TilemapLoader::Load("../../Assets/level3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("./Assets/level3.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void Level3Scene::OnUpdate(float _dt)

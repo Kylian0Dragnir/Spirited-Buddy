@@ -74,7 +74,7 @@ void LevelTestScene::OnEnter()
 			});
 	}
 
-	TilemapLoader::Load("../../Assets/test3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("./Assets/test3.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void LevelTestScene::OnUpdate(float _dt)

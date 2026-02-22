@@ -8,6 +8,7 @@ class UIButtonLogic : public Component, public Updatable, public Collidable
 {
 private:
 	bool m_isHovered;
+	bool m_wasHovered;
 	std::function<void()> m_onClick;
 
 public:

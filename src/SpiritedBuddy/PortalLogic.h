@@ -23,6 +23,8 @@ class PortalLogic : public Component, public Updatable, public Collidable
 
 	PortalState m_state = PortalState::Hidden;
 
+	Entity* m_player = nullptr;
+
 	void HandleAppear(float _dt);
 	void HandleDisappear(float _dt);
 

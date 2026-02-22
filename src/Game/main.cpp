@@ -21,8 +21,8 @@ int main()
     if (ae.Init() == false)
         exit(1);
 
-    ae.LoadSound("WOOD_HIT", "../../Assets/woodHit.wav");
-    ae.LoadSound("ROCK_HIT", "../../Assets/rockHit.wav");
+    ae.LoadSound("WOOD_HIT", "./Assets/woodHit.wav");
+    ae.LoadSound("ROCK_HIT", "./Assets/rockHit.wav");
         
     SceneManager& sm = SceneManager::GetInstance();
 

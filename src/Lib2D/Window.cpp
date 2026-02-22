@@ -3,6 +3,7 @@
 #include "AssetManager.h"
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <stdlib.h>
 #include <string>
@@ -37,6 +38,10 @@ void Window::Create(const std::string& _title, int _w, int _h, int _x, int _y)
         m_height, 
         SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
+    SDL_Surface* icon = IMG_Load("./Assets/SpiritedBuddy_logo.png");
+
+    SDL_SetWindowIcon(m_window, icon);
+        
     AssetManager::Get().SetWindow(this);
 
     m_renderer = SDL_CreateRenderer(m_window, -1, 0);

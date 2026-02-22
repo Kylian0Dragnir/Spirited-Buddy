@@ -13,7 +13,7 @@
           "../../lib/SDL2/include",
           "../../lib/SDL2_image/include",
           "../../lib/SDL2_ttf/include",
-          "../../lib/SDL2_mixer/include"
+          "./lib/SDL2_mixer/include"
         ],
         "additionalLibraryDirectories": [
           "../../lib/SDL2/lib/x64",

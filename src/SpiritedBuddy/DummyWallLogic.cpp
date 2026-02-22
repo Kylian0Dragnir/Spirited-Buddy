@@ -20,6 +20,9 @@ void DummyWallLogic::Update(float _dt)
 
 void DummyWallLogic::OnCollisionEnter(Collider* _self, Collider* _other)
 {
+	if (_other->IsTrigger())
+		return;
+
 	TagComponent* otherTag = _other->GetOwner()->GetComponent<TagComponent>();
 	if (otherTag && (otherTag->Is("Player") || otherTag->Is("Spirit")))
 	{

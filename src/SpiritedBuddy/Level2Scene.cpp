@@ -6,6 +6,65 @@
 
 void Level2Scene::OnEnter()
 {
+	//BUTTON
+	{
+
+		//Destroy Barrier Button 
+		{
+			ButtonLogic* bl = CreateButton({ 1550, 905 }, ButtonMode::Hold);
+
+			bl->SetOnActivate([this]()
+				{
+					Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
+
+					if (targetBarrier == nullptr)
+						return;
+
+					targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+					targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
+				});
+
+			bl->SetOnDeactivate([this]()
+				{
+					Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
+
+					if (targetBarrier == nullptr)
+						return;
+
+					targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+					targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
+				});
+		}
+
+		// Swipe Barrier Mode Button
+		{
+
+			ButtonLogic* bl2 = CreateButton({ 1790, 905 }, ButtonMode::Hold);
+
+			bl2->SetOnActivate([this]()
+				{
+					Entity* targetBarrier = FindByTag("BARRIER_TO_SWIPE");
+
+					if (targetBarrier == nullptr)
+						return;
+
+					DestroyEntity(targetBarrier);
+					CreateSpiritBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
+				});
+
+			bl2->SetOnDeactivate([this]()
+				{
+					Entity* targetBarrier = FindByTag("BARRIER_TO_SWIPE");
+
+					if (targetBarrier == nullptr)
+						return;
+
+					DestroyEntity(targetBarrier);
+					CreatePlayerBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
+				});
+		}
+	}
+
 	//PORTAL
 	{
 		CreatePortal({ 120, 500 }, "Level3Scene");
@@ -42,66 +101,7 @@ void Level2Scene::OnEnter()
 		CreateSpiritBarrier({ 200, 600 }, { 200, 750 });
 	}
 
-	//BUTTON
-	{
-
-		//Destroy Barrier Button 
-		{
-			ButtonLogic* bl = CreateButton({ 1550, 930 }, ButtonMode::Hold);
-
-			bl->SetOnActivate([this]()
-				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
-
-					if (targetBarrier == nullptr)
-						return;
-
-					targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-					targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
-				});
-
-			bl->SetOnDeactivate([this]()
-				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
-
-					if (targetBarrier == nullptr)
-						return;
-
-					targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-					targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
-				});
-		}
-
-		// Swipe Barrier Mode Button
-		{
-
-			ButtonLogic* bl2 = CreateButton({ 1790, 930 }, ButtonMode::Hold);
-
-			bl2->SetOnActivate([this]()
-				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_SWIPE");
-
-					if (targetBarrier == nullptr)
-						return;
-
-					DestroyEntity(targetBarrier);
-					CreateSpiritBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
-				});
-
-			bl2->SetOnDeactivate([this]()
-				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_SWIPE");
-
-					if (targetBarrier == nullptr)
-						return;
-
-					DestroyEntity(targetBarrier);
-					CreatePlayerBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
-				});
-		}
-	}
-
-	TilemapLoader::Load("../../Assets/level2.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("./Assets/level2.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 
 	//Dummy Wall
 	{
