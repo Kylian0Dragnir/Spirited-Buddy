@@ -8,7 +8,7 @@ void Level2Scene::OnEnter()
 {
 	//PORTAL
 	{
-		CreatePortal({ 120, 500 }, "Level2Scene");
+		CreatePortal({ 120, 500 }, "Level3Scene");
 	}
 
 	//COLLECTIBLES

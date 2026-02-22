@@ -14,7 +14,7 @@ class ButtonLogic : public Component, public Updatable, public Collidable
 {
 private:
 	bool m_isPressed;
-	bool m_isPlayerOnTop;
+	bool m_isPhysicObjectOn;
 
 	ButtonMode m_mode;
 

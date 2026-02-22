@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Application.h"
 #include "SceneManager.h"
+#include "StartScene.h"
 #include "LevelTestScene.h"
 #include "Level1Scene.h"
 #include "Level2Scene.h"
@@ -14,7 +15,7 @@ int main()
     rand();
 
     Application& app = Application::Get();
-    app.InitApp("Pong", 1920, 1080);
+    app.InitApp("Spirited Buddy", 1920, 1080);
 
     AudioEngine& ae = AudioEngine::Get();
 
@@ -30,12 +31,13 @@ int main()
 
     SceneManager& sm = SceneManager::GetInstance();
 
+    sm.AddScene("StartScene", new StartScene);
     sm.AddScene("LevelTestScene", new LevelTestScene);
     sm.AddScene("Level1Scene", new Level1Scene);
     sm.AddScene("Level2Scene", new Level2Scene);
     sm.AddScene("Level3Scene", new Level3Scene);
 
-    sm.SetStartScene("Level3Scene");
+    sm.SetStartScene("StartScene");
 
     app.LoopApp();
 	return 0;

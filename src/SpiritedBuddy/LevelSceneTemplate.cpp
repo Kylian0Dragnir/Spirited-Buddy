@@ -11,30 +11,238 @@
 #include "DummyWallLogic.h"
 #include "WorldWrapLogic.h"
 #include "Collider.h"
+#include "UIButtonLogic.h"
+#include "MouseCursorLogic.h"
 #include "Lib2D/InputManager.h"
 #include "TilemapLoader.h"
 #include "SceneManager.h"
+#include "Application.h"
+#include "CollisionSystem.h"
 #include "Lib2D/AudioEngine.h"
 
 #include <iostream>
 
 LevelSceneTemplate::LevelSceneTemplate()
 {
+	m_player = nullptr;
+	m_spirit = nullptr;
+	m_onPause = false;
+}
 
+LevelSceneTemplate::~LevelSceneTemplate()
+{
+	for (Entity* ent : m_pauseMenuEntities)
+	{
+		delete ent;
+	}
 }
 
 void LevelSceneTemplate::Enter()
 {
+	m_onPause = false;
+
+	// Dialogue Box
+	{
+		Entity* ent = new Entity;
+
+		TransformComponent* transform = ent->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 540 });
+		transform->SetScale({ 10, 10 });
+
+		ent->AddComponent<TagComponent>("");
+
+		ent->AddComponent<SpriteRenderer>()->Load("../../Assets/dialogue_box.png");
+
+		TextComponent* text = ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48);
+		text->SetText("MENU");
+		text->SetOffset({ 0.f, -300.f });
+
+		m_pauseMenuEntities.push_back(ent);
+	}
+
+	// Continue Button
+	{
+		Entity* ent = new Entity;
+
+		TransformComponent* transform = ent->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 350 });
+		transform->SetScale({ 4, 4 });
+
+		ent->AddComponent<TagComponent>("");
+
+		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/UIbutton.png");
+		sr->SetFrame(100, 35, 200, 0);
+
+		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
+
+		ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48)->SetText("CONTINUE");
+
+		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
+			{
+				m_onPause = false;
+			});
+
+		m_pauseMenuEntities.push_back(ent);
+	}
+
+	// Restart Button
+	{
+		Entity* ent = new Entity;
+
+		TransformComponent* transform = ent->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 475 });
+		transform->SetScale({ 4, 4 });
+
+		ent->AddComponent<TagComponent>("");
+
+		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/UIbutton.png");
+		sr->SetFrame(100, 35, 200, 0);
+
+		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
+
+		ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48)->SetText("RESTART");
+
+		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
+			{
+				m_onPause = false;
+				m_player->GetComponent<AnimatorComponent>()->Play("Despawn");
+				AudioEngine::Get().PlaySound("DEATH", false);
+			});
+
+		m_pauseMenuEntities.push_back(ent);
+	}
+
+	// Return to Start Button
+	{
+		Entity* ent = new Entity;
+
+		TransformComponent* transform = ent->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 600 });
+		transform->SetScale({ 4, 4 });
+
+		ent->AddComponent<TagComponent>("");
+
+		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/UIbutton.png");
+		sr->SetFrame(100, 35, 200, 0);
+
+		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
+
+		TextComponent* text = ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 30);
+		text->SetText(" RETURN\nTO START");
+		text->SetOffset({ 425.f , 0.f });
+
+		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
+			{
+				SceneManager::GetInstance().ChangeScene("StartScene");
+			});
+
+		m_pauseMenuEntities.push_back(ent);
+	}
+
+	// GO to level select Button
+	{
+		Entity* ent = new Entity;
+
+		TransformComponent* transform = ent->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 725 });
+		transform->SetScale({ 4, 4 });
+
+		ent->AddComponent<TagComponent>("");
+
+		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/UIbutton.png");
+		sr->SetFrame(100, 35, 200, 0);
+
+		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
+
+		TextComponent* text = ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 30);
+		text->SetText("         GO TO\nLEVEL SELECT");
+		text->SetOffset({ 385.f , 0.f });
+
+		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
+			{
+				SceneManager::GetInstance().ChangeScene("StartScene");
+			});
+
+		m_pauseMenuEntities.push_back(ent);
+	}
+
+	// Quit Button
+	{
+		Entity* ent = new Entity;
+
+		TransformComponent* transform = ent->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 850 });
+		transform->SetScale({ 4, 4 });
+
+		ent->AddComponent<TagComponent>("");
+
+		SpriteRenderer* sr = ent->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/UIbutton.png");
+		sr->SetFrame(100, 35, 200, 0);
+
+		ent->AddComponent<BoxCollider>(370.f, 120.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetTrigger(true);
+
+		ent->AddComponent<TextComponent>("../../Assets/Bungee-Regular.otf", 48)->SetText("QUIT");
+
+		ent->AddComponent<UIButtonLogic>()->SetOnClick([this]()
+			{
+				Application::Get().ShutDownApp();
+			});
+
+		m_pauseMenuEntities.push_back(ent);
+	}
+
+	// Mouse Cursor
+	{
+		m_mouse = new Entity;
+		m_mouse->AddComponent<TagComponent>("");
+
+		TransformComponent* transform = m_mouse->AddComponent<TransformComponent>();
+		transform->SetPos({ 960, 540 });
+		transform->SetRotationCenter({ 32,48 });
+		transform->SetRotation(-45);
+		transform->SetScale({ 3.f, 3.f });
+
+		SpriteRenderer* sr = m_mouse->AddComponent<SpriteRenderer>();
+		sr->Load("../../Assets/Spirit_backup.png");
+		sr->SetOffset({ 25, 30 });
+
+		//Solid Collider
+		m_mouse->AddComponent<CircleCollider>(15.f, SPIRIT_LAYER, SPIRIT_LAYER)->SetVisible(false);
+
+		m_mouse->AddComponent<MouseCursorLogic>();
+
+		m_mouse->AddComponent<Rigidbody2D>(1.0f, false, 0.f);
+
+		m_pauseMenuEntities.push_back(m_mouse);
+	}
+
 	OnEnter();
 }
 
 void LevelSceneTemplate::Update(float _dt)
 {
+	if (InputManager::Get().IsKeyDown(Key::KEY_ESCAPE))
+	{
+		m_mouse->GetComponent<TransformComponent>()->SetPos({ 1200, 600 });
+		m_onPause = !m_onPause;
+	}
+
+	if (m_onPause)
+	{
+		UpdatePauseMenu(_dt);
+		return;
+	}
+
 	AScene::Update(_dt);
 
 	CleanDestroyedEntities();
 
-	if (m_collectibles.empty() || InputManager::Get().IsKeyDown(Key::KEY_p))
+	if (m_collectibles.empty())
 	{
 		for (Entity* p : m_portals)
 		{
@@ -42,26 +250,39 @@ void LevelSceneTemplate::Update(float _dt)
 		}
 	}
 
-	if (InputManager::Get().IsKeyDown(Key::KEY_BACKSPACE))
-	{
-		DestroyAllEntitiesWithTag("BARRIER");
-	}
-
-	if (InputManager::Get().IsKeyDown(Key::KEY_r))
-	{
-		m_player->GetComponent<AnimatorComponent>()->Play("Despawn");
-		AudioEngine::Get().PlaySound("DEATH", false);
-	}
-
 	OnUpdate(_dt);
+}
+
+void LevelSceneTemplate::Draw(Window* window)
+{
+	AScene::Draw(window);
+
+	if(m_onPause)
+	{
+		for (Entity* entity : m_pauseMenuEntities)
+		{
+			entity->Draw(window);
+		}
+	}
 }
 
 void LevelSceneTemplate::Exit()
 {
 	DestroyAllEntities();
+
 	CleanVectors();
 
 	OnExit();
+}
+
+void LevelSceneTemplate::UpdatePauseMenu(float _dt)
+{
+	CollisionSystem::GetInstance().Update(m_pauseMenuEntities);
+
+	for (Entity* ent : m_pauseMenuEntities)
+	{
+		ent->Update(_dt);
+	}
 }
 
 void LevelSceneTemplate::CreateCollectible(Vector2f _pos)
@@ -106,11 +327,11 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 	m_player->AddComponent<TagComponent>("Player");
 
 	//Solid Collider
-	m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(true);
+	m_player->AddComponent<BoxCollider>(33.75f, 50.f, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER | SPIRIT_LAYER)->SetVisible(false);
 
 	//Grounded Trigger Collider
 	BoxCollider* bc = m_player->AddComponent<BoxCollider>(33.75f / 2, 1, PLAYER_LAYER, PLAYER_LAYER | ENV_LAYER);
-	bc->SetVisible(true);
+	bc->SetVisible(false);
 	bc->SetTrigger(true);
 	bc->SetOffset(0, 30);
 
@@ -337,7 +558,7 @@ void LevelSceneTemplate::CreatePortal(Vector2f _pos, const std::string& newScene
 
 	CircleCollider* cc = portal->AddComponent<CircleCollider>(48.f, ENV_LAYER, PLAYER_LAYER);
 	cc->SetActive(false);
-	cc->SetTrigger(true);
+	cc->SetTrigger(false);
 
 	portal->AddComponent<PortalLogic>(newSceneID);
 
@@ -573,15 +794,13 @@ void LevelSceneTemplate::CleanDestroyedEntities()
 
 void LevelSceneTemplate::CleanVectors()
 {
-	for (int i = m_collectibles.size() - 1; i >= 0; i--)
-		m_collectibles.erase(m_collectibles.begin() + i);
+	m_collectibles.clear();
 
-	for (int i = m_playerBarriers.size() - 1; i >= 0; i--)
-		m_playerBarriers.erase(m_playerBarriers.begin() + i);
+	m_playerBarriers.clear();
 
-	for (int i = m_spiritBarriers.size() - 1; i >= 0; i--)
-		m_spiritBarriers.erase(m_spiritBarriers.begin() + i);
+	m_spiritBarriers.clear();
 
-	for (int i = m_portals.size() - 1; i >= 0; i--)
-		m_portals.erase(m_portals.begin() + i);
+	m_portals.clear();
+
+	m_pauseMenuEntities.clear();
 }

@@ -29,7 +29,7 @@ void Text::SetText(std::string _text)
 	}
 
 	TTF_SetFontStyle(m_font, TTF_STYLE_NORMAL);
-	m_surface = TTF_RenderText_Blended(m_font, _text.c_str(), m_color);
+	m_surface = TTF_RenderText_Blended_Wrapped(m_font, _text.c_str(), m_color, 1000);
 }
 
 void Text::SetDrawColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)

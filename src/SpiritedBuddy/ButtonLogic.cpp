@@ -11,7 +11,7 @@ void ButtonLogic::Update(float _dt)
 {
 	if (m_mode == ButtonMode::Hold)
 	{
-		if (m_isPlayerOnTop)
+		if (m_isPhysicObjectOn)
 			Activate();
 	}
 }
@@ -20,7 +20,7 @@ void ButtonLogic::OnCollisionEnter(Collider* self, Collider* other)
 {
     if (self->IsTrigger())
     {
-        m_isPlayerOnTop = true;
+        m_isPhysicObjectOn = true;
 
         if (m_mode == ButtonMode::Toggle)
         {
@@ -36,7 +36,7 @@ void ButtonLogic::OnCollisionExit(Collider* self, Collider* other)
 {
     if (self->IsTrigger())
     {
-        m_isPlayerOnTop = false;
+        m_isPhysicObjectOn = false;
 
         if (m_mode == ButtonMode::Hold)
         {

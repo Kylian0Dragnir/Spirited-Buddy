@@ -12,22 +12,30 @@ protected:
 	Entity* m_player;
 	Entity* m_spirit;
 
+	Entity* m_mouse;
+
 	std::vector<Entity*> m_playerBarriers;
 	std::vector<Entity*> m_spiritBarriers;
 	std::vector<Entity*> m_portals;
 	std::vector<Entity*> m_collectibles;
 
+	bool m_onPause;
+	std::vector<Entity*> m_pauseMenuEntities;
+
 public:
 	LevelSceneTemplate();
+	~LevelSceneTemplate();
 
 	void Enter() override;
 	void Update(float _dt) override;
+	void Draw(Window* window) override;
 	void Exit() override;
 
 	virtual void OnEnter() {};
 	virtual void OnUpdate(float _dt) {};
 	virtual void OnExit() {};
 
+	void UpdatePauseMenu(float _dt);
 	void CreateCollectible(Vector2f _pos);
 	void CreatePlayer(Vector2f _pos);
 	void CreateSpirit(Vector2f _pos);

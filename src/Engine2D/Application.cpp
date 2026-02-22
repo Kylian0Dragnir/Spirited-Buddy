@@ -57,9 +57,6 @@ void Application::LoopApp()
         InputManager& im = InputManager::Get();
         im.Update(deltaTime);
 
-        if (im.IsKeyDown(Key::KEY_ESCAPE))
-            ShutDownApp();
-
         sm.Update(deltaTime);
 
         cs.Update(sm.GetCurrentScene()->GetEntities());

@@ -15,6 +15,9 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+	if (m_filepath == "")
+		return;
+
 	if (m_texture)
 		AssetManager::Get().UnsetTexture(m_filepath);
 }

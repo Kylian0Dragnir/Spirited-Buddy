@@ -33,7 +33,7 @@ public:
 	std::vector<Entity*> FindAllEntitiesWithTag(const std::string& _tag);
 
 	virtual void Enter() = 0;
-	void Update(float _dt) override;
+	virtual void Update(float _dt) override;
 	virtual void Draw(Window* _window) override;
 	virtual void Exit() = 0;
 };

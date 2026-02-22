@@ -16,7 +16,7 @@
 SpiritLogic::SpiritLogic(Key _switchKey, Entity* initialPossessed)
 {
 	m_switchKey = _switchKey;
-	m_speed = 2.2f;
+	m_speed = 1.5f;
 
 	m_switchCooldown = 0.6f;
 
@@ -48,7 +48,6 @@ void SpiritLogic::Update(float _dt)
 
 			for(Collider* c : m_owner->GetAllComponents<Collider>())
 			{
-				c->SetVisible(true);
 				c->SetActive(true);
 			}
 
@@ -58,7 +57,7 @@ void SpiritLogic::Update(float _dt)
 	else
 	{
 		Vector2f delta = im.GetMouseDelta();
-		float maxDelta = 500.f * _dt;
+		float maxDelta = 500.f * m_speed * _dt;
 
 		if (delta.Length() > maxDelta)
 		{
@@ -74,22 +73,23 @@ void SpiritLogic::Update(float _dt)
 			targetAngle *= 180.f / M_PI;
 
 			rotationSpeed = 360.f;
+
+
+			float currentAngle = transform->GetAngle();
+
+			float diff = targetAngle - currentAngle;
+
+			while (diff > 180.f) diff -= 360.f;
+			while (diff < -180.f) diff += 360.f;
+
+			float maxStep = rotationSpeed * _dt;
+
+			if (std::abs(diff) < maxStep)
+				currentAngle = targetAngle;
+			else
+				transform->SetRotation(currentAngle + (diff > 0 ? maxStep : -maxStep));
+
 		}
-
-		float currentAngle = transform->GetAngle();
-
-		float diff = targetAngle - currentAngle;
-
-		while (diff > 180.f) diff -= 360.f;
-		while (diff < -180.f) diff += 360.f;
-
-		float maxStep = rotationSpeed * _dt;
-
-		if (std::abs(diff) < maxStep)
-			currentAngle = targetAngle;
-		else
-			transform->SetRotation(currentAngle + (diff > 0 ? maxStep : -maxStep));
-
 		rb->SetVelocity(delta / _dt);
 
 

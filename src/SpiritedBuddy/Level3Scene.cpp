@@ -43,7 +43,7 @@ void Level3Scene::OnEnter()
 
 	//SPIRIT BARRIER
 	{
-		CreateSpiritBarrier({ 256, 272+96 }, { 1696, 272+96 });
+		CreateSpiritBarrier({ 256, 368 }, { 1696, 368 });
 	}
 
 	//BUTTON
