@@ -26,6 +26,11 @@ AScene* SceneManager::GetCurrentScene()
 	return m_scene[m_currentScene];
 }
 
+std::string SceneManager::GetCurrentSceneID()
+{
+	return m_currentScene;
+}
+
 void SceneManager::ChangeScene(const std::string& _id)
 {
 	m_nextScene = _id;

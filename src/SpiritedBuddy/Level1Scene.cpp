@@ -67,7 +67,7 @@ void Level1Scene::OnEnter()
 		CreateSpiritBarrier({ 64, 400 }, { 1856, 400 }, "BARRIER");
 	}
 
-	TilemapLoader::Load("./Assets/level1.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("../../Assets/level1.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void Level1Scene::OnUpdate(float _dt)

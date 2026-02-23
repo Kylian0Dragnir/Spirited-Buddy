@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
 #include "Component.h"
-#include "Updatable.h"
 #include "Collidable.h"
 
 enum class ButtonMode
@@ -10,11 +9,11 @@ enum class ButtonMode
 	Toggle
 };
 
-class ButtonLogic : public Component, public Updatable, public Collidable
+class ButtonLogic : public Component, public Collidable
 {
 private:
 	bool m_isPressed;
-	bool m_isPhysicObjectOn;
+	int m_PhysicObjectsOn;
 
 	ButtonMode m_mode;
 
@@ -28,8 +27,6 @@ public:
 	void SetOnDeactivate(const std::function<void()>& func) { m_onDeactivate = func; }
 
 	bool IsPressed() { return m_isPressed; }
-
-	void Update(float _dt) override;
 
 	void OnCollisionEnter(Collider* self, Collider* other) override;
 	void OnCollisionExit(Collider* self, Collider* other) override;

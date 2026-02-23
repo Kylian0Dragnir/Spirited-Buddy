@@ -5,6 +5,7 @@
 class Entity;
 enum class ButtonMode;
 class ButtonLogic;
+class PortalLogic;
 
 class LevelSceneTemplate : public AScene
 {
@@ -39,8 +40,8 @@ public:
 	void CreateCollectible(Vector2f _pos);
 	void CreatePlayer(Vector2f _pos);
 	void CreateSpirit(Vector2f _pos);
-	void CreatePortal(Vector2f _pos, const std::string & newSceneID);
-	void CreateText(Vector2f _pos, const std::string & _text, int size = 24, const std::string& _fontPath = "./Assets/Bungee-Regular.otf");
+	PortalLogic* CreatePortal(Vector2f _pos, const std::string & newSceneID);
+	void CreateText(Vector2f _pos, const std::string & _text, int size = 24, const std::string& _fontPath = "../../Assets/Bungee-Regular.otf");
 	void CreateCrate(Vector2f _pos);
 	ButtonLogic* CreateButton(Vector2f _pos, ButtonMode _mode);
 	void CreateDummyWall(Vector2f _pos, const std::string& _direction);

@@ -8,24 +8,26 @@
 ButtonLogic::ButtonLogic(ButtonMode mode)
 {
 	m_mode = mode;
-}
-
-void ButtonLogic::Update(float _dt)
-{
-	if (m_mode == ButtonMode::Hold)
-	{
-		if (m_isPhysicObjectOn)
-			Activate();
-	}
+    m_isPressed = false;
 }
 
 void ButtonLogic::OnCollisionEnter(Collider* self, Collider* other)
 {
-    if (self->IsTrigger())
-    {
-        m_isPhysicObjectOn = true;
+    if (other->IsTrigger())
+        return;
 
-        if (m_mode == ButtonMode::Toggle)
+    if (self->IsTrigger() == false)
+        return;
+
+    m_PhysicObjectsOn++;
+
+    if (m_PhysicObjectsOn == 1)
+    {
+        if (m_mode == ButtonMode::Hold)
+        {
+            Activate();
+        }
+        else if (m_mode == ButtonMode::Toggle)
         {
             if (m_isPressed)
                 Deactivate();
@@ -37,11 +39,20 @@ void ButtonLogic::OnCollisionEnter(Collider* self, Collider* other)
 
 void ButtonLogic::OnCollisionExit(Collider* self, Collider* other)
 {
-    if (self->IsTrigger())
-    {
-        m_isPhysicObjectOn = false;
+    if (other->IsTrigger())
+        return;
 
-        if (m_mode == ButtonMode::Hold)
+    if (self->IsTrigger() == false)
+        return;
+
+    m_PhysicObjectsOn--;
+
+    if (m_PhysicObjectsOn < 0)
+        m_PhysicObjectsOn = 0;
+
+    if (m_mode == ButtonMode::Hold)
+    {
+        if (m_PhysicObjectsOn == 0)
         {
             Deactivate();
         }

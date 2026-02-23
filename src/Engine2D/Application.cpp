@@ -5,7 +5,7 @@
 #include "AScene.h"
 #include "CollisionSystem.h"
 #include "Timer.h"
-#include "Windows.h"
+#include "DataManager.h"
 #include "Lib2D/AudioEngine.h"
 
 using Clock = std::chrono::steady_clock;
@@ -23,7 +23,7 @@ float GetElapsed(Clock::time_point& _start, float targetFps)
 
 Application::Application()
 {
-    m_isMute = false;
+    m_isMusicMute = false;
     m_window = nullptr;
 }
 
@@ -59,11 +59,18 @@ void Application::LoopApp()
         InputManager& im = InputManager::Get();
         im.Update(deltaTime);
 
-        if (m_isMute)
+        DataManager::Get().Update();
+
+        AudioEngine& ae = AudioEngine::Get();
+
+        if (m_isMusicMute)
         {
-            AudioEngine& ae = AudioEngine::Get();
-            ae.StopAllSounds();
             ae.StopMusic();
+        }
+
+        if (m_isSFXMute)
+        {
+            ae.StopAllSounds();
         }
 
         sm.Update(deltaTime);

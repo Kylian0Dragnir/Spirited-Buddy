@@ -25,6 +25,8 @@ class PortalLogic : public Component, public Updatable, public Collidable
 
 	Entity* m_player = nullptr;
 
+	bool m_isActive;
+
 	void HandleAppear(float _dt);
 	void HandleDisappear(float _dt);
 
@@ -32,6 +34,8 @@ public:
 	PortalLogic(const std::string& _nextSceneID);
 	void Update(float dt) override;
 	void OnCollisionStay(Collider* _self, Collider* _other) override;
+
+	void SetActive(bool value) { m_isActive = value; }
 
 	void Appear();
 };

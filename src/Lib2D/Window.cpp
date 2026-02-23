@@ -33,12 +33,12 @@ void Window::Create(const std::string& _title, int _w, int _h, int _x, int _y)
     m_y = _y;
 
     m_window = SDL_CreateWindow(_title.c_str(),
-        m_x, m_y, 
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         m_width,
         m_height, 
-        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_WINDOW_SHOWN);
 
-    SDL_Surface* icon = IMG_Load("./Assets/SpiritedBuddy_logo.png");
+    SDL_Surface* icon = IMG_Load("../../Assets/SpiritedBuddy_logo.png");
 
     SDL_SetWindowIcon(m_window, icon);
         

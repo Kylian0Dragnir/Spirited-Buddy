@@ -11,10 +11,12 @@
 #include "PossessionLogic.h"
 #include "AnimatorComponent.h"
 #include "Lib2D/AudioEngine.h"
+#include "param.h"
 
 PortalLogic::PortalLogic(const std::string& _nextSceneID)
 {
 	m_nextSceneID = _nextSceneID;
+	m_isActive = true;
 }
 
 void PortalLogic::Update(float dt)
@@ -47,6 +49,9 @@ void PortalLogic::Update(float dt)
 
 void PortalLogic::OnCollisionStay(Collider* _self, Collider* _other)
 {
+	if (m_isActive == false)
+		return;
+
 	TagComponent* tags = _other->GetOwner()->GetComponent<TagComponent>();
 	PossessionLogic* pl = _other->GetOwner()->GetComponent<PossessionLogic>();
 
@@ -116,7 +121,14 @@ void PortalLogic::HandleDisappear(float _dt)
 	if (m_frameX >= 512)
 	{
 		m_state = PortalState::Hidden;
-		SceneManager::GetInstance().ChangeScene(m_nextSceneID);
+		SceneManager& sm = SceneManager::GetInstance();
+		sm.ChangeScene(m_nextSceneID);
+
+		if (sm.GetCurrentSceneID() == "LevelSelectorScene")
+			return;
+
+		Param& param = Param::Get();
+		param.SetLevelUnlockedCount(param.GetLevelUnlockedCount() + 1);
 		return;
 	}
 }

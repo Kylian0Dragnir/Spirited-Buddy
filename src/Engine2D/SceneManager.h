@@ -23,6 +23,7 @@ public:
 	~SceneManager();
 
 	AScene* GetCurrentScene();
+	std::string GetCurrentSceneID();
 	void ChangeScene(const std::string& _id);
 	void ReloadScene();
 	void Update(float _dt) override;

@@ -101,7 +101,7 @@ void Level2Scene::OnEnter()
 		CreateSpiritBarrier({ 200, 600 }, { 200, 750 });
 	}
 
-	TilemapLoader::Load("./Assets/level2.tmx", this, "./Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	TilemapLoader::Load("../../Assets/level2.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 
 	//Dummy Wall
 	{
