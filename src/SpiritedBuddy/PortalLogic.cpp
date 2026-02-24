@@ -24,6 +24,11 @@ void PortalLogic::Update(float dt)
 	SpriteRenderer* sr = m_owner->GetComponent<SpriteRenderer>();
 	CircleCollider* cc = m_owner->GetComponent<CircleCollider>();
 
+	if (m_isActive)
+		m_frameY = 0;
+	else
+		m_frameY = 64;
+
 	switch (m_state)
 	{
 	case PortalState::Hidden:
@@ -60,7 +65,7 @@ void PortalLogic::OnCollisionStay(Collider* _self, Collider* _other)
 
 	if (InputManager::Get().IsKeyDown(Key::KEY_e) && tags->Is("Player") && pl->IsPossessed())
 	{
-		AudioEngine::Get().PlaySound("PORTAL_CLOSE", false);
+		AudioEngine::Get().PlaySound("PORTAL_CLOSE", false, 10);
 		_other->GetOwner()->GetComponent<AnimatorComponent>()->Play("Despawn2");
 		m_player = _other->GetOwner();
 		m_state = PortalState::Disappearing;
@@ -73,7 +78,10 @@ void PortalLogic::Appear()
 	if (m_state != PortalState::Hidden)
 		return;
 
-	AudioEngine::Get().PlaySound("PORTAL_OPEN", false);
+	AudioEngine& ae = AudioEngine::Get();
+
+	if(m_isActive && ae.IsPlaying("PORTAL_OPEN") == false)
+		ae.PlaySound("PORTAL_OPEN", false, 10);
 
 	m_state = PortalState::Appearing;
 }

@@ -42,7 +42,7 @@ void Application::InitApp(const std::string& _title, int _width, int _height, in
 {
     m_FPS = _targetFPS;
     m_window = new Window;
-    m_window->Create(_title, _width, _height, 100, 100);
+    m_window->Create(_title, _width, _height);
 }
 
 void Application::LoopApp()

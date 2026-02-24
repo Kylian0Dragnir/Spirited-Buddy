@@ -1,10 +1,12 @@
 #include "AudioEngine.h"
 #include <iostream>
 #include <SDL_mixer.h>
+#include <algorithm>
 
 AudioEngine::AudioEngine() 
 {
     m_currentMusic = nullptr;
+    Mix_ChannelFinished(ChannelFinishedCallback);
 }
 
 AudioEngine& AudioEngine::Get()
@@ -53,16 +55,40 @@ void AudioEngine::LoadMusic(const std::string& _id, const std::string& _path)
         m_musics[_id] = music;
 }
 
-int AudioEngine::PlaySound(const std::string& _id, bool _loop)
+int AudioEngine::PlaySound(const std::string& _id, bool _loop, int _volume)
 {
     if (!m_sounds.count(_id))
         return -1;
 
     int loops = _loop ? -1 : 0;
-    return Mix_PlayChannel(-1, m_sounds[_id], loops);
+    int channel = Mix_PlayChannel(-1, m_sounds[_id], loops);
+
+    if (channel != -1)
+    {
+        _volume = std::clamp(_volume, 0, 128);
+
+        Mix_Volume(channel, _volume);
+        m_activeChannels[_id].push_back(channel);
+    }
+
+    return channel;
 }
 
-void AudioEngine::PlayMusic(const std::string& _id, bool _loop)
+bool AudioEngine::IsPlaying(const std::string& _id)
+{
+    if (!m_activeChannels.count(_id))
+        return false;
+
+    for (int channel : m_activeChannels[_id])
+    {
+        if (Mix_Playing(channel))
+            return true;
+    }
+
+    return false;
+}
+
+void AudioEngine::PlayMusic(const std::string& _id, bool _loop, int _volume)
 {
     auto it = m_musics.find(_id);
     if (it == m_musics.end())
@@ -74,10 +100,13 @@ void AudioEngine::PlayMusic(const std::string& _id, bool _loop)
     if (m_currentMusicId == _id && Mix_PlayingMusic())
         return;
 
+    _volume = std::clamp(_volume, 0, 128);
+
     m_currentMusic = it->second;
     m_currentMusicId = _id;
 
     int loops = _loop ? -1 : 0;
+    Mix_VolumeMusic(_volume);
     Mix_PlayMusic(m_currentMusic, loops);
 }
 
@@ -92,14 +121,32 @@ void AudioEngine::StopAllSounds()
     Mix_HaltChannel(-1);
 }
 
-void AudioEngine::StopSound(int _channel)
+void AudioEngine::StopSound(const std::string& _id)
 {
-    Mix_HaltChannel(_channel);
-}
+    if (!m_activeChannels.count(_id))
+        return;
 
+    for (int channel : m_activeChannels[_id])
+    {
+        Mix_HaltChannel(channel);
+    }
+
+    m_activeChannels.erase(_id);
+}
 
 void AudioEngine::SetMasterVolume(int _volume)
 {
     Mix_Volume(-1, _volume);
     Mix_VolumeMusic(_volume);
+}
+
+void AudioEngine::ChannelFinishedCallback(int channel)
+{
+    AudioEngine& engine = AudioEngine::Get();
+
+    for (auto& pair : engine.m_activeChannels)
+    {
+        auto& vec = pair.second;
+        vec.erase(std::remove(vec.begin(), vec.end(), channel), vec.end());
+    }
 }

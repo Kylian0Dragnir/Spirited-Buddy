@@ -7,7 +7,7 @@
 void UIButtonLogic::Update(float _dt)
 {
     if (m_isHovered && m_wasHovered == false)
-        AudioEngine::Get().PlaySound("UI_HOVER", false);
+        AudioEngine::Get().PlaySound("UI_HOVER", false, 30);
 
     m_wasHovered = m_isHovered;
 }
@@ -18,7 +18,7 @@ void UIButtonLogic::OnCollisionStay(Collider* self, Collider* other)
 
     if(InputManager::Get().IsMouseDown(MouseButton::LEFT))
     {
-        AudioEngine::Get().PlaySound("UI_CLICK", false);
+        AudioEngine::Get().PlaySound("UI_CLICK", false, 30);
 
         if (m_onClick)
             m_onClick();

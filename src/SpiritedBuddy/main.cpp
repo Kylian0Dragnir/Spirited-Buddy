@@ -1,4 +1,3 @@
-#define SDL_MAIN_HANDLED
 #include <iostream>
 #include "Application.h"
 #include "SceneManager.h"
@@ -11,13 +10,13 @@
 #include "Level4Scene.h"
 #include "Lib2D/AudioEngine.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     srand(time(NULL));
     rand();
 
     Application& app = Application::Get();
-    app.InitApp("Spirited Buddy", 1920, 1080);
+    app.InitApp("Spirited Buddy", 540, 320);
 
     AudioEngine& ae = AudioEngine::Get();
 
@@ -26,6 +25,7 @@ int main()
 
     ae.SetMasterVolume(5);
 
+    ae.LoadSound("REVEAL", "../../Assets/Reveal.wav");
     ae.LoadSound("UI_HOVER", "../../Assets/UI_Hover.wav");
     ae.LoadSound("UI_CLICK", "../../Assets/UI_Click.wav");
     ae.LoadSound("BUTTON_DOWN", "../../Assets/button_down.wav");
@@ -40,7 +40,7 @@ int main()
 
     ae.LoadMusic("MAIN", "../../Assets/mainMusic.wav");
 
-    ae.PlayMusic("MAIN", true);
+    ae.PlayMusic("MAIN", true, 10);
 
     SceneManager& sm = SceneManager::GetInstance();
 

@@ -40,7 +40,7 @@ void SpiritLogic::Update(float _dt)
 		{
 			m_switchCooldown = 0.6f;
 
-			AudioEngine::Get().PlaySound("SPIRIT_OUT", false);
+			AudioEngine::Get().PlaySound("SPIRIT_OUT", false, 10);
 
 			Vector2f targetPos = m_possessedEntity->GetComponent<TransformComponent>()->GetPos() + Vector2f{ 0, -40 };
 			transform->SetPos(targetPos);
@@ -133,7 +133,7 @@ void SpiritLogic::OnCollisionStay(Collider* _self, Collider* _other)
 		{
 			m_switchCooldown = 0.6f;
 
-			AudioEngine::Get().PlaySound("SPIRIT_IN", false);
+			AudioEngine::Get().PlaySound("SPIRIT_IN", false, 10);
 
 			pl->SetPossessed(true);
 			m_possessedEntity = _other->GetOwner();

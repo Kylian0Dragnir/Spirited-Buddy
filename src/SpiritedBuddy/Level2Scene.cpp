@@ -77,6 +77,7 @@ void Level2Scene::OnEnter()
 
 	//PLAYER
 	{
+		CreateDummyPortal({ 120, 880 });
 		CreatePlayer({ 120, 920 });
 	}
 

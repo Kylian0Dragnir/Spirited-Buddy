@@ -1,0 +1,3 @@
+#include "resource.h"
+
+IDI_ICON1 ICON "C:/Users/kylia/source/repos/Spirited-Buddy/Assets/logo.ico"

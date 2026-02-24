@@ -33,14 +33,17 @@ void PlayerMovement::Update(float _dt)
     AnimatorComponent* animator = m_owner->GetComponent<AnimatorComponent>();
     Rigidbody2D* rb = m_owner->GetComponent<Rigidbody2D>();
 
+    if (animator->IsPlaying("NONE"))
+        return;
+
     if (animator->IsPlaying("Walk") && m_isPlayingWalking == false)
     {
-        AudioEngine::Get().PlaySound("WALKING", true);
+        AudioEngine::Get().PlaySound("WALKING", true, 90);
         m_isPlayingWalking = true;
     }
     else if(animator->IsPlaying("Walk") == false && m_wasPlayingWalking)
     {
-        AudioEngine::Get().StopAllSounds();
+        AudioEngine::Get().StopSound("WALKING");
         m_isPlayingWalking = false;
     }
 

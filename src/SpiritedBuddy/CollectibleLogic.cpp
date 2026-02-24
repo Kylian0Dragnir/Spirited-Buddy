@@ -14,7 +14,7 @@ void CollectibleLogic::OnCollisionEnter(Collider* _self, Collider* _other)
 		if (_other->IsTrigger())
 			return;
 
-		AudioEngine::Get().PlaySound("PICK_UP", false);
+		AudioEngine::Get().PlaySound("PICK_UP", false, 30);
 
 		AScene* cs = SceneManager::GetInstance().GetCurrentScene();
 		cs->DestroyEntity(m_owner);

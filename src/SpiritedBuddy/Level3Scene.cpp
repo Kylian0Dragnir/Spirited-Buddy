@@ -70,6 +70,7 @@ void Level3Scene::OnEnter()
 
 	//PLAYER
 	{
+		CreateDummyPortal({ 300, 920 });
 		CreatePlayer({ 300, 984 });
 	}
 

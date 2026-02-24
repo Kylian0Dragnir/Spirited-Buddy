@@ -44,7 +44,8 @@ void Level1Scene::OnEnter()
 
 	//PLAYER
 	{
-		CreatePlayer({ 100, 760 });
+		CreateDummyPortal({ 100, 700 });
+		CreatePlayer({ 100, 700 });
 	}
 
 	//SPIRIT

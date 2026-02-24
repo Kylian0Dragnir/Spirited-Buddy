@@ -64,7 +64,7 @@ void ButtonLogic::Activate()
     if (m_isPressed)
         return;
 
-    AudioEngine::Get().PlaySound("BUTTON_DOWN", false);
+    AudioEngine::Get().PlaySound("BUTTON_DOWN", false, 50);
 
     m_owner->GetComponent<SpriteRenderer>()->SetFrame(32,32,32,0);
 
@@ -79,7 +79,7 @@ void ButtonLogic::Deactivate()
     if (!m_isPressed)
         return;
 
-    AudioEngine::Get().PlaySound("BUTTON_UP", false);
+    AudioEngine::Get().PlaySound("BUTTON_UP", false, 50);
 
     m_owner->GetComponent<SpriteRenderer>()->SetFrame(32, 32, 0, 0);
 

@@ -125,7 +125,7 @@ void StartScene::Enter()
 			else
 			{
 				output = "ON";
-				AudioEngine::Get().PlayMusic("MAIN", true);
+				AudioEngine::Get().PlayMusic("MAIN", true, 10);
 			}
 
 			ent->GetComponent<TextComponent>()->SetText(output);
@@ -149,7 +149,7 @@ void StartScene::Enter()
 					else
 					{
 						output = "ON";
-						AudioEngine::Get().PlayMusic("MAIN", true);
+						AudioEngine::Get().PlayMusic("MAIN", true, 10);
 					}
 
 					ent->GetComponent<TextComponent>()->SetText(output);

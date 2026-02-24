@@ -6,7 +6,7 @@ class AudioSource : public Component
 {
 private:
     bool m_loop;
-    int m_channel;
+    std::string m_soundId;
 
 public:
     AudioSource();

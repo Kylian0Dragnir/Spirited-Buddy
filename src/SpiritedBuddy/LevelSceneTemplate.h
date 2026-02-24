@@ -21,6 +21,7 @@ protected:
 	std::vector<Entity*> m_collectibles;
 
 	bool m_onPause;
+	bool m_wasOnPause;
 	std::vector<Entity*> m_pauseMenuEntities;
 
 public:
@@ -41,6 +42,7 @@ public:
 	void CreatePlayer(Vector2f _pos);
 	void CreateSpirit(Vector2f _pos);
 	PortalLogic* CreatePortal(Vector2f _pos, const std::string & newSceneID);
+	void CreateDummyPortal(Vector2f _pos);
 	void CreateText(Vector2f _pos, const std::string & _text, int size = 24, const std::string& _fontPath = "../../Assets/Bungee-Regular.otf");
 	void CreateCrate(Vector2f _pos);
 	ButtonLogic* CreateButton(Vector2f _pos, ButtonMode _mode);

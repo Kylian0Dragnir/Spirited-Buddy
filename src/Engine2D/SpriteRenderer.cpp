@@ -65,16 +65,16 @@ void SpriteRenderer::Draw(Window* _window)
 
     if (m_owner->GetComponent<TagComponent>()->Is("WORLD_WRAP"))
     {
-        m_sprite->SetPos(baseDrawPos + m_offset + Vector2f{ (float)_window->GetWidth(), 0 });
+        m_sprite->SetPos(baseDrawPos + m_offset + Vector2f{ (float)_window->GetVirtualWidth(), 0 });
         m_sprite->Draw(_window);
 
-        m_sprite->SetPos(baseDrawPos + m_offset - Vector2f{ (float)_window->GetWidth(), 0 });
+        m_sprite->SetPos(baseDrawPos + m_offset - Vector2f{ (float)_window->GetVirtualWidth(), 0 });
         m_sprite->Draw(_window);
 
-        m_sprite->SetPos(baseDrawPos + m_offset + Vector2f{ 0, (float)_window->GetHeight() });
+        m_sprite->SetPos(baseDrawPos + m_offset + Vector2f{ 0, (float)_window->GetVirtualHeight() });
         m_sprite->Draw(_window);
 
-        m_sprite->SetPos(baseDrawPos + m_offset - Vector2f{ 0, (float)_window->GetHeight() });
+        m_sprite->SetPos(baseDrawPos + m_offset - Vector2f{ 0, (float)_window->GetVirtualHeight() });
         m_sprite->Draw(_window);
     }
 

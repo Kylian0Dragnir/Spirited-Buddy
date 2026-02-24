@@ -19,6 +19,7 @@ void Level4Scene::OnEnter()
 
 	//PLAYER
 	{
+		CreateDummyPortal({ 200, 920 });
 		CreatePlayer({ 200, 984 });
 	}
 

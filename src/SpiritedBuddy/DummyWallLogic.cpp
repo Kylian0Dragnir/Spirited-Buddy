@@ -5,6 +5,7 @@
 #include "SpriteRenderer.h"
 #include "SceneManager.h"
 #include "AScene.h"
+#include "Lib2D/AudioEngine.h"
 
 void DummyWallLogic::Update(float _dt)
 {
@@ -26,6 +27,11 @@ void DummyWallLogic::OnCollisionEnter(Collider* _self, Collider* _other)
 	TagComponent* otherTag = _other->GetOwner()->GetComponent<TagComponent>();
 	if (otherTag && (otherTag->Is("Player") || otherTag->Is("Spirit")))
 	{
+		AudioEngine& ae = AudioEngine::Get();
+
+		if(ae.IsPlaying("REVEAL") == false)
+			ae.PlaySound("REVEAL", false, 40);
+
 		m_playerCollide = true;
 	}
 }

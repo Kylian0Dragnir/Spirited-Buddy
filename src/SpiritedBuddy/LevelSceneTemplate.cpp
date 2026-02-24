@@ -7,6 +7,7 @@
 #include "CollectibleLogic.h"
 #include "PossessionLogic.h"
 #include "PortalLogic.h"
+#include "DummyPortalLogic.h"
 #include "ButtonLogic.h"
 #include "DummyWallLogic.h"
 #include "WorldWrapLogic.h"
@@ -232,8 +233,18 @@ void LevelSceneTemplate::Update(float _dt)
 		m_onPause = !m_onPause;
 	}
 
+	if (m_wasOnPause && m_onPause == false)
+	{
+		AudioEngine::Get().StopSound("BUTTON_UP");
+		AudioEngine::Get().StopSound("BUTTON_DOWN");
+	}
+
+	m_wasOnPause = m_onPause;
+
 	if (m_onPause)
 	{
+		AudioEngine::Get().StopSound("BUTTON_UP");
+		AudioEngine::Get().StopSound("BUTTON_DOWN");
 		UpdatePauseMenu(_dt);
 		return;
 	}
@@ -269,8 +280,6 @@ void LevelSceneTemplate::Draw(Window* window)
 void LevelSceneTemplate::Exit()
 {
 	DestroyAllEntities();
-
-	AudioEngine::Get().StopAllSounds();
 
 	CleanVectors();
 
@@ -348,6 +357,19 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 	m_player->AddComponent<WorldWrapLogic>()->Generate();
 
 	AnimatorComponent* animator = m_player->AddComponent<AnimatorComponent>();
+
+	//NONE
+	{
+		Animation none;
+		none.frameWidth = 32;
+		none.frameHeight = 32;
+		none.frameDuration = 0.3f;
+		none.loop = true;
+
+		none.frames = {{5 , 0 }};
+
+		animator->AddAnimation("NONE", none);
+	}
 
 	//Idle
 	{
@@ -533,7 +555,7 @@ void LevelSceneTemplate::CreatePlayer(Vector2f _pos)
 		animator->AddAnimation("Respawn", respawn);
 	}
 
-	animator->Play("Respawn");
+	animator->Play("NONE");
 }
 
 void LevelSceneTemplate::CreateSpirit(Vector2f _pos)
@@ -590,6 +612,27 @@ PortalLogic* LevelSceneTemplate::CreatePortal(Vector2f _pos, const std::string& 
 	m_portals.push_back(portal);
 
 	return pl;
+}
+
+void LevelSceneTemplate::CreateDummyPortal(Vector2f _pos)
+{
+	Entity* portal = CreateEntity();
+
+	portal->AddComponent<TagComponent>("");
+
+	SpriteRenderer* sr = portal->AddComponent<SpriteRenderer>();
+	sr->Load("../../Assets/Portal-Sheet.png");
+	sr->SetVisible(false);
+
+	CircleCollider* cc = portal->AddComponent<CircleCollider>(48.f, ENV_LAYER, PLAYER_LAYER);
+	cc->SetActive(true);
+	cc->SetTrigger(true);
+
+	portal->AddComponent<DummyPortalLogic>();
+
+	TransformComponent* transform = portal->GetComponent<TransformComponent>();
+	transform->SetPos(_pos);
+	transform->SetScale({ 1.5f, 1.5f });
 }
 
 void LevelSceneTemplate::CreateText(Vector2f _pos, const std::string& _text, int _size, const std::string& _fontPath)

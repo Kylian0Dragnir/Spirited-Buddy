@@ -191,12 +191,6 @@ void Rigidbody2D::OnCollisionStay(Collider* _self, Collider* _other)
     if (otherRb && !otherRb->m_isKinematic)
         otherTransform->SetPos(otherTransformPos - correction * invMassB);
 
-    Vector2f horizontalNormal = { normal.GetX(), 0 };
-    m_velocity = m_velocity - horizontalNormal * m_velocity.Dot(horizontalNormal);
-
-    Vector2f verticalNormal = { 0, normal.GetY() };
-    m_velocity = m_velocity - verticalNormal * m_velocity.Dot(verticalNormal);
-
     // ----------- Calcul de la vélocité relative -----------
     Vector2f otherVelocity = otherRb ? otherRb->m_velocity : Vector2f(0, 0);
     Vector2f relativeVelocity = m_velocity - otherVelocity;
