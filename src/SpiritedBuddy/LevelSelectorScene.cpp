@@ -41,7 +41,7 @@ void LevelSelectorScene::OnUpdate(float _dt)
 	for (int i = 0; i < Param::Get().GetLevelUnlockedCount(); i++)
 	{
 		if (i > m_portals.size() - 1)
-			return;
+			continue;
 
 		m_portals[i]->GetComponent<PortalLogic>()->SetActive(true);
 	}

@@ -43,24 +43,27 @@ void Level2Scene::OnEnter()
 
 			bl2->SetOnActivate([this]()
 				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_SWIPE");
+					Entity* playerBarrier = FindByTag("PLAYERBARRIER_TO_SWIPE");
+					Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
+					
+					
+					playerBarrier->GetComponent<Collider>()->SetActive(false);
+					playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
 
-					if (targetBarrier == nullptr)
-						return;
-
-					DestroyEntity(targetBarrier);
-					CreateSpiritBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
+					spiritBarrier->GetComponent<Collider>()->SetActive(true);
+					spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 				});
 
 			bl2->SetOnDeactivate([this]()
 				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_SWIPE");
+					Entity* playerBarrier = FindByTag("PLAYERBARRIER_TO_SWIPE");
+					Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
 
-					if (targetBarrier == nullptr)
-						return;
+					playerBarrier->GetComponent<Collider>()->SetActive(true);
+					playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 
-					DestroyEntity(targetBarrier);
-					CreatePlayerBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
+					spiritBarrier->GetComponent<Collider>()->SetActive(false);
+					spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
 				});
 		}
 	}
@@ -94,12 +97,13 @@ void Level2Scene::OnEnter()
 	//PLAYER BARRIER
 	{
 		CreatePlayerBarrier({ 200, 830 }, { 200, 926 }, "BARRIER_TO_DESTROY");
-		CreatePlayerBarrier({ 1472, 780 }, { 1632, 780 }, "BARRIER_TO_SWIPE");
+		CreatePlayerBarrier({ 1472, 780 }, { 1632, 780 }, "PLAYERBARRIER_TO_SWIPE");
 	}
 
 	//SPIRIT BARRIER
 	{
 		CreateSpiritBarrier({ 200, 600 }, { 200, 750 });
+		CreateSpiritBarrier({ 1472, 780 }, { 1632, 780 }, "SPIRITBARRIER_TO_SWIPE");
 	}
 
 	TilemapLoader::Load("../../Assets/level2.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
