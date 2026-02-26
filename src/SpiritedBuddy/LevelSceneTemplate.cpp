@@ -20,6 +20,8 @@
 #include "Application.h"
 #include "CollisionSystem.h"
 #include "Lib2D/AudioEngine.h"
+#include "tinyxml2.h"
+#include "TiledUtils.h"
 
 #include <iostream>
 
@@ -28,6 +30,8 @@ LevelSceneTemplate::LevelSceneTemplate()
 	m_player = nullptr;
 	m_spirit = nullptr;
 	m_onPause = false;
+
+	m_loader = new TilemapLoader();
 }
 
 LevelSceneTemplate::~LevelSceneTemplate()
@@ -36,6 +40,8 @@ LevelSceneTemplate::~LevelSceneTemplate()
 	{
 		delete ent;
 	}
+
+	delete m_loader;
 }
 
 void LevelSceneTemplate::Enter()
@@ -221,6 +227,178 @@ void LevelSceneTemplate::Enter()
 
 		m_pauseMenuEntities.push_back(m_mouse);
 	}
+
+	m_loader->AddObjectLayerHandler("Collisions", [](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+			float w = obj->FloatAttribute("width") * scale.GetX();
+			float h = obj->FloatAttribute("height") * scale.GetY();
+
+			Entity* collider = scene->CreateEntity();
+			auto transform = collider->GetComponent<TransformComponent>();
+
+			transform->SetPos({ x + w * 0.5f, y + h * 0.5f });
+
+			collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER | SPIRIT_LAYER);
+			collider->AddComponent<TagComponent>("Ground");
+		});
+
+	m_loader->AddObjectLayerHandler("Kill_Zone", [](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+			float w = obj->FloatAttribute("width") * scale.GetX();
+			float h = obj->FloatAttribute("height") * scale.GetY();
+
+			Entity* collider = scene->CreateEntity();
+			auto transform = collider->GetComponent<TransformComponent>();
+
+			transform->SetPos({ x + w * 0.5f, y + h * 0.5f });
+
+			collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER)->SetTrigger(true);
+			collider->AddComponent<TagComponent>("KILL_ZONE");
+		});
+
+	m_loader->AddObjectLayerHandler("Portals", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+
+			std::string sceneId = TiledUtils::GetProperty<std::string>(obj, "SceneId", "StartScene");
+			bool active = TiledUtils::GetProperty<bool>(obj, "Active", true);
+
+			PortalLogic* portal = CreatePortal({ x, y }, sceneId);
+			portal->SetActive(active);
+		});
+
+	m_loader->AddObjectLayerHandler("Collectibles", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+
+			CreateCollectible({ x, y });
+		});
+
+	m_loader->AddObjectLayerHandler("PlayerSpawn", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+
+			CreateDummyPortal({ x,y });
+			CreatePlayer({ x, y });
+			CreateSpirit({ -100, -100 });
+		});
+
+	m_loader->AddObjectLayerHandler("Text", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+
+			std::string text = TiledUtils::GetProperty<std::string>(obj, "Text", "ERROR!");
+			int size = TiledUtils::GetProperty<int>(obj, "Size", 24);
+			std::string fontPath = TiledUtils::GetProperty<std::string>(obj, "FontPath", "../../Assets/Bungee-Regular.otf");
+
+			CreateText({ x, y }, text, size, fontPath);
+		});
+
+	m_loader->AddObjectLayerHandler("Crate", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+
+			CreateCrate({ x, y });
+		});
+
+	m_loader->AddObjectLayerHandler("Button", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+
+			std::string mode_str = TiledUtils::GetProperty<std::string>(obj, "ButtonMode", "Hold");
+			ButtonMode mode = ButtonMode::Hold;
+			
+			if (mode_str == "Toggle")
+				mode = ButtonMode::Toggle;
+
+			CreateButton({ x, y }, mode);
+		});
+
+	m_loader->AddObjectLayerHandler("DummyWall", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+			float w = obj->FloatAttribute("width") * scale.GetX();
+			float h = obj->FloatAttribute("height") * scale.GetY();
+
+			std::string direction = TiledUtils::GetProperty<std::string>(obj, "Direction", "Right");
+
+			CreateDummyWall({ x + w/2, y + h/2 }, direction);
+		});
+
+	m_loader->AddObjectLayerHandler("PlayerBarrier", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+			float w = obj->FloatAttribute("width") * scale.GetX();
+			float h = obj->FloatAttribute("height") * scale.GetY();
+
+			float x1 = x;
+			float y1 = y;
+			float x2 = x + w;
+			float y2 = y + h;
+
+			Vector2f p1, p2;
+
+			if (w > h)
+			{
+				float centerY = y + h * 0.5f;
+				p1 = { x1, centerY };
+				p2 = { x2, centerY };
+			}
+			else
+			{
+				float centerX = x + w * 0.5f;
+				p1 = { centerX, y1 };
+				p2 = { centerX, y2 };
+			}
+
+			std::string tag = TiledUtils::GetProperty<std::string>(obj, "Tag", "");
+
+			CreatePlayerBarrier(p1, p2, tag);
+		});
+
+	m_loader->AddObjectLayerHandler("SpiritBarrier", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
+		{
+			float x = obj->FloatAttribute("x") * scale.GetX();
+			float y = obj->FloatAttribute("y") * scale.GetY();
+			float w = obj->FloatAttribute("width") * scale.GetX();
+			float h = obj->FloatAttribute("height") * scale.GetY();
+
+			float x1 = x;
+			float y1 = y;
+			float x2 = x + w;
+			float y2 = y + h;
+
+			Vector2f p1, p2;
+
+			if (w > h)
+			{
+				float centerY = y + h * 0.5f;
+				p1 = { x1, centerY };
+				p2 = { x2, centerY };
+			}
+			else
+			{
+				float centerX = x + w * 0.5f;
+				p1 = { centerX, y1 };
+				p2 = { centerX, y2 };
+			}
+
+			std::string tag = TiledUtils::GetProperty<std::string>(obj, "Tag", "");
+
+			CreateSpiritBarrier(p1, p2, tag);
+		});
 
 	OnEnter();
 }
@@ -690,7 +868,7 @@ ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
 
 	button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
 
-	button->GetComponent<TransformComponent>()->SetPos(_pos);
+	button->GetComponent<TransformComponent>()->SetPos(_pos + Vector2f(0, -24));
 
 	return button->AddComponent<ButtonLogic>(_mode);
 }

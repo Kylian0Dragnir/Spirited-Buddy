@@ -39,7 +39,7 @@ void Level4Scene::OnEnter()
 		CreateSpiritBarrier({ 1120, 96 }, { 1120, 224 });
 	}
 
-	TilemapLoader::Load("../../Assets/level4.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	m_loader->Load("../../Assets/level4.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 
 	//DUMMY WALL
 	{

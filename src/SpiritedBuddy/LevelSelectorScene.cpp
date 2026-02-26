@@ -33,7 +33,7 @@ void LevelSelectorScene::OnEnter()
 		CreatePlayer({ 120, 930 });
 	}
 
-	TilemapLoader::Load("../../Assets/levelSelector.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	m_loader->Load("../../Assets/levelSelector.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void LevelSelectorScene::OnUpdate(float _dt)

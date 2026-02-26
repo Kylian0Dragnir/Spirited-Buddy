@@ -6,6 +6,7 @@ class Entity;
 enum class ButtonMode;
 class ButtonLogic;
 class PortalLogic;
+class TilemapLoader;
 
 class LevelSceneTemplate : public AScene
 {
@@ -23,6 +24,8 @@ protected:
 	bool m_onPause;
 	bool m_wasOnPause;
 	std::vector<Entity*> m_pauseMenuEntities;
+
+	TilemapLoader* m_loader;
 
 public:
 	LevelSceneTemplate();

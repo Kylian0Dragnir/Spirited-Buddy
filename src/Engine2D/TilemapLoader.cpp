@@ -6,11 +6,15 @@
 #include "BoxCollider.h"
 #include "TagComponent.h"
 
-#include <tinyxml2.h>
 #include <vector>
 #include <sstream>
 
 using namespace tinyxml2;
+
+void TilemapLoader::AddObjectLayerHandler(const std::string& layerName, ObjectLayerHandler handler)
+{
+    m_objectLayerHandlers[layerName] = handler;
+}
 
 void TilemapLoader::Load(const std::string& path, AScene* scene, const std::string& tilesetPath, Vector2f scale)
 {
@@ -50,7 +54,7 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
 
     // GENERATE SMART COLLIDERS
 
-    for (XMLElement* group = map->FirstChildElement("objectgroup");
+    /*for (XMLElement* group = map->FirstChildElement("objectgroup");
         group != nullptr;
         group = group->NextSiblingElement("objectgroup"))
     {
@@ -98,6 +102,26 @@ void TilemapLoader::Load(const std::string& path, AScene* scene, const std::stri
                 collider->AddComponent<BoxCollider>(w, h, ENV_LAYER, PLAYER_LAYER)->SetTrigger(true);
                 collider->AddComponent<TagComponent>("KILL_ZONE");
             }
+        }
+    }*/
+
+    for (XMLElement* group = map->FirstChildElement("objectgroup"); group != nullptr; group = group->NextSiblingElement("objectgroup"))
+    {
+        const char* layerName = group->Attribute("name");
+
+        if (!layerName)
+            continue;
+
+        auto it = m_objectLayerHandlers.find(layerName);
+
+        if (it == m_objectLayerHandlers.end())
+            continue; 
+
+        for (XMLElement* obj = group->FirstChildElement("object");
+            obj != nullptr;
+            obj = obj->NextSiblingElement("object"))
+        {
+            it->second(obj, scene, scale);
         }
     }
 }

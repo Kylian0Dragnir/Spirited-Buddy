@@ -101,7 +101,7 @@ void Level3Scene::OnEnter()
 
 
 
-	TilemapLoader::Load("../../Assets/level3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+	m_loader->Load("../../Assets/level3.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 }
 
 void Level3Scene::OnUpdate(float _dt)
