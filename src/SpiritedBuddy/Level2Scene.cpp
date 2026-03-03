@@ -6,113 +6,63 @@
 
 void Level2Scene::OnEnter()
 {
-	//BUTTON
-	{
 
-		//Destroy Barrier Button 
+	m_loader->Load("../../levels/level2.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+
+	Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
+	spiritBarrier->GetComponent<Collider>()->SetActive(false);
+	spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+
+	ButtonLogic* bl = FindByTag("b1")->GetComponent<ButtonLogic>();
+
+	bl->SetOnActivate([this]()
 		{
-			ButtonLogic* bl = CreateButton({ 1550, 905 }, ButtonMode::Hold);
+			Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
 
-			bl->SetOnActivate([this]()
-				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
+			if (targetBarrier == nullptr)
+				return;
 
-					if (targetBarrier == nullptr)
-						return;
+			targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+			targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
+		});
 
-					targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-					targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
-				});
-
-			bl->SetOnDeactivate([this]()
-				{
-					Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
-
-					if (targetBarrier == nullptr)
-						return;
-
-					targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-					targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
-				});
-		}
-
-		// Swipe Barrier Mode Button
+	bl->SetOnDeactivate([this]()
 		{
+			Entity* targetBarrier = FindByTag("BARRIER_TO_DESTROY");
 
-			ButtonLogic* bl2 = CreateButton({ 1790, 905 }, ButtonMode::Hold);
+			if (targetBarrier == nullptr)
+				return;
 
-			bl2->SetOnActivate([this]()
-				{
-					Entity* playerBarrier = FindByTag("PLAYERBARRIER_TO_SWIPE");
-					Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
-					
-					
-					playerBarrier->GetComponent<Collider>()->SetActive(false);
-					playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+			targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+			targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
+		});
 
-					spiritBarrier->GetComponent<Collider>()->SetActive(true);
-					spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-				});
+	ButtonLogic* bl2 = FindByTag("b2")->GetComponent<ButtonLogic>();
 
-			bl2->SetOnDeactivate([this]()
-				{
-					Entity* playerBarrier = FindByTag("PLAYERBARRIER_TO_SWIPE");
-					Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
+	bl2->SetOnActivate([this]()
+		{
+			Entity* playerBarrier = FindByTag("PLAYERBARRIER_TO_SWIPE");
+			Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
 
-					playerBarrier->GetComponent<Collider>()->SetActive(true);
-					playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 
-					spiritBarrier->GetComponent<Collider>()->SetActive(false);
-					spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-				});
-		}
-	}
+			playerBarrier->GetComponent<Collider>()->SetActive(false);
+			playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
 
-	//PORTAL
-	{
-		CreatePortal({ 120, 500 }, "Level3Scene");
-	}
+			spiritBarrier->GetComponent<Collider>()->SetActive(true);
+			spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+		});
 
-	//COLLECTIBLES
-	{
-		CreateCollectible({ 120,690 });
-	}
+	bl2->SetOnDeactivate([this]()
+		{
+			Entity* playerBarrier = FindByTag("PLAYERBARRIER_TO_SWIPE");
+			Entity* spiritBarrier = FindByTag("SPIRITBARRIER_TO_SWIPE");
 
-	//PLAYER
-	{
-		CreateDummyPortal({ 120, 880 });
-		CreatePlayer({ 120, 920 });
-	}
+			playerBarrier->GetComponent<Collider>()->SetActive(true);
+			playerBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
 
-	//SPIRIT
-	{
-		CreateSpirit({ -100,-100 });
-	}
-
-	//CRATE
-	{
-		CreateCrate({ 1700, 750 });
-	}
-
-	//PLAYER BARRIER
-	{
-		CreatePlayerBarrier({ 200, 830 }, { 200, 926 }, "BARRIER_TO_DESTROY");
-		CreatePlayerBarrier({ 1472, 780 }, { 1632, 780 }, "PLAYERBARRIER_TO_SWIPE");
-	}
-
-	//SPIRIT BARRIER
-	{
-		CreateSpiritBarrier({ 200, 600 }, { 200, 750 });
-		CreateSpiritBarrier({ 1472, 780 }, { 1632, 780 }, "SPIRITBARRIER_TO_SWIPE");
-	}
-
-	m_loader->Load("../../Assets/level2.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
-
-	//Dummy Wall
-	{
-		CreateDummyWall({ -16, 880 }, "Left");
-		CreateDummyWall({ 1936, 880 }, "Right");
-	}
+			spiritBarrier->GetComponent<Collider>()->SetActive(false);
+			spiritBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+		});
 }
 
 void Level2Scene::OnUpdate(float _dt)

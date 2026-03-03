@@ -1,0 +1,134 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "level2.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
+    "fileStates": {
+        "C:/Users/kylia/Documents/Tiled/Dungeon TileSet.tsx": {
+            "scaleInDock": 3
+        },
+        "C:/Users/kylia/source/repos/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/kylia/source/repos/Spirited-Buddy/Assets/level2.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 368,
+                "y": 614
+            }
+        },
+        "C:/Users/kylia/source/repos/Spirited-Buddy/Assets/test3.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 809,
+                "y": 859
+            }
+        },
+        "C:/Users/kylia/source/repos/Spirited-Buddy/Assets/test4.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 444.5,
+                "y": 276.75
+            }
+        },
+        "Dungeon TileSet.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 4,
+            "scaleInEditor": 3
+        },
+        "level1.tmx": {
+            "expandedObjectLayers": [
+                6,
+                2,
+                12,
+                13,
+                9,
+                11,
+                10,
+                5,
+                4
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 191.99999999999994,
+                "y": 336.5
+            }
+        },
+        "level2.tmx": {
+            "expandedObjectLayers": [
+                6,
+                2,
+                12,
+                13,
+                9,
+                3,
+                11,
+                10,
+                5,
+                4
+            ],
+            "scale": 2,
+            "selectedLayer": 8,
+            "viewCenter": {
+                "x": 448.5,
+                "y": 275.75
+            }
+        },
+        "levelSelector.tmx": {
+            "scale": 1.690441176470588,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 479.75641583297096,
+                "y": 271.82253153545025
+            }
+        },
+        "test.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 956,
+                "y": 750
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/kylia/Downloads",
+    "map.height": 5,
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": "3",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 5,
+    "openFiles": [
+        "Dungeon TileSet.tsx",
+        "level2.tmx"
+    ],
+    "project": "test.tiled-project",
+    "property.type": "string",
+    "recentFiles": [
+        "Dungeon TileSet.tsx",
+        "level2.tmx",
+        "level1.tmx",
+        "C:/Users/kylia/source/repos/Spirited-Buddy/Assets/test4.tmx",
+        "levelSelector.tmx",
+        "C:/Users/kylia/source/repos/Spirited-Buddy/Assets/test3.tmx",
+        "test.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

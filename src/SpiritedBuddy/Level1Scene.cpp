@@ -6,69 +6,31 @@
 
 void Level1Scene::OnEnter()
 {
-	//BUTTON
-	{
-		ButtonLogic* bl = CreateButton({ 1450, 905 }, ButtonMode::Hold);
+	m_loader->Load("../../levels/level1.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
 
-		bl->SetOnActivate([this]()
-			{
-				Entity* targetBarrier = FindByTag("BARRIER");
+	ButtonLogic* bl = FindByTag("b1")->GetComponent<ButtonLogic>();
 
-				if (targetBarrier == nullptr)
-					return;
+	bl->SetOnActivate([this]()
+		{
+			Entity* targetBarrier = FindByTag("BARRIER");
 
-				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
-				targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
-			});
+			if (targetBarrier == nullptr)
+				return;
 
-		bl->SetOnDeactivate([this]()
-			{
-				Entity* targetBarrier = FindByTag("BARRIER");
+			targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(false);
+			targetBarrier->GetComponent<BoxCollider>()->SetActive(false);
+		});
 
-				if (targetBarrier == nullptr)
-					return;
+	bl->SetOnDeactivate([this]()
+		{
+			Entity* targetBarrier = FindByTag("BARRIER");
 
-				targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
-				targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
-			});
-	}
-	//PORTAL
-	{
-		CreatePortal({ 80, 725 }, "Level2Scene");
-	}
+			if (targetBarrier == nullptr)
+				return;
 
-	//COLLECTIBLES
-	{
-		CreateCollectible({ 960,300 });
-	}
-
-	//PLAYER
-	{
-		CreateDummyPortal({ 100, 700 });
-		CreatePlayer({ 100, 700 });
-	}
-
-	//SPIRIT
-	{
-		CreateSpirit({ -100,-100 });
-	}
-
-	//CRATE
-	{
-		CreateCrate({ 1800, 760 });
-	}
-
-	//PLAYER BARRIER
-	{
-		CreatePlayerBarrier({ 840, 0 }, { 840, 925 });
-	}
-
-	//SPIRIT BARRIER
-	{
-		CreateSpiritBarrier({ 64, 400 }, { 1856, 400 }, "BARRIER");
-	}
-
-	m_loader->Load("../../Assets/level1.tmx", this, "../../Assets/Dungeon_Tileset.png", { 2.f, 2.f });
+			targetBarrier->GetComponent<SpriteRenderer>()->SetVisible(true);
+			targetBarrier->GetComponent<BoxCollider>()->SetActive(true);
+		});
 }
 
 void Level1Scene::OnUpdate(float _dt)

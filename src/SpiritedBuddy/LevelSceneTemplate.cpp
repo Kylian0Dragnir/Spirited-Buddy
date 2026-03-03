@@ -317,11 +317,13 @@ void LevelSceneTemplate::Enter()
 
 			std::string mode_str = TiledUtils::GetProperty<std::string>(obj, "ButtonMode", "Hold");
 			ButtonMode mode = ButtonMode::Hold;
+
+			std::string tag = TiledUtils::GetProperty < std::string >(obj, "Tag", "");
 			
 			if (mode_str == "Toggle")
 				mode = ButtonMode::Toggle;
 
-			CreateButton({ x, y }, mode);
+			CreateButton({ x, y }, mode, tag);
 		});
 
 	m_loader->AddObjectLayerHandler("DummyWall", [this](tinyxml2::XMLElement* obj, AScene* scene, Vector2f scale)
@@ -846,7 +848,7 @@ void LevelSceneTemplate::CreateCrate(Vector2f _pos)
 	crate->AddComponent<WorldWrapLogic>()->Generate();
 }
 
-ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
+ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode, const std::string& _tag)
 {
 	Entity* button = CreateEntity();
 
@@ -866,7 +868,9 @@ ButtonLogic* LevelSceneTemplate::CreateButton(Vector2f _pos, ButtonMode _mode)
 	triggerCollider->SetTrigger(true);
 	triggerCollider->SetOffset(0, 17);
 
-	button->AddComponent<TagComponent>("BUTTON")->AddTag("PhysicObject");
+	TagComponent* tag = button->AddComponent<TagComponent>("BUTTON");
+	tag->AddTag("PhysicObject");
+	tag->AddTag(_tag);
 
 	button->GetComponent<TransformComponent>()->SetPos(_pos + Vector2f(0, -24));
 

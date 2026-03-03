@@ -1,0 +1,264 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ffff0000",
+            "drawFill": true,
+            "id": 6,
+            "members": [
+                {
+                    "name": "ButtonMode",
+                    "type": "string",
+                    "value": "Hold"
+                },
+                {
+                    "name": "Tag",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Button",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffffff00",
+            "drawFill": true,
+            "id": 5,
+            "members": [
+            ],
+            "name": "Collectibles",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ff937225",
+            "drawFill": true,
+            "id": 7,
+            "members": [
+            ],
+            "name": "Crate",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ff7c7c7f",
+            "drawFill": true,
+            "id": 9,
+            "members": [
+                {
+                    "name": "Direction",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "DummyWall",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffaa0000",
+            "drawFill": true,
+            "id": 3,
+            "members": [
+                {
+                    "name": "Tag",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "PlayerBarrier",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffffaa00",
+            "drawFill": true,
+            "id": 10,
+            "members": [
+            ],
+            "name": "PlayerSpawn",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffaa00ff",
+            "drawFill": true,
+            "id": 2,
+            "members": [
+                {
+                    "name": "Active",
+                    "type": "bool",
+                    "value": true
+                },
+                {
+                    "name": "SceneId",
+                    "type": "string",
+                    "value": "LevelSelectorScene"
+                }
+            ],
+            "name": "Portals",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ff00aa00",
+            "drawFill": true,
+            "id": 4,
+            "members": [
+                {
+                    "name": "Tag",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "SpiritBarrier",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#fff9f9ff",
+            "drawFill": true,
+            "id": 8,
+            "members": [
+                {
+                    "name": "FontPath",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "Size",
+                    "type": "int",
+                    "value": 24
+                },
+                {
+                    "name": "Text",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Text",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 11,
+            "members": [
+            ],
+            "name": "Classe9",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        }
+    ]
+}

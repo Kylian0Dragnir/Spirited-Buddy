@@ -48,7 +48,7 @@ public:
 	void CreateDummyPortal(Vector2f _pos);
 	void CreateText(Vector2f _pos, const std::string & _text, int size = 24, const std::string& _fontPath = "../../Assets/Bungee-Regular.otf");
 	void CreateCrate(Vector2f _pos);
-	ButtonLogic* CreateButton(Vector2f _pos, ButtonMode _mode);
+	ButtonLogic* CreateButton(Vector2f _pos, ButtonMode _mode, const std::string& _tag = "");
 	void CreateDummyWall(Vector2f _pos, const std::string& _direction);
 	void CreatePlayerBarrier(Vector2f _start, Vector2f _end, const std::string & _tag = {});
 	void CreateSpiritBarrier(Vector2f _start, Vector2f _end, const std::string& _tag = {});

@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     sm.AddScene("Level3Scene", new Level3Scene);
     sm.AddScene("Level4Scene", new Level4Scene);
 
-    sm.SetStartScene("LevelTestScene");
+    sm.SetStartScene("Level2Scene");
 
     app.LoopApp();
 	return 0;

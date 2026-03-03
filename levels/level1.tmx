@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="left-up" width="60" height="34" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="17">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="left-up" width="60" height="34" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="36">
  <tileset firstgid="1" source="../../../../Documents/Tiled/Dungeon TileSet.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="60" height="34">
   <data encoding="csv">
@@ -40,11 +40,62 @@
 </data>
  </layer>
  <objectgroup id="2" name="Collisions">
-  <object id="11" x="-0.0103714" y="463.994" width="960.067" height="80.0216"/>
-  <object id="12" x="-50" y="383.993" width="129.994" height="79.9904"/>
-  <object id="13" x="880.001" y="384.004" width="129.994" height="79.9904"/>
-  <object id="14" x="0.00189394" y="32.1212" width="31.9963" height="271.906"/>
-  <object id="15" x="927.991" y="32.0835" width="31.9963" height="271.906"/>
-  <object id="16" x="-0.00577446" y="-0.00824653" width="960.008" height="32.006"/>
+  <object id="30" x="0.0077536" y="463.979" width="960.067" height="80.0216"/>
+  <object id="31" x="-49.9819" y="383.978" width="129.994" height="79.9904"/>
+  <object id="32" x="880.019" y="383.989" width="129.994" height="79.9904"/>
+  <object id="33" x="0.0200189" y="32.1058" width="31.9963" height="271.906"/>
+  <object id="34" x="928.009" y="32.0681" width="31.9963" height="271.906"/>
+  <object id="35" x="0.0123505" y="-0.023642" width="960.008" height="32.006"/>
+ </objectgroup>
+ <objectgroup id="3" name="Kill_Zone"/>
+ <objectgroup id="6" name="Portals" class="Portals">
+  <properties>
+   <property name="SceneId" value="LevelTestScene"/>
+  </properties>
+  <object id="16" type="Portals" x="32" y="352">
+   <properties>
+    <property name="SceneId" value="LevelTestScene"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Collectibles">
+  <object id="18" type="Collectibles" x="464" y="160">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="9" name="Button">
+  <object id="19" type="Button" x="560" y="464">
+   <properties>
+    <property name="Tag" value="b1"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="13" name="SpiritBarrier">
+  <object id="21" type="SpiritBarrier" x="32" y="192" width="896" height="16">
+   <properties>
+    <property name="Tag" value="BARRIER"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="12" name="PlayerBarrier">
+  <object id="12" type="PlayerBarrier" x="400" y="32" width="16" height="432">
+   <properties>
+    <property name="Tag" value=""/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="11" name="DummyWall"/>
+ <objectgroup id="10" name="Crate">
+  <object id="20" type="Crate" x="784" y="448">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="Text"/>
+ <objectgroup id="4" name="PlayerSpawn">
+  <object id="15" type="PlayerSpawn" x="192" y="432">
+   <point/>
+  </object>
  </objectgroup>
 </map>
